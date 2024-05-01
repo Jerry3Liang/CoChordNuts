@@ -1,14 +1,25 @@
 package com.ispan.recordshop.cochordnuts.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "Case")
 public class Case {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "caseNo")
     private Integer caseNO;
 
+    @Column(name = "memberNo")
     private Integer memberNo;
 
+    @Column(name = "orderNo")
     private Integer orderNo;
 
+    @Column(name = "subject")
     private String subject;
 
+    @Column(name = "status")
     private Integer status;
 
     public Case() {}

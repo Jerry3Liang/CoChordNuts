@@ -1,17 +1,28 @@
 package com.ispan.recordshop.cochordnuts.model;
 
+import jakarta.persistence.*;
+
 import java.util.Date;
 
+@Entity
+@Table(name = "Case_Detail")
 public class CaseDetail {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "caseDetailNo")
     private Integer caseDetailNo;
 
+    @Column(name = "caseNo")
     private Integer caseNo;
 
+    @Column(name = "message")
     private String message;
 
+    @Column(name = "messageTime")
     private Date messageTime;
 
+    @Column(name = "employeeNo")
     private Integer employeeNo;
 
     public CaseDetail(){}
