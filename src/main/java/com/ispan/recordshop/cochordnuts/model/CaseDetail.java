@@ -8,23 +8,29 @@ import java.util.Date;
 @Table(name = "Case_Detail")
 public class CaseDetail {
 
+    //回覆問題詳細內容編號
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "caseDetailNo")
     private Integer caseDetailNo;
 
+    //問題回覆編號
     @Column(name = "caseNo")
     private Integer caseNo;
 
+    //回覆內容
     @Column(name = "message")
     private String message;
 
+    //回覆時間
     @Column(name = "messageTime")
     private Date messageTime;
 
+    //回覆員工編號
     @Column(name = "employeeNo")
     private Integer employeeNo;
 
+    //無參數 Constructor
     public CaseDetail(){}
 
     public Integer getCaseDetailNo() {
