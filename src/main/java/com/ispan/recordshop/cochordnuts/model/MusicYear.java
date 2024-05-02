@@ -11,40 +11,42 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "product_style")
-public class ProductStyle {
+@Table(name = "music_year")
+public class MusicYear {
 	
 //	table建好再打開
 //	@OneToMany(
-//			mappedBy = "product_style",
+//			mappedBy = "music_year",
 //			cascade = CascadeType.ALL)
 //	private Set<Product> products;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer styleNo; //商品類型編號
+	private Integer musicYearNo; //年代編號
 	
-	private String styleType; //商品類型描述
+	private String generation; //年代
 
-	public ProductStyle() {
+	public MusicYear() {
 	}
 
-	public Integer getStyleNo() {
-		return styleNo;
+	public Integer getMusicYearNo() {
+		return musicYearNo;
 	}
 
-	public void setStyleNo(Integer styleNo) {
-		this.styleNo = styleNo;
+	public void setMusicYearNo(Integer musicYearNo) {
+		this.musicYearNo = musicYearNo;
 	}
 
-	public String getStyleType() {
-		return styleType;
+	public String getGeneration() {
+		return generation;
 	}
 
-	public void setStyleType(String styleType) {
-		this.styleType = styleType;
+	public void setGeneration(String generation) {
+		this.generation = generation;
 	}
+
 	
 	
-
+	
+	
 }

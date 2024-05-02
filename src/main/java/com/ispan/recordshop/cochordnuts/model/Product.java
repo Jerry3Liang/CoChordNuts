@@ -7,11 +7,39 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "product")
 public class Product {
+
+//	table建好再打開 並刪除對應屬性
+//	@ManyToOne
+//	@JoinColumn(
+//			name = "styleNo",
+//			referencedColumnName = "styleNo")
+//	private ProductStyle productStyle;
+//	
+//	@ManyToOne
+//	@JoinColumn(
+//			name = "artistNo",
+//			referencedColumnName = "artistNo")
+//	private Artist artist;
+//	
+//	@ManyToOne
+//	@JoinColumn(
+//			name = "languageNo",
+//			referencedColumnName = "languageNo")
+//	private Language language;
+//	
+//	@ManyToOne
+//	@JoinColumn(
+//			name = "musicYearNo",
+//			referencedColumnName = "musicYearNo")
+//	private MusicYear musicYear;
+	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +59,7 @@ public class Product {
 	
 	private Integer artistNo; //藝人
 	
-	private Integer language; //語言
+	private Integer languageNo; //語言
 	
 	private Date publishedDate; //發行日
 	
@@ -116,12 +144,12 @@ public class Product {
 		this.artistNo = artistNo;
 	}
 
-	public Integer getLanguage() {
-		return language;
+	public Integer getLanguageNo() {
+		return languageNo;
 	}
 
-	public void setLanguage(Integer language) {
-		this.language = language;
+	public void setLanguageNo(Integer languageNo) {
+		this.languageNo = languageNo;
 	}
 
 	public Date getPublishedDate() {
@@ -187,6 +215,8 @@ public class Product {
 	public void setMusicYearNo(Integer musicYearNo) {
 		this.musicYearNo = musicYearNo;
 	}
+
+	
 	
 	
 
