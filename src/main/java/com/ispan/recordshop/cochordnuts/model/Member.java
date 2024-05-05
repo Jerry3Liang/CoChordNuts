@@ -40,12 +40,8 @@ public class Member {
 	
 	private String recipientPhone; //收件人電話
 
-	
-
 	public Member() {
-		
 	}
-
 
 	public Integer getMemberNo() {
 		return memberNo;
