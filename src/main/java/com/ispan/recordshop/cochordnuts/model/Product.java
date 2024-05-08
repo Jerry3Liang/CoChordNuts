@@ -259,6 +259,22 @@ public class Product {
 		this.musicYear = musicYear;
 	}
 
+	public Set<OrderDetail> getOrderDetail() {
+		return orderDetail;
+	}
+
+	public void setOrderDetail(Set<OrderDetail> orderDetail) {
+		this.orderDetail = orderDetail;
+	}
+
+	public Set<WishList> getWishList() {
+		return wishList;
+	}
+
+	public void setWishList(Set<WishList> wishList) {
+		this.wishList = wishList;
+	}
+
 	
 	
 	
