@@ -16,29 +16,29 @@ import jakarta.persistence.Table;
 public class Product {
 
 //	table建好再打開 並刪除對應屬性
-//	@ManyToOne
-//	@JoinColumn(
-//			name = "styleNo",
-//			referencedColumnName = "styleNo")
-//	private ProductStyle productStyle;
-//	
-//	@ManyToOne
-//	@JoinColumn(
-//			name = "artistNo",
-//			referencedColumnName = "artistNo")
-//	private Artist artist;
-//	
-//	@ManyToOne
-//	@JoinColumn(
-//			name = "languageNo",
-//			referencedColumnName = "languageNo")
-//	private Language language;
-//	
-//	@ManyToOne
-//	@JoinColumn(
-//			name = "musicYearNo",
-//			referencedColumnName = "musicYearNo")
-//	private MusicYear musicYear;
+	@ManyToOne
+	@JoinColumn(
+			name = "styleNo",
+			referencedColumnName = "styleNo")
+	private ProductStyle productStyle;
+	
+	@ManyToOne
+	@JoinColumn(
+			name = "artistNo",
+			referencedColumnName = "artistNo")
+	private Artist artist;
+	
+	@ManyToOne
+	@JoinColumn(
+			name = "languageNo",
+			referencedColumnName = "languageNo")
+	private Language language;
+	
+	@ManyToOne
+	@JoinColumn(
+			name = "musicYearNo",
+			referencedColumnName = "musicYearNo")
+	private MusicYear musicYear;
 	
 	
 	@Id
@@ -55,11 +55,11 @@ public class Product {
 	
 	private String photoPath; //圖片路徑
 	
-	private Integer styleNo; //類型
+//	private Integer styleNo; //類型
 	
-	private Integer artistNo; //藝人
+//	private Integer artistNo; //藝人
 	
-	private Integer languageNo; //語言
+//	private Integer languageNo; //語言
 	
 	private Date publishedDate; //發行日
 	
@@ -75,7 +75,7 @@ public class Product {
 	
 	private double discount; //折扣
 	
-	private Integer musicYearNo; //音樂年份
+//	private Integer musicYearNo; //音樂年份
 	
 	public Product() {
 	}
@@ -128,29 +128,29 @@ public class Product {
 		this.photoPath = photoPath;
 	}
 
-	public Integer getStyleNo() {
-		return styleNo;
-	}
+//	public Integer getStyleNo() {
+//		return styleNo;
+//	}
+//
+//	public void setStyleNo(Integer styleNo) {
+//		this.styleNo = styleNo;
+//	}
 
-	public void setStyleNo(Integer styleNo) {
-		this.styleNo = styleNo;
-	}
+//	public Integer getArtistNo() {
+//		return artistNo;
+//	}
+//
+//	public void setArtistNo(Integer artistNo) {
+//		this.artistNo = artistNo;
+//	}
 
-	public Integer getArtistNo() {
-		return artistNo;
-	}
-
-	public void setArtistNo(Integer artistNo) {
-		this.artistNo = artistNo;
-	}
-
-	public Integer getLanguageNo() {
-		return languageNo;
-	}
-
-	public void setLanguageNo(Integer languageNo) {
-		this.languageNo = languageNo;
-	}
+//	public Integer getLanguageNo() {
+//		return languageNo;
+//	}
+//
+//	public void setLanguageNo(Integer languageNo) {
+//		this.languageNo = languageNo;
+//	}
 
 	public Date getPublishedDate() {
 		return publishedDate;
@@ -208,12 +208,44 @@ public class Product {
 		this.discount = discount;
 	}
 
-	public Integer getMusicYearNo() {
-		return musicYearNo;
+//	public Integer getMusicYearNo() {
+//		return musicYearNo;
+//	}
+//
+//	public void setMusicYearNo(Integer musicYearNo) {
+//		this.musicYearNo = musicYearNo;
+//	}
+
+	public ProductStyle getProductStyle() {
+		return productStyle;
 	}
 
-	public void setMusicYearNo(Integer musicYearNo) {
-		this.musicYearNo = musicYearNo;
+	public void setProductStyle(ProductStyle productStyle) {
+		this.productStyle = productStyle;
+	}
+
+	public Artist getArtist() {
+		return artist;
+	}
+
+	public void setArtist(Artist artist) {
+		this.artist = artist;
+	}
+
+	public Language getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(Language language) {
+		this.language = language;
+	}
+
+	public MusicYear getMusicYear() {
+		return musicYear;
+	}
+
+	public void setMusicYear(MusicYear musicYear) {
+		this.musicYear = musicYear;
 	}
 
 	

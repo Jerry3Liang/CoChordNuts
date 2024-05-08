@@ -14,11 +14,10 @@ import jakarta.persistence.Table;
 @Table(name = "product_style")
 public class ProductStyle {
 	
-//	table建好再打開
-//	@OneToMany(
-//			mappedBy = "product_style",
-//			cascade = CascadeType.ALL)
-//	private Set<Product> products;
+	@OneToMany(
+			mappedBy = "productStyle",
+			cascade = CascadeType.ALL)
+	private Set<Product> products;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +43,14 @@ public class ProductStyle {
 	public void setStyleType(String styleType) {
 		this.styleType = styleType;
 	}
-	
+
+	public Set<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(Set<Product> products) {
+		this.products = products;
+	}
 	
 
 }

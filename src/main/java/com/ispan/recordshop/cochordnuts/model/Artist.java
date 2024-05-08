@@ -14,11 +14,10 @@ import jakarta.persistence.Table;
 @Table(name = "artist")
 public class Artist {
 	
-//	table建好再打開
-//	@OneToMany(
-//			mappedBy = "artist",
-//			cascade = CascadeType.ALL)
-//	private Set<Product> products;
+	@OneToMany(
+			mappedBy = "artist",
+			cascade = CascadeType.ALL)
+	private Set<Product> products;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +44,13 @@ public class Artist {
 		this.artistName = artistName;
 	}
 
+	public Set<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(Set<Product> products) {
+		this.products = products;
+	}
 	
 	
 	
