@@ -17,18 +17,12 @@ public class Orders {
 	@OneToMany(mappedBy = "orderNo" ,cascade = CascadeType.ALL)
 	private List<OrderDetail> orderDetail;//訂單編號
 	
-	//與CustomerCase連接
-//	@OneToMany(mappedBy = "orderNo" ,cascade = CascadeType.ALL)
-//	private List<CustomerCase> CustomerCase;//訂單編號
-	
-
-//	@ManyToOne //與Member連接
-//	@JoinColumn(name="memberNo" ,referencedColumnName = "memberNo")
-//	private Member memberNo;//訂單編號
+	@ManyToOne //與Member關聯
+	@JoinColumn(name="memberNo" ,referencedColumnName = "memberNo")
+	private Member memberNo;//會員編號
 
 	@OneToOne(mappedBy = "orders")
 	private CustomerCase customerCase;
-	private Integer memberNo;//會員編號
 	
 	private Date createDate;//下單日
 	
@@ -93,11 +87,12 @@ public class Orders {
 		this.customerCase = customerCase;
 	}
 
-	public Integer getMemberNo() {
+
+	public Member getMemberNo() {
 		return memberNo;
 	}
 
-	public void setMemberNo(Integer memberNo) {
+	public void setMemberNo(Member memberNo) {
 		this.memberNo = memberNo;
 	}
 
