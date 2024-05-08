@@ -3,15 +3,7 @@ package com.ispan.recordshop.cochordnuts.model;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "orders")
@@ -33,6 +25,9 @@ public class Orders {
 //	@ManyToOne //與Member連接
 //	@JoinColumn(name="memberNo" ,referencedColumnName = "memberNo")
 //	private Member memberNo;//訂單編號
+
+	@OneToOne(mappedBy = "orders")
+	private CustomerCase customerCase;
 	private Integer memberNo;//會員編號
 	
 	private Date createDate;//下單日
@@ -88,6 +83,14 @@ public class Orders {
 
 	public void setOrderDetail(List<OrderDetail> orderDetail) {
 		this.orderDetail = orderDetail;
+	}
+
+	public CustomerCase getCustomerCase() {
+		return customerCase;
+	}
+
+	public void setCustomerCase(CustomerCase customerCase) {
+		this.customerCase = customerCase;
 	}
 
 	public Integer getMemberNo() {

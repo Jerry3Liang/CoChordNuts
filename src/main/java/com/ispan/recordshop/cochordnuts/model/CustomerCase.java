@@ -2,6 +2,9 @@ package com.ispan.recordshop.cochordnuts.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "Customer_Case")
 public class CustomerCase {
@@ -12,13 +15,20 @@ public class CustomerCase {
     @Column(name = "caseNo")
     private Integer caseNO;
 
-    //客戶編號
-    @Column(name = "memberNo")
-    private Integer memberNo;
-
     //訂單編號
-    @Column(name = "orderNo")
-    private Integer orderNo;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "orderNo", referencedColumnName = "orderNo")
+    private Orders orders;
+
+    @OneToMany(mappedBy = "caseNo", cascade = CascadeType.ALL)
+    private List<CaseDetail> caseDetails = new ArrayList<>();
+
+    //客戶編號
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "memberNo")
+    private Member member;
+
+
 
     //問題主旨
     @Column(name = "subject")
@@ -39,20 +49,28 @@ public class CustomerCase {
         this.caseNO = caseNO;
     }
 
-    public Integer getMemberNo() {
-        return memberNo;
+    public Orders getOrders() {
+        return orders;
     }
 
-    public void setMemberNo(Integer memberNo) {
-        this.memberNo = memberNo;
+    public void setOrders(Orders orders) {
+        this.orders = orders;
     }
 
-    public Integer getOrderNo() {
-        return orderNo;
+    public List<CaseDetail> getCaseDetails() {
+        return caseDetails;
     }
 
-    public void setOrderNo(Integer orderNo) {
-        this.orderNo = orderNo;
+    public void setCaseDetails(List<CaseDetail> caseDetails) {
+        this.caseDetails = caseDetails;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     public String getSubject() {

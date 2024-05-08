@@ -15,10 +15,10 @@ public class CaseDetail {
     private Integer caseDetailNo;
 
     //問題回覆編號
-    @Column(name = "caseNo")
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "caseNo")
-    private Integer caseNo;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "caseNo")
+    private CustomerCase caseNo;
 
     //回覆內容
     @Column(name = "message")
@@ -29,8 +29,9 @@ public class CaseDetail {
     private Date messageTime;
 
     //回覆員工編號
-    @Column(name = "employeeNo")
-    private Integer employeeNo;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "employeeNo")
+    private Employee employeeNo;
 
     //無參數 Constructor
     public CaseDetail(){}
@@ -43,11 +44,11 @@ public class CaseDetail {
         this.caseDetailNo = caseDetailNo;
     }
 
-    public Integer getCaseNo() {
+    public CustomerCase getCaseNo() {
         return caseNo;
     }
 
-    public void setCaseNo(Integer caseNo) {
+    public void setCaseNo(CustomerCase caseNo) {
         this.caseNo = caseNo;
     }
 
@@ -67,11 +68,11 @@ public class CaseDetail {
         this.messageTime = messageTime;
     }
 
-    public Integer getEmployeeNo() {
+    public Employee getEmployeeNo() {
         return employeeNo;
     }
 
-    public void setEmployeeNo(Integer employeeNo) {
+    public void setEmployeeNo(Employee employeeNo) {
         this.employeeNo = employeeNo;
     }
 }

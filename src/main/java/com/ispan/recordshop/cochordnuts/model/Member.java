@@ -1,12 +1,10 @@
 package com.ispan.recordshop.cochordnuts.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "member")
@@ -15,6 +13,9 @@ public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer memberNo; //會員編號
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<CustomerCase> customerCases = new ArrayList<>();
 	
 	private String name; //會員姓名
 	
