@@ -16,6 +16,8 @@ public class CaseDetail {
 
     //問題回覆編號
     @Column(name = "caseNo")
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "caseNo")
     private Integer caseNo;
 
     //回覆內容

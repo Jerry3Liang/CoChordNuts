@@ -3,8 +3,8 @@ package com.ispan.recordshop.cochordnuts.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Case")
-public class Case {
+@Table(name = "Customer_Case")
+public class CustomerCase {
 
     //問題回覆編號
     @Id
@@ -29,7 +29,7 @@ public class Case {
     private Integer status;
 
     //無參數 Constructor
-    public Case() {}
+    public CustomerCase() {}
 
     public Integer getCaseNO() {
         return caseNO;
