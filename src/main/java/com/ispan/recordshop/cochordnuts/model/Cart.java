@@ -20,7 +20,7 @@ public class Cart {
 	private Integer Count;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	//@MapsId("memberId")
+	@MapsId("memberId")
 	private Member member;
 	
 	@MapsId("productId")
@@ -43,7 +43,7 @@ public class Cart {
 		Count = count;
 	}
 
-	//public Member getMember() {
+	public Member getMember() {
 		return member;
 	}
 
@@ -51,7 +51,7 @@ public class Cart {
 		this.member = member;
 	}
 
-	//public Product getProduct() {
+	public Product getProduct() {
 		return product;
 	}
 
