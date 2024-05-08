@@ -1,10 +1,10 @@
 package com.ispan.recordshop.cochordnuts.model;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
 @Entity
@@ -14,52 +14,51 @@ public class Cart {
 	public Cart() {
 		// TODO Auto-generated constructor stub
 	}
+	@EmbeddedId
+	private CartId cartId;
+
+	private Integer Count;
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "cartNo")
-	private Integer cartNo;
+	@ManyToOne(fetch = FetchType.LAZY)
+	//@MapsId("memberId")
+	private Member member;
 	
-	@Column(name = "memberNo")
-	private Integer memberNo;
-	
-	@Column(name = "productNo")
-	private Integer productNo;
-	
-	@Column(name = "count")
-	private Integer count;
+	@MapsId("productId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Product product;
 
-	public Integer getCartNo() {
-		return cartNo;
+	public CartId getCartId() {
+		return cartId;
 	}
 
-	public void setCartNo(Integer cartNo) {
-		this.cartNo = cartNo;
-	}
-
-	public Integer getMemberNo() {
-		return memberNo;
-	}
-
-	public void setMemberNo(Integer memberNo) {
-		this.memberNo = memberNo;
-	}
-
-	public Integer getProductNo() {
-		return productNo;
-	}
-
-	public void setProductNo(Integer productNo) {
-		this.productNo = productNo;
+	public void setCartId(CartId cartId) {
+		this.cartId = cartId;
 	}
 
 	public Integer getCount() {
-		return count;
+		return Count;
 	}
 
 	public void setCount(Integer count) {
-		this.count = count;
+		Count = count;
 	}
 
+	//public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
+
+	//public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+	
+	
 	
 }
