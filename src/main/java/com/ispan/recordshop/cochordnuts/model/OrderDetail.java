@@ -30,10 +30,10 @@ public class OrderDetail {
 	
 	private float discount;//打折數
 	
-//	@ManyToOne //與Product連接
-//	@JoinColumn(name="productNo" ,referencedColumnName = "productNo")
-//	private Product productNo;//商品編號
-	private Integer productNo;//商品編號
+	@ManyToOne //與Product連接
+	@JoinColumn(name="productNo" ,referencedColumnName = "productNo")
+	private Product productNo;//商品編號
+//	private Integer productNo;//商品編號
 	
 	public OrderDetail() {
 
@@ -95,14 +95,25 @@ public class OrderDetail {
 		this.discount = discount;
 	}
 
-	public Integer getProductNo() {
+	public Product getProductNo() {
 		return productNo;
 	}
 
-	public void setProductNo(Integer productNo) {
+	public void setProductNo(Product productNo) {
 		this.productNo = productNo;
 	}
 
+//	public Integer getProductNo() {
+//		return productNo;
+//	}
+//
+//	public void setProductNo(Integer productNo) {
+//		this.productNo = productNo;
+//	}
+	
+	
+	
+	
 
 
 }

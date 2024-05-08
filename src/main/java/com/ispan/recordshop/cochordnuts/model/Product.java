@@ -1,21 +1,22 @@
 package com.ispan.recordshop.cochordnuts.model;
 
-import java.sql.Clob;
 import java.util.Date;
+import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "product")
 public class Product {
 
-//	table建好再打開 並刪除對應屬性
 	@ManyToOne
 	@JoinColumn(
 			name = "styleNo",
@@ -40,6 +41,11 @@ public class Product {
 			referencedColumnName = "musicYearNo")
 	private MusicYear musicYear;
 	
+	@OneToMany(
+			mappedBy="productNo",
+			cascade = CascadeType.ALL)
+	private Set<OrderDetail> orderDetail;
+	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +57,7 @@ public class Product {
 	
 	private Integer unitPrice; //單價(原價)
 	
-	private Clob describe; //商品描述
+	private String describe; //商品描述
 	
 	private String photoPath; //圖片路徑
 	
@@ -112,11 +118,11 @@ public class Product {
 		this.unitPrice = unitPrice;
 	}
 
-	public Clob getDescribe() {
+	public String getDescribe() {
 		return describe;
 	}
 
-	public void setDescribe(Clob describe) {
+	public void setDescribe(String describe) {
 		this.describe = describe;
 	}
 
