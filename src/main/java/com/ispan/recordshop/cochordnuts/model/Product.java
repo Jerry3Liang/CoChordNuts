@@ -46,6 +46,11 @@ public class Product {
 			cascade = CascadeType.ALL)
 	private Set<OrderDetail> orderDetail;
 	
+	@OneToMany(
+			mappedBy="product",
+			cascade = CascadeType.ALL)
+	private Set<WishList> wishList;
+	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
