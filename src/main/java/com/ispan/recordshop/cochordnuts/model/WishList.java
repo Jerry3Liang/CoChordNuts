@@ -23,11 +23,11 @@ public class WishList {
 	private Product product;
 	
 //	再確認欄位名稱
-//	@ManyToOne
-//	@JoinColumn(
-//			name = "memberNo",
-//			referencedColumnName = "memberNo")
-//	private Member member;
+	@ManyToOne
+	@JoinColumn(
+			name = "memberNo",
+			referencedColumnName = "memberNo")
+	private Member member;
 	
 	public WishList() {
 	}

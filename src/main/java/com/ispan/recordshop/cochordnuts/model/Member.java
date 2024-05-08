@@ -17,7 +17,7 @@ public class Member {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<CustomerCase> customerCases = new ArrayList<>();
 
-	@OneToMany(mappedBy = "member")
+	@OneToMany(mappedBy = "memberNo")
 	private List<Orders> orders = new ArrayList<>();
 
 	@ManyToMany

@@ -23,6 +23,8 @@ public class Orders {
 
 	@OneToOne(mappedBy = "orders")
 	private CustomerCase customerCase;
+
+
 	
 	private Date createDate;//下單日
 	
