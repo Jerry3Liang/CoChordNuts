@@ -28,7 +28,7 @@ public class OrderDetail {
 	
 	private Integer pay;//小計(單價*數量)
 	
-	private float discount;//打折數
+	private Double discount;//打折數
 	
 	@ManyToOne //與Product連接
 	@JoinColumn(name="productNo" ,referencedColumnName = "productNo")
@@ -87,11 +87,11 @@ public class OrderDetail {
 		this.pay = pay;
 	}
 
-	public float getDiscount() {
+	public Double getDiscount() {
 		return discount;
 	}
 
-	public void setDiscount(float discount) {
+	public void setDiscount(Double discount) {
 		this.discount = discount;
 	}
 
