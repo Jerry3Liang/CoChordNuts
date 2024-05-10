@@ -9,7 +9,7 @@ public interface OrdersService{
 	
 	
 	public List<Orders>selectAll();
-	public Orders insert(String Json);
+	public Orders insert(Orders orders);
 	public Orders update(String Json);
 	public void deleteById(Integer ordersNo);
 

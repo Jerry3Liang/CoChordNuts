@@ -22,9 +22,9 @@ public class OdersController {
 	private OrdersServiceImpl ordersServiceImpl;
 	
 	 @PostMapping("/orders/insert")
-	 public String create(@RequestBody String json) {
+	 public String create(@RequestBody Orders od) {
 		    JSONObject responseJson = new JSONObject();		    
-	        Orders order =ordersServiceImpl.insert(json);
+	        Orders order =ordersServiceImpl.insert(od);
 	        if(order!=null) {
 	        responseJson.put("success", true);
 	        responseJson.put("message", "新增成功");
@@ -32,6 +32,7 @@ public class OdersController {
 	        	 responseJson.put("success", false);
 	             responseJson.put("message", "新增失敗");
 	        }
+	        
 	        
 	        return responseJson.toString();
 	 }
@@ -41,15 +42,7 @@ public class OdersController {
 		 JSONArray array = new JSONArray();
 		 List<Orders> orders = ordersServiceImpl.selectAll();
 		 for(Orders order:orders) {
-			 JSONObject item = new JSONObject().put("orderNo",order.getOrderNo())
-					 						   .put("totalPay",order.getTotalPay())
-			                                   .put("deliverType",order.getDeliverType())
-			                                   .put("dispatchDate",order.getDispatchDate())			                                   
-			                                   .put("createDate",order.getCreateDate())
-			                                   .put("completeDate",order.getCompleteDate())
-			                                   .put("cancelDate",order.getCnacelDate())
-			                                   .put("returnDate", order.getReturnDate())
-			                                   .put("preparationDate", order.getPreparationDate());			                                   
+			 JSONObject item = new JSONObject(order);					 						                             
 			 array.put(item);
 			 
 		 }		
