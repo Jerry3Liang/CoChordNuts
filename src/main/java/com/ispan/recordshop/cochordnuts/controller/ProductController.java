@@ -1,7 +1,9 @@
 package com.ispan.recordshop.cochordnuts.controller;
 
 import java.net.URI;
+import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ public class ProductController {
 	//新增產品
 	@PostMapping("/products/create")
 	public ResponseEntity<?> createProduct(@RequestBody Product product) {
-		if(product != null && product.getProductNo() != null && product.getProductNo() != 0) {
+//		if(product != null && product.getProductNo() != null && product.getProductNo() != 0) {
 			Product result = productService.findById(product.getProductNo());
 			if(result == null) {
 				Product newProd = productService.insert(product);
@@ -36,7 +38,7 @@ public class ProductController {
 							.body(newProd);
 				}
 			}
-		}
+//		}
 		return ResponseEntity.noContent().build();
 	}
 	
@@ -56,6 +58,23 @@ public class ProductController {
 			}
 		}
 		return ResponseEntity.notFound().build();
+	}
+	
+	//多條件查詢
+	@PostMapping("/products/search")
+	public List<Product> searchByCondition(@RequestBody String obj) {
+		JSONObject json = new JSONObject(obj);
+//		System.out.println(json);
+		List<Product> result = productService.search(json);
+		if(!result.isEmpty()) {
+			return result;
+//			System.out.println(result.size());
+//			System.out.println(result.toString());
+		} else {
+			System.out.println("notFound");
+			return null;
+		}
+		
 	}
 	
 	

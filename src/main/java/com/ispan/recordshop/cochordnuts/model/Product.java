@@ -95,6 +95,19 @@ public class Product {
 	
 	public Product() {
 	}
+	
+
+	@Override
+	public String toString() {
+		return "Product [productStyle=" + productStyle + ", artist=" + artist + ", language=" + language
+				+ ", musicYear=" + musicYear + ", orderDetail=" + orderDetail + ", wishList=" + wishList + ", Cart="
+				+ Cart + ", productNo=" + productNo + ", productName=" + productName + ", stock=" + stock
+				+ ", unitPrice=" + unitPrice + ", describe=" + describe + ", photoPath=" + photoPath
+				+ ", publishedDate=" + publishedDate + ", lastModifiedDate=" + lastModifiedDate + ", isDiscount="
+				+ isDiscount + ", isBest=" + isBest + ", isPreorder=" + isPreorder + ", productStatus=" + productStatus
+				+ ", discount=" + discount + "]";
+	}
+
 
 	public Integer getProductNo() {
 		return productNo;
