@@ -1,8 +1,8 @@
 package com.ispan.recordshop.cochordnuts.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.*;
 
@@ -12,39 +12,66 @@ public class Member {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "memberNo")
 	private Integer memberNo; // 會員編號
 
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	private List<CustomerCase> customerCases = new ArrayList<>();
+	// @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	// private List<CustomerCase> customerCases = new ArrayList<>(); //所有回覆
 
-	@OneToMany(mappedBy = "memberNo")
-	private List<Orders> orders = new ArrayList<>();
+	// @OneToMany(mappedBy = "memberNo")
+	// private List<Orders> orders = new ArrayList<>(); //所有訂單
 
-	@ManyToMany
-	@JoinTable(name = "member_favorite_style", joinColumns = @JoinColumn(name = "memberNo"), inverseJoinColumns = @JoinColumn(name = "styleNo"))
-	private List<ProductStyle> favoriteMusicType = new ArrayList<>(); // 喜好音樂類型
-
+	// @ManyToMany
+	// @JoinTable(name = "member_favorite_style", joinColumns = @JoinColumn(name =
+	// "memberNo"), inverseJoinColumns = @JoinColumn(name = "styleNo"))
+	// private List<ProductStyle> favoriteMusicType = new ArrayList<>(); // 喜好音樂類型
+	@Column(name = "name")
 	private String name; // 會員姓名
 
+	@Column(name = "password")
 	private String password; // 會員密碼
 
+	@Column(name = "email")
 	private String email; // 信箱
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "birthday")
 	private Date birthday; // 生日
 
+	@Column(name = "address")
 	private String address; // 地址
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "registerTime")
 	private Date registerTime; // 註冊日
 
+	@Column(name = "lastLoginTime")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastLoginTime; // 最後登入日
 
+	@Column(name = "phone")
 	private String phone; // 電話
 
+	@Column(name = "recipient")
 	private String recipient; // 收件人
 
+	@Column(name = "recipientAddress")
 	private String recipientAddress; // 收件人地址
 
+	@Column(name = "recipientPhone")
 	private String recipientPhone; // 收件人電話
+
+	@Override
+	public String toString() {
+		return "Member [" + " name=" + name + ", password=" + password + ", email=" + email
+				+ ", birthday=" + birthday
+				+ ", address=" + address + ", registerTime=" + registerTime + ", lastLoginTime=" + lastLoginTime
+				+ ", phone=" + phone + ", recipient=" + recipient + ", recipientAddress=" + recipientAddress
+				+ ", recipientPhone=" + recipientPhone + "]";
+	}
 
 	public Member() {
 	}
@@ -57,29 +84,29 @@ public class Member {
 		this.memberNo = memberNo;
 	}
 
-	public List<CustomerCase> getCustomerCases() {
-		return customerCases;
-	}
+	// public List<CustomerCase> getCustomerCases() {
+	// return customerCases;
+	// }
 
-	public void setCustomerCases(List<CustomerCase> customerCases) {
-		this.customerCases = customerCases;
-	}
+	// public void setCustomerCases(List<CustomerCase> customerCases) {
+	// this.customerCases = customerCases;
+	// }
 
-	public List<Orders> getOrders() {
-		return orders;
-	}
+	// public List<Orders> getOrders() {
+	// return orders;
+	// }
 
-	public void setOrders(List<Orders> orders) {
-		this.orders = orders;
-	}
+	// public void setOrders(List<Orders> orders) {
+	// this.orders = orders;
+	// }
 
-	public List<ProductStyle> getFavoriteMusicType() {
-		return favoriteMusicType;
-	}
+	// public List<ProductStyle> getFavoriteMusicType() {
+	// return favoriteMusicType;
+	// }
 
-	public void setFavoriteMusicType(List<ProductStyle> favoriteMusicType) {
-		this.favoriteMusicType = favoriteMusicType;
-	}
+	// public void setFavoriteMusicType(List<ProductStyle> favoriteMusicType) {
+	// this.favoriteMusicType = favoriteMusicType;
+	// }
 
 	public String getName() {
 		return name;
