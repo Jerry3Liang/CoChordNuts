@@ -42,11 +42,12 @@ public class OrderDetail {
 		this.orderDetailNo = orderDetailNo;
 	}
 
-	public Integer getProductTotalPay() {
+	public Integer getProductTotalPay() {		
 		return productTotalPay;
 	}
 
-	public void setProductTotalPay(Integer productTotalPay) {
+	public void setProductTotalPay(Integer productTotalPay) {//單一商品小計
+		productTotalPay=productNo.getUnitPrice()*productBoughtCount;
 		this.productTotalPay = productTotalPay;
 	}
 
@@ -54,8 +55,8 @@ public class OrderDetail {
 		return discount;
 	}
 
-	public void setDiscount(Double discount) {
-		this.discount = discount;
+	public void setDiscount() {
+		this.discount = productNo.getDiscount();
 	}
 
 	public Integer getProductBoughtCount() {

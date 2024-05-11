@@ -8,59 +8,58 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "orders")
 public class Orders {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer orderNo;//訂單編號
+	private Integer orderNo;// 訂單編號
 
-	
-	@OneToMany(mappedBy = "orderNo" ,cascade = CascadeType.ALL)
-	private List<OrderDetail> orderDetail;//訂單編號
-	
-	@ManyToOne //與Member關聯
-	@JoinColumn(name="memberNo" ,referencedColumnName = "memberNo")
-	private Member memberNo;//會員編號
+	@OneToMany(mappedBy = "orderNo", cascade = CascadeType.ALL)
+	private List<OrderDetail> orderDetail;// 訂單編號
+
+	@ManyToOne // 與Member關聯
+	@JoinColumn(name = "memberNo", referencedColumnName = "memberNo")
+	private Member memberNo;// 會員編號
 
 	@OneToOne(mappedBy = "orders")
 	private CustomerCase customerCase;
-	
-	private String payment;//付款方式
-	
-	private String deliverType;//運送方式
-	
-	private Date createDate;//下單日
-	
-	private String status;//狀態
-	
-	private Date lastModifiedDate;//最後修改日
-	
-	private String receiptNo;//發票號碼
-	
-	private Integer totalPay;//總金額
-	
-	private Integer totalCount;//總數量
-	
-	private Integer freight;//運費
-	
-	private String creditCardNo;//信用卡號
-	
-	private String address;//初始地址
-	
-	private String receiptType;//發票方式
-	
-	private String note;//備註
-	
-	private Date preparationDate;//備貨日
-	
-	private Date dispatchDate;//出貨日
-	
-	private Date completeDate;//完成日
 
-	private String recipient;//收件人姓名
-	
-    private String recipientAddress;//收件人電話
-	
-	private String recipientPhone;//收件人地址
+	private String payment;// 付款方式
+
+	private String deliverType;// 運送方式
+
+	private Date createDate;// 下單日
+
+	private String status;// 狀態
+
+	private Date lastModifiedDate;// 最後修改日
+
+	private String receiptNo;// 發票號碼
+
+	private Integer totalPay;// 總金額
+
+	private Integer totalCount;// 總數量
+
+	private Integer freight;// 運費
+
+	private String creditCardNo;// 信用卡號
+
+	private String address;// 初始地址
+
+	private String receiptType;// 發票方式
+
+	private String note;// 備註
+
+	private Date preparationDate;// 備貨日
+
+	private Date dispatchDate;// 出貨日
+
+	private Date completeDate;// 完成日
+
+	private String recipient;// 收件人姓名
+
+	private String recipientAddress;// 收件人電話
+
+	private String recipientPhone;// 收件人地址
 
 	public Orders() {
 	}
@@ -117,8 +116,8 @@ public class Orders {
 		return createDate;
 	}
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
+	public void setCreateDate() {
+		this.createDate = new Date();// 取得現在時間
 	}
 
 	public String getStatus() {
@@ -142,7 +141,8 @@ public class Orders {
 	}
 
 	public void setReceiptNo(String receiptNo) {
-		this.receiptNo = receiptNo;
+		Integer r = 16620962 + this.orderNo;
+		this.receiptNo = r.toString();
 	}
 
 	public Integer getTotalPay() {
@@ -150,7 +150,9 @@ public class Orders {
 	}
 
 	public void setTotalPay(Integer totalPay) {
-		this.totalPay = totalPay;
+		for (OrderDetail anOrder : orderDetail) {
+			this.totalPay += anOrder.getProductTotalPay();
+		}
 	}
 
 	public Integer getTotalCount() {
@@ -158,7 +160,9 @@ public class Orders {
 	}
 
 	public void setTotalCount(Integer totalCount) {
-		this.totalCount = totalCount;
+		for (OrderDetail anOrder : orderDetail) {
+			this.totalCount += anOrder.getProductBoughtCount();
+		}
 	}
 
 	public Integer getFreight() {
@@ -182,7 +186,8 @@ public class Orders {
 	}
 
 	public void setAddress(String address) {
-		this.address = address;
+		
+		this.address = memberNo.getAddress();
 	}
 
 	public String getReceiptType() {
