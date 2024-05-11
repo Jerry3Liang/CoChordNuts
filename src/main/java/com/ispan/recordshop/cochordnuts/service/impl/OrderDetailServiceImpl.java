@@ -1,6 +1,7 @@
 package com.ispan.recordshop.cochordnuts.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,14 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 			return true;
 		}
 		return false;
+	}
+	public OrderDetail findByOdNo(Integer OdNo) {
+		if(orderRepository.findById(OdNo)!=null) {
+			return orderDetailRepository.findById(OdNo).get();
+		}
+		return null;
+		
+		
 	}
 
 	

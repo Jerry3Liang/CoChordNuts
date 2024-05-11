@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,7 +57,7 @@ public class OdersController {
 	@PutMapping("/orders/update") // 後台新增備貨、出貨等等OR修改訂單
 	public String update(@RequestBody Orders od) {
 		JSONObject responseJson = new JSONObject();
-		Orders order = ordersServiceImpl.insert(od);
+		Orders order = ordersServiceImpl.update(od);
 		if (order != null) {
 			responseJson.put("success", true);
 			responseJson.put("message", "修改成功");
@@ -67,8 +68,8 @@ public class OdersController {
 		return responseJson.toString();
 	}
 
-	@DeleteMapping("/orders/deleteById")//後台刪除訂單
-	public String deleteById(@RequestBody Integer odNo) {
+	@DeleteMapping("/orders/deleteById/{odNo}")//後台刪除訂單
+	public String deleteById(@PathVariable Integer odNo) {
 		JSONObject responseJson = new JSONObject();
 		boolean rs = ordersServiceImpl.deleteById(odNo);
 		if (rs) {

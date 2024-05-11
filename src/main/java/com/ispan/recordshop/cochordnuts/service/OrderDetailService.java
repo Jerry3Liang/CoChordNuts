@@ -12,5 +12,6 @@ public interface OrderDetailService {
 	public OrderDetail insert(OrderDetail orderDetail);
 	public OrderDetail update(OrderDetail orderDetail);
 	public boolean deleteById(Integer ordersNo);
+	public OrderDetail findByOdNo(Integer OdNo);
 	
 }
