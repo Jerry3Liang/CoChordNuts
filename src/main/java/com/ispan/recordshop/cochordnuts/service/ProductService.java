@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.ispan.recordshop.cochordnuts.model.Product;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
+import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -38,6 +39,9 @@ public class ProductService {
 
 	// 單一查詢
 	public Product findById(Integer id) {
+		if(id == null) {
+			return null;
+		}
 		Optional<Product> optional = productRepo.findById(id);
 		if (optional.isPresent()) {
 			return optional.get();
@@ -47,7 +51,7 @@ public class ProductService {
 
 	// 新增產品
 	public Product insert(Product product) {
-		if (product != null && product.getProductNo() != null) {
+		if(product != null ) {
 			return productRepo.save(product);
 		}
 		return null;
@@ -104,6 +108,7 @@ public class ProductService {
 			predicates.add(p1);
 		}
 		if(productName != null && productName.length() != 0) {
+			System.out.println(productName);
 			Predicate p2 = criteriaBuilder.like(table.get("productName"), "%"+productName+"%");
 			predicates.add(p2);
 		}
@@ -114,14 +119,17 @@ public class ProductService {
 			predicates.add(criteriaBuilder.lessThanOrEqualTo(table.get("unitPrice"), endPrice));
 		}
 		//日期比較 處理~~~~
-//		if(startDate != null) {
-//			java.util.Date temp = DatetimeConverter.parse(startDate, "yyyy-MM-dd");
-//			predicates.add(criteriaBuilder.greaterThan(table.get("publishedDate"), temp));
-//		}
-//		if(endDate != null) {
-//			java.util.Date temp = DatetimeConverter.parse(endDate, "yyyy-MM-dd");
-//			predicates.add(criteriaBuilder.lessThan(table.get("publishedDate"), temp));
-//		}
+		if(startDate != null) {
+			java.util.Date temp = DatetimeConverter.parse(startDate, "yyyy-MM-dd");
+//			java.sql.Date temp1 = new java.sql.Date(temp.getTime());
+			System.err.println(startDate);
+			System.out.println(temp);
+			predicates.add(criteriaBuilder.greaterThan(table.get("publishedDate"), temp));
+		}
+		if(endDate != null) {
+			java.util.Date temp = DatetimeConverter.parse(endDate, "yyyy-MM-dd");
+			predicates.add(criteriaBuilder.lessThan(table.get("publishedDate"), temp));
+		}
 		if(artistName != null && artistName.length() != 0) {
 			Predicate p3 = criteriaBuilder.like(table.get("artist"), "%"+artistName+"%");
 			predicates.add(p3);
@@ -133,6 +141,11 @@ public class ProductService {
 		//下拉選項用數字對照
 		if(language != null && language != 0) {
 			predicates.add(criteriaBuilder.equal(table.get("language"), language));
+		}
+		
+		if(predicates != null && !predicates.isEmpty()) {
+			Predicate[] array = predicates.toArray(new Predicate[0]);
+			criteriaQuery = criteriaQuery.where(array);
 		}
 		//where end		
 		
@@ -152,8 +165,6 @@ public class ProductService {
 		} else {
 			return null;
 		}
-		
-		
 	}
 	
 	

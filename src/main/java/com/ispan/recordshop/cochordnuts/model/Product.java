@@ -4,11 +4,13 @@ import java.util.Date;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -67,9 +69,12 @@ public class Product {
 	
 	private Integer unitPrice; //單價(原價)
 	
+	@Lob
+	@Column(columnDefinition = "nvarchar(MAX)")
 	private String describe; //商品描述
 	
-	private String photoPath; //圖片路徑
+	@Column(columnDefinition = "varbinary(MAX)")
+	private byte[] photo; //圖片
 	
 //	private Integer styleNo; //類型
 	
@@ -95,6 +100,25 @@ public class Product {
 	
 	public Product() {
 	}
+	
+
+	
+
+
+	@Override
+	public String toString() {
+		return "Product [productStyle=" + productStyle + ", artist=" + artist + ", language=" + language
+				+ ", musicYear=" + musicYear + ", orderDetail=" + orderDetail + ", wishList=" + wishList + ", Cart="
+				+ Cart + ", productNo=" + productNo + ", productName=" + productName + ", stock=" + stock
+				+ ", unitPrice=" + unitPrice + ", describe=" + describe + ", photo=" + photo + ", publishedDate="
+				+ publishedDate + ", lastModifiedDate=" + lastModifiedDate + ", isDiscount=" + isDiscount + ", isBest="
+				+ isBest + ", isPreorder=" + isPreorder + ", productStatus=" + productStatus + ", discount=" + discount
+				+ "]";
+	}
+
+
+
+
 
 	public Integer getProductNo() {
 		return productNo;
@@ -136,13 +160,7 @@ public class Product {
 		this.describe = describe;
 	}
 
-	public String getPhotoPath() {
-		return photoPath;
-	}
-
-	public void setPhotoPath(String photoPath) {
-		this.photoPath = photoPath;
-	}
+	
 
 //	public Integer getStyleNo() {
 //		return styleNo;
@@ -167,6 +185,15 @@ public class Product {
 //	public void setLanguageNo(Integer languageNo) {
 //		this.languageNo = languageNo;
 //	}
+
+	
+	public byte[] getPhoto() {
+		return photo;
+	}
+	
+	public void setPhoto(byte[] photo) {
+		this.photo = photo;
+	}
 
 	public Date getPublishedDate() {
 		return publishedDate;
@@ -280,6 +307,19 @@ public class Product {
 		this.wishList = wishList;
 	}
 
+
+	public Set<Cart> getCart() {
+		return Cart;
+	}
+
+
+	public void setCart(Set<Cart> cart) {
+		Cart = cart;
+	}
+
+	
+	
+	
 	
 	
 	
