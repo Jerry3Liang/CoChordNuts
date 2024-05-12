@@ -70,10 +70,11 @@ public class Product {
 	private Integer unitPrice; //單價(原價)
 	
 	@Lob
+	@Column(columnDefinition = "nvarchar(MAX)")
 	private String describe; //商品描述
 	
 	@Column(columnDefinition = "varbinary(MAX)")
-	private byte[] photo; //圖片路徑
+	private byte[] photo; //圖片
 	
 //	private Integer styleNo; //類型
 	
