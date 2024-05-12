@@ -51,10 +51,10 @@ public class ProductService {
 
 	// 新增產品
 	public Product insert(Product product) {
-//		if (product != null && product.getProductNo() != null) {
+		if(product != null ) {
 			return productRepo.save(product);
-//		}
-//		return null;
+		}
+		return null;
 	}
 
 	// 多筆查詢分頁

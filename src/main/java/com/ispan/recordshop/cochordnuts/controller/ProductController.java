@@ -27,7 +27,7 @@ public class ProductController {
 	//新增產品
 	@PostMapping("/products/create")
 	public ResponseEntity<?> createProduct(@RequestBody Product product) {
-//		if(product != null && product.getProductNo() != null && product.getProductNo() != 0) {
+		if(product != null) {
 			Product result = productService.findById(product.getProductNo());
 			if(result == null) {
 				Product newProd = productService.insert(product);
@@ -38,7 +38,7 @@ public class ProductController {
 							.body(newProd);
 				}
 			}
-//		}
+		}
 		return ResponseEntity.noContent().build();
 	}
 	
