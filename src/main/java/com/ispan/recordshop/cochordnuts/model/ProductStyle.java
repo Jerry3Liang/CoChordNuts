@@ -21,8 +21,8 @@ public class ProductStyle {
 	@OneToMany(mappedBy = "productStyle", cascade = CascadeType.ALL)
 	private Set<Product> products;
 
-	@ManyToMany(mappedBy = "favoriteMusicType")
-	private List<Member> members = new ArrayList<>(); // 喜好此音樂類型的會員
+//	@ManyToMany(mappedBy = "favoriteMusicType")
+//	private List<Member> members = new ArrayList<>(); // 喜好此音樂類型的會員
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,13 +41,13 @@ public class ProductStyle {
 		this.products = products;
 	}
 
-	public List<Member> getMembers() {
-		return members;
-	}
-
-	public void setMembers(List<Member> members) {
-		this.members = members;
-	}
+//	public List<Member> getMembers() {
+//		return members;
+//	}
+//
+//	public void setMembers(List<Member> members) {
+//		this.members = members;
+//	}
 
 	public Integer getStyleNo() {
 		return styleNo;
