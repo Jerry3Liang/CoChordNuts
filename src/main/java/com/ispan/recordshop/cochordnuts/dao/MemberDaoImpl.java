@@ -1,7 +1,7 @@
 package com.ispan.recordshop.cochordnuts.dao;
 
 import com.ispan.recordshop.cochordnuts.model.Member;
-import com.ispan.util.DatetimeConverter;
+import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 
 import java.util.ArrayList;
 import java.util.List;
