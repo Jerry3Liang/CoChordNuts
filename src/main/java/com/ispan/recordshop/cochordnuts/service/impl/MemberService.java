@@ -42,6 +42,24 @@ public class MemberService {
         return false;
     }
 
+      public boolean existById(Integer memberNo) {
+        if (memberNo != null) {
+            return memberRepo.existsById(memberNo);
+        }
+        return false;
+    }
+
+    public String getPhoneByEmail(String email) {
+        Optional<Member> optional = memberRepo.findByEmail(email);
+        if (optional.isPresent()) {
+            Member member = optional.get();
+            return member.getPhone();
+        } else {
+            return null;
+        }
+    }
+
+
     // 登入
     public Member login(String email, String password) {
         if (email != null && !email.isEmpty() && password != null && !password.isEmpty()) {
@@ -103,6 +121,58 @@ public class MemberService {
         member.setLastLoginTime(new Date());
 
         return memberRepo.save(member);
+    }
+
+    // 修改個人資料
+    public Member modify(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+
+            String name = obj.isNull("name") ? null : obj.getString("name");
+            String email = obj.isNull("email") ? null : obj.getString("email");
+            String birthday = obj.isNull("birthday") ? null : obj.getString("birthday");
+            String address = obj.isNull("address") ? null : obj.getString("address");
+            String phone = obj.isNull("phone") ? null : obj.getString("phone");
+
+            if (email != null && phone != null) {
+                Optional<Member> optional = memberRepo.findByEmail(email);
+                if (optional.isPresent()) {
+                    Member update = optional.get();
+                    update.setName(name);
+                    update.setEmail(email);
+                    update.setAddress(address);
+                    update.setPhone(phone);
+                    if (birthday != null && birthday.length() != 0) {
+                        java.util.Date temp = DatetimeConverter.parse(birthday, "yyyy-MM-dd");
+                        update.setBirthday(temp);
+                    } else {
+                        update.setBirthday(null);
+                    }
+                    return memberRepo.save(update);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // 刪除，需要確認密碼
+    public boolean delete(Integer memberNo, String password) {
+        if (memberNo != null) {
+            Optional<Member> optional = memberRepo.findById(memberNo);
+            if (optional.isPresent()) {
+                Member member = optional.get();
+                String storedPasswordHash = member.getPassword();
+
+                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                if (passwordEncoder.matches(password, storedPasswordHash)) {
+                    memberRepo.deleteById(memberNo);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
