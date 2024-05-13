@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispan.recordshop.cochordnuts.model.Member;
-import com.ispan.recordshop.cochordnuts.service.MemberService;
+import com.ispan.recordshop.cochordnuts.service.impl.MemberService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
