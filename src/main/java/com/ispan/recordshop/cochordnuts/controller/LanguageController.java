@@ -10,24 +10,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispan.recordshop.cochordnuts.model.Artist;
-import com.ispan.recordshop.cochordnuts.service.ArtistService;
+import com.ispan.recordshop.cochordnuts.model.Language;
+import com.ispan.recordshop.cochordnuts.service.LanguageService;
 
 @RestController
 @CrossOrigin
-public class ArtistController {
+public class LanguageController {
 
 	@Autowired
-	private ArtistService artistService;
+	private LanguageService languageService;
 	
-	@PostMapping("/product/artist/add")
-	public Artist insert(@RequestBody Artist artist) {
-		return artistService.insert(artist);
+	@PostMapping("/product/language/add")
+	public Language insert(@RequestBody Language language) {
+		return languageService.insert(language);
 	}
 	
-	@GetMapping("/product/artist/find")
-	public List<Artist> findAll(){
-		return artistService.findAll();
+	@GetMapping("/product/language/find")
+	public List<Language> findAll(){
+		return languageService.findAll();
 	}
+	
 	
 	
 }

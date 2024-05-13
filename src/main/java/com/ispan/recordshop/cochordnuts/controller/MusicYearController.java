@@ -9,25 +9,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ispan.recordshop.cochordnuts.model.Artist;
-import com.ispan.recordshop.cochordnuts.service.ArtistService;
+import com.ispan.recordshop.cochordnuts.model.MusicYear;
+import com.ispan.recordshop.cochordnuts.service.MusicYearService;
 
 @RestController
 @CrossOrigin
-public class ArtistController {
-
+public class MusicYearController {
+	
 	@Autowired
-	private ArtistService artistService;
+	private MusicYearService musicYearService;
 	
-	@PostMapping("/product/artist/add")
-	public Artist insert(@RequestBody Artist artist) {
-		return artistService.insert(artist);
+	@PostMapping("/product/musicYear/add")
+	public MusicYear insert(@RequestBody MusicYear year) {
+		return musicYearService.insert(year);
 	}
 	
-	@GetMapping("/product/artist/find")
-	public List<Artist> findAll(){
-		return artistService.findAll();
+	@GetMapping("/product/musicYear/find")
+	public List<MusicYear> findAll(){
+		return musicYearService.findAll();
 	}
 	
 	
+
 }

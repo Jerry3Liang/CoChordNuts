@@ -1,5 +1,7 @@
 package com.ispan.recordshop.cochordnuts.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,12 @@ public class ArtistService {
 	public Artist insert(Artist artist) {
 		return artistRepository.save(artist);
 	}
+	
+	public List<Artist> findAll(){
+		return artistRepository.findAll();
+	}
+	
+	
 	
 
 }
