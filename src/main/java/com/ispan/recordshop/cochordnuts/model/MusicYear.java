@@ -27,6 +27,12 @@ public class MusicYear {
 
 	public MusicYear() {
 	}
+	
+	@Override
+	public String toString() {
+		return "MusicYear [musicYearNo=" + musicYearNo + ", generation=" + generation + "]";
+	}
+
 
 	public Integer getMusicYearNo() {
 		return musicYearNo;
