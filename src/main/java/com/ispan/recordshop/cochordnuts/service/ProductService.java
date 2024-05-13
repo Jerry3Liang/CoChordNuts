@@ -96,9 +96,7 @@ public class ProductService {
 		String artistName = obj.isNull("artistName")? null : obj.getString("artistName");
 		Integer style = obj.isNull("style")? null : obj.getInt("style");
 		Integer language = obj.isNull("language")? null : obj.getInt("language");
-		if(obj.isEmpty()) {
-			System.out.println("空的");
-		}
+		
 		//設定排列預設值
 		int rows = obj.isNull("rows") ? 15 : obj.getInt("rows");
 		String order = obj.isNull("order") ? "productNo" : obj.getString("order");
@@ -189,11 +187,21 @@ public class ProductService {
 		}
 	}
 	
+	// 熱銷商品
+	public List<Product> findIsBest(Integer isBest){
+		return productRepo.findIsBest(isBest);
+	}
 	
 	
+	// 折扣商品
+	public List<Product> findIsDiscount(Integer isDiscount){
+		return productRepo.findIsDiscount(isDiscount);
+	}
 	
-	
-	
+	// 預購商品
+	public List<Product> findIsPreorder(Integer isPreorder){
+		return productRepo.findIsPreorder(isPreorder);
+	}
 	
 	
 	
