@@ -62,20 +62,32 @@ public class ProductController {
 	
 	//多條件查詢
 	@PostMapping("/products/search")
-	public List<Product> searchByCondition(@RequestBody String obj) {
+	public ResponseEntity<?> searchByCondition(@RequestBody String obj) {
 		JSONObject json = new JSONObject(obj);
-//		System.out.println(json);
+		System.out.println(json.toString());
 		List<Product> result = productService.search(json);
-		if(!result.isEmpty()) {
-			return result;
-//			System.out.println(result.size());
+		if(result != null && !result.isEmpty()) {
 //			System.out.println(result.toString());
+			return ResponseEntity.ok(result.toString());
 		} else {
-			System.out.println("notFound");
-			return null;
+			return ResponseEntity.notFound().build();
 		}
+	
+//		if(!result.isEmpty()) {
+////			System.out.println(result.toString());
+////			System.out.println(result.size());
+//			return result.toString();
+//		} else {
+////			System.out.println("notFound");
+//			return null;
+//		}
 		
 	}
+	
+	// 查詢全部
+//	public ResponseEntity<?> findAll(){
+//		
+//	}
 	
 	
 	

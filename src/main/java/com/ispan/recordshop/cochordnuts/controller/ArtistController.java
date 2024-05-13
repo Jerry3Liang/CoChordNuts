@@ -2,6 +2,7 @@ package com.ispan.recordshop.cochordnuts.controller;
 
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,9 +26,19 @@ public class ArtistController {
 	}
 	
 	@GetMapping("/product/artist/find")
-	public List<Artist> findAll(){
-		return artistService.findAll();
+	public String findAll(){
+//		return artistService.findAll();
+		List<Artist> result = artistService.findAll();
+		return result.toString();
 	}
+	
+	@PostMapping("/product/artist/findByName")
+	public String insert(@RequestBody String obj) {
+		JSONObject json = new JSONObject(obj);
+		String artistName = json.isNull("artistName")? null : json.getString("artistName");
+		return artistService.findByName(artistName).toString();
+	}
+	
 	
 	
 }

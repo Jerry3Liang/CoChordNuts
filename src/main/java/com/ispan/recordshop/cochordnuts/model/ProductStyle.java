@@ -32,6 +32,12 @@ public class ProductStyle {
 
 	public ProductStyle() {
 	}
+	
+
+	@Override
+	public String toString() {
+		return "ProductStyle [styleNo=" + styleNo + ", styleType=" + styleType + "]";
+	}
 
 	public Set<Product> getProducts() {
 		return products;

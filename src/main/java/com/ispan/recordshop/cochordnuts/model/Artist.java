@@ -27,6 +27,13 @@ public class Artist {
 
 	public Artist() {
 	}
+	
+	
+
+	@Override
+	public String toString() {
+		return "Artist [artistNo=" + artistNo + ", artistName=" + artistName + "]";
+	}
 
 	public Integer getArtistNo() {
 		return artistNo;
