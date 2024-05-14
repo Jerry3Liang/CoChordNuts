@@ -3,10 +3,28 @@ package com.ispan.recordshop.cochordnuts.model;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "orders")
+@JsonIdentityInfo(
+		generator = ObjectIdGenerators.PropertyGenerator.class,
+		property = "orderNo"
+)
 public class Orders {
 
 	@Id
@@ -17,6 +35,7 @@ public class Orders {
 	private List<OrderDetail> orderDetail;// 訂單編號
 
 	@ManyToOne // 與Member關聯
+	@JsonBackReference
 	@JoinColumn(name = "memberNo", referencedColumnName = "memberNo")
 	private Member memberNo;// 會員編號
 
@@ -80,14 +99,30 @@ public class Orders {
 		this.orderDetail = orderDetail;
 	}
 
-	public Member getMemberNo() {
-		return memberNo;
-	}
+//	public Member getMemberNo() {
+//		return memberNo;
+//	}
 
+	public String getMemberName() {
+		return memberNo.getName();
+	}
+	public String getMemberEmail() {
+		return memberNo.getEmail();
+	}
+	public String getMemberPhone() {
+		return memberNo.getPhone();
+	}
+	public String getMemberAddress() {
+		return memberNo.getAddress();
+	}
+	
+	public Integer getMemberNo() {
+		return memberNo.getMemberNo();
+	}
 	public void setMemberNo(Member memberNo) {
 		this.memberNo = memberNo;
 	}
-
+	
 	public CustomerCase getCustomerCase() {
 		return customerCase;
 	}
@@ -124,8 +159,18 @@ public class Orders {
 		return status;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setStatus() {
+		
+		if(preparationDate==null && dispatchDate==null && completeDate==null ) {
+			this.status="成功下單";
+		}else if (preparationDate!=null && dispatchDate==null && completeDate==null) {
+			this.status="備貨中";
+		}else if(preparationDate!=null && dispatchDate!=null && completeDate==null) {
+			this.status="已出貨";
+		}else {
+			this.status="完成訂單";
+		}
+	
 	}
 
 	public Date getLastModifiedDate() {
@@ -141,8 +186,13 @@ public class Orders {
 	}
 
 	public void setReceiptNo(String receiptNo) {
-		Integer r = 16620962 + this.orderNo;
-		this.receiptNo = r.toString();
+		if(this.completeDate!=null) {
+			Integer r = 16620962 + this.orderNo;
+			this.receiptNo = r.toString();
+		}else {
+			this.receiptNo="";
+		}
+		
 	}
 
 	public Integer getTotalPay() {
@@ -169,8 +219,8 @@ public class Orders {
 		return freight;
 	}
 
-	public void setFreight(Integer freight) {
-		this.freight = freight;
+	public void setFreight() {
+		this.freight = 60;
 	}
 
 	public String getCreditCardNo() {
@@ -185,9 +235,9 @@ public class Orders {
 		return address;
 	}
 
-	public void setAddress(String address) {
+	public void setAddress() {
+			this.address = memberNo.getAddress();
 		
-		this.address = memberNo.getAddress();
 	}
 
 	public String getReceiptType() {
