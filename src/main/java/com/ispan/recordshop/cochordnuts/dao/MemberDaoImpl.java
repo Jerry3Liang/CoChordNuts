@@ -30,6 +30,7 @@ public class MemberDaoImpl implements MemberDao {
     @Override
     public long count(JSONObject obj) {
 
+        Integer memberNo = obj.isNull("memberNo") ? null : obj.getInt("memberNo");
         String name = obj.isNull("name") ? null : obj.getString("name");
         String password = obj.isNull("password") ? null : obj.getString("password");
         String email = obj.isNull("email") ? null : obj.getString("email");
@@ -53,12 +54,60 @@ public class MemberDaoImpl implements MemberDao {
 
         // where start
         List<Predicate> predicates = new ArrayList<>();
+
+        if (memberNo != null) {
+            Predicate p = criteriaBuilder.equal(table.get("memberNo"), memberNo);
+            predicates.add(p);
+        }
         if (name != null && name.length() != 0) {
             predicates.add(criteriaBuilder.like(table.get("name"), "%" + name + "%"));
         }
         if (email != null && email.length() != 0) {
-            predicates.add(criteriaBuilder.greaterThan(table.get("email"), "%" + email +
+            predicates.add(criteriaBuilder.like(table.get("email"), "%" + email +
                     "%"));
+        }
+
+        if (password != null && password.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("password"), "%" + password +
+                    "%"));
+        }
+
+        if (address != null && address.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("address"), "%" + address +
+                    "%"));
+        }
+
+        if (phone != null && phone.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("phone"), "%" + phone +
+                    "%"));
+        }
+
+        if (recipient != null && recipient.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("recipient"), "%" + recipient +
+                    "%"));
+        }
+
+        if (recipientAddress != null && recipientAddress.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("recipientAddress"), "%" + recipientAddress +
+                    "%"));
+        }
+
+        if (recipientPhone != null && recipientPhone.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("recipientPhone"), "%" + recipientPhone +
+                    "%"));
+        }
+
+        if (birthday != null && birthday.length() != 0) {
+            java.util.Date temp = DatetimeConverter.parse(birthday, "yyyy-MM-dd");
+            predicates.add(criteriaBuilder.equal(table.get("birthday"), temp));
+        }
+        if (registerTime != null && registerTime.length() != 0) {
+            java.util.Date temp = DatetimeConverter.parse(registerTime, "yyyy-MM-dd");
+            predicates.add(criteriaBuilder.equal(table.get("registerTime"), temp));
+        }
+        if (lastLoginTime != null && lastLoginTime.length() != 0) {
+            java.util.Date temp = DatetimeConverter.parse(lastLoginTime, "yyyy-MM-dd");
+            predicates.add(criteriaBuilder.equal(table.get("lastLoginTime"), temp));
         }
 
         if (predicates != null && !predicates.isEmpty()) {
@@ -78,14 +127,18 @@ public class MemberDaoImpl implements MemberDao {
 
     @Override
     public List<Member> find(JSONObject obj) {
-        Integer id = obj.isNull("id") ? null : obj.getInt("id");
+        Integer memberNo = obj.isNull("memberNo") ? null : obj.getInt("memberNo");
         String name = obj.isNull("name") ? null : obj.getString("name");
-        Double startPrice = obj.isNull("startPrice") ? null : obj.getDouble("startPrice");
-        Double endPrice = obj.isNull("endPrice") ? null : obj.getDouble("endPrice");
-        String startMake = obj.isNull("startMake") ? null : obj.getString("startMake");
-        String endMake = obj.isNull("endMake") ? null : obj.getString("endMake");
-        Integer startExpire = obj.isNull("startExpire") ? null : obj.getInt("startExpire");
-        Integer endExpire = obj.isNull("endExpire") ? null : obj.getInt("endExpire");
+        String password = obj.isNull("password") ? null : obj.getString("password");
+        String email = obj.isNull("email") ? null : obj.getString("email");
+        String birthday = obj.isNull("birthday") ? null : obj.getString("birthday");
+        String address = obj.isNull("address") ? null : obj.getString("address");
+        String registerTime = obj.isNull("registerTime") ? null : obj.getString("registerTime");
+        String lastLoginTime = obj.isNull("lastLoginTime") ? null : obj.getString("lastLoginTime");
+        String phone = obj.isNull("phone") ? null : obj.getString("phone");
+        String recipient = obj.isNull("recipient") ? null : obj.getString("recipient");
+        String recipientAddress = obj.isNull("recipientAddress") ? null : obj.getString("recipientAddress");
+        String recipientPhone = obj.isNull("recipientPhone") ? null : obj.getString("recipientPhone");
 
         int start = obj.isNull("start") ? 0 : obj.getInt("start");
         int rows = obj.isNull("rows") ? 10 : obj.getInt("rows");
@@ -100,32 +153,59 @@ public class MemberDaoImpl implements MemberDao {
 
         // where start
         List<Predicate> predicates = new ArrayList<>();
-        if (id != null) {
-            Predicate p = criteriaBuilder.equal(table.get("id"), id);
+        if (memberNo != null) {
+            Predicate p = criteriaBuilder.equal(table.get("memberNo"), memberNo);
             predicates.add(p);
         }
         if (name != null && name.length() != 0) {
             predicates.add(criteriaBuilder.like(table.get("name"), "%" + name + "%"));
         }
-        if (startPrice != null) {
-            predicates.add(criteriaBuilder.greaterThan(table.get("price"), startPrice));
+        if (email != null && email.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("email"), "%" + email +
+                    "%"));
         }
-        if (endPrice != null) {
-            predicates.add(criteriaBuilder.lessThan(table.get("price"), endPrice));
+
+        if (password != null && password.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("password"), "%" + password +
+                    "%"));
         }
-        if (startMake != null && startMake.length() != 0) {
-            java.util.Date temp = DatetimeConverter.parse(startMake, "yyyy-MM-dd");
-            predicates.add(criteriaBuilder.greaterThan(table.get("make"), temp));
+
+        if (address != null && address.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("address"), "%" + address +
+                    "%"));
         }
-        if (endMake != null && endMake.length() != 0) {
-            java.util.Date temp = DatetimeConverter.parse(endMake, "yyyy-MM-dd");
-            predicates.add(criteriaBuilder.lessThan(table.get("make"), temp));
+
+        if (phone != null && phone.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("phone"), "%" + phone +
+                    "%"));
         }
-        if (startExpire != null) {
-            predicates.add(criteriaBuilder.greaterThan(table.get("expire"), startExpire));
+
+        if (recipient != null && recipient.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("recipient"), "%" + recipient +
+                    "%"));
         }
-        if (endExpire != null) {
-            predicates.add(criteriaBuilder.lessThan(table.get("expire"), endExpire));
+
+        if (recipientAddress != null && recipientAddress.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("recipientAddress"), "%" + recipientAddress +
+                    "%"));
+        }
+
+        if (recipientPhone != null && recipientPhone.length() != 0) {
+            predicates.add(criteriaBuilder.like(table.get("recipientPhone"), "%" + recipientPhone +
+                    "%"));
+        }
+
+        if (birthday != null && birthday.length() != 0) {
+            java.util.Date temp = DatetimeConverter.parse(birthday, "yyyy-MM-dd");
+            predicates.add(criteriaBuilder.equal(table.get("birthday"), temp));
+        }
+        if (registerTime != null && registerTime.length() != 0) {
+            java.util.Date temp = DatetimeConverter.parse(registerTime, "yyyy-MM-dd");
+            predicates.add(criteriaBuilder.equal(table.get("registerTime"), temp));
+        }
+        if (lastLoginTime != null && lastLoginTime.length() != 0) {
+            java.util.Date temp = DatetimeConverter.parse(lastLoginTime, "yyyy-MM-dd");
+            predicates.add(criteriaBuilder.equal(table.get("lastLoginTime"), temp));
         }
 
         if (predicates != null && !predicates.isEmpty()) {
