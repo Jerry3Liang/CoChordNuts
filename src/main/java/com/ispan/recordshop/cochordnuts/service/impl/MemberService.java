@@ -7,11 +7,15 @@ import java.util.Optional;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
+import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.model.Member;
+import com.ispan.recordshop.cochordnuts.model.Orders;
+import com.ispan.recordshop.cochordnuts.repository.CustomerCaseRepository;
 import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
+import com.ispan.recordshop.cochordnuts.repository.OrderRepository;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 
 @Service
@@ -19,6 +23,12 @@ public class MemberService {
 
     @Autowired
     private MemberRepository memberRepo;
+
+    @Autowired
+    private OrderRepository orderRepo;
+
+    @Autowired
+    private CustomerCaseRepository caseRepo;
 
     @Autowired
     private BCryptPasswordEncoder bcrypt;
@@ -43,14 +53,13 @@ public class MemberService {
         return false;
     }
 
-      public boolean existById(Integer memberNo) {
+    public boolean existById(Integer memberNo) {
         if (memberNo != null) {
             return memberRepo.existsById(memberNo);
         }
         return false;
     }
 
-    
     // findAll start
     public long count(String json) {
         try {
@@ -83,6 +92,59 @@ public class MemberService {
         return null;
     }
 
+    // // orders
+    // public long countOrders(String json) {
+    // try {
+    // JSONObject obj = new JSONObject(json);
+    // return memberRepo.countOrders(obj);
+    // } catch (JSONException e) {
+    // e.printStackTrace();
+    // }
+    // return 0;
+    // }
+
+    // public List<Orders> findOrders(String json) {
+    // try {
+    // JSONObject obj = new JSONObject(json);
+    // return memberRepo.findOrders(obj);
+    // } catch (JSONException e) {
+    // e.printStackTrace();
+    // }
+    // return null;
+    // }
+
+    // public List<Orders> findOrdersById(String json) {
+    // try {
+    // JSONObject obj = new JSONObject(json);
+    // return memberRepo.findOrders(obj);
+    // } catch (JSONException e) {
+    // e.printStackTrace();
+    // }
+    // return null;
+    // }
+
+    // public List<Orders> findByMemberNo(Integer memberNo) {
+    // if (memberNo != null) {
+    // // Integer memberNo = member.getMemberNo();
+
+    // return orderRepo.findByMemberNo(memberNo);
+    // }
+    // return null;
+    // }
+
+    //
+
+    // 查詢會員客服
+    public List<CustomerCase> findCaseByMemberNo(Integer memberNo) {
+        if (memberNo != null) {
+            // Integer memberNo = member.getMemberNo();
+
+            return caseRepo.findByMemberNo(memberNo);
+        }
+        return null;
+    }
+    //
+
     public String getPhoneByEmail(String email) {
         Optional<Member> optional = memberRepo.findByEmail(email);
         if (optional.isPresent()) {
@@ -93,7 +155,7 @@ public class MemberService {
         }
     }
 
-     public String getPhoneById(Integer memberNo) {
+    public String getPhoneById(Integer memberNo) {
         Optional<Member> optional = memberRepo.findById(memberNo);
         if (optional.isPresent()) {
             Member member = optional.get();
@@ -112,7 +174,6 @@ public class MemberService {
             return null;
         }
     }
-
 
     // 登入
     public Member login(String email, String password) {
@@ -188,7 +249,7 @@ public class MemberService {
             String address = obj.isNull("address") ? null : obj.getString("address");
             String phone = obj.isNull("phone") ? null : obj.getString("phone");
 
-             if (memberNo != null) {
+            if (memberNo != null) {
                 Optional<Member> optional = memberRepo.findById(memberNo);
                 if (optional.isPresent()) {
                     Member update = optional.get();
