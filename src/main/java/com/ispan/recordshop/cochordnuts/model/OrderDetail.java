@@ -1,6 +1,5 @@
 package com.ispan.recordshop.cochordnuts.model;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,14 +12,6 @@ import jakarta.persistence.Table;
 @Table(name="orderDetail")
 public class OrderDetail {
 	
-	@Override
-	public String toString() {
-		return "OrderDetail [orderDetailNo=" + orderDetailNo + ", productTotalPay=" + productTotalPay + ", discount="
-				+ discount + ", productBoughtCount=" + productBoughtCount + ", orderNo=" + orderNo + ", productNo="
-				+ productNo + "]";
-	}
-
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer orderDetailNo;//訂單明細流水號
@@ -55,8 +46,9 @@ public class OrderDetail {
 		return productTotalPay;
 	}
 
-	public void setProductTotalPay() {//單一商品小計
-		this.productTotalPay=productNo.getUnitPrice()*productBoughtCount;
+	public void setProductTotalPay(Integer productTotalPay) {//單一商品小計
+		productTotalPay=productNo.getUnitPrice()*productBoughtCount;
+		this.productTotalPay = productTotalPay;
 	}
 
 	public Double getDiscount() {
@@ -75,31 +67,21 @@ public class OrderDetail {
 		this.productBoughtCount = productBoughtCount;
 	}
 
-//	public Orders getOrderNo() {
-//		return orderNo;
-//	}
-	public Integer getOrderNo() {
-		return orderNo.getOrderNo();
+	public Orders getOrderNo() {
+		return orderNo;
 	}
-	
-	
+
 	public void setOrderNo(Orders orderNo) {
 		this.orderNo = orderNo;
 	}
 
-//	public Product getProductNo() {
-//		return productNo;
-//	}
-	public Integer getProductNo() {
-		return productNo.getProductNo();
+	public Product getProductNo() {
+		return productNo;
 	}
-	
 
 	public void setProductNo(Product productNo) {
 		this.productNo = productNo;
 	}
-	
-
 
 	
 	

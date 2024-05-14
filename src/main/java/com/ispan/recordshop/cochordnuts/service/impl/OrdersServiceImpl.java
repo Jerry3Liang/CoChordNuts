@@ -5,27 +5,24 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
-import com.ispan.recordshop.cochordnuts.model.Cart;
-import com.ispan.recordshop.cochordnuts.model.Member;
 import com.ispan.recordshop.cochordnuts.model.OrderDetail;
 import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.repository.OrderDetailRepository;
 import com.ispan.recordshop.cochordnuts.repository.OrderRepository;
-
+import com.ispan.recordshop.cochordnuts.service.OrdersService;
 
 @Service
-public class OrdersServiceImpl  {
+public class OrdersServiceImpl implements OrdersService {
 
 	@Autowired
 	private OrderRepository orderRepository;
-	
-	public List<Orders> selectAll() {//搜尋全部
+
+	public List<Orders> selectAll() {
 		return orderRepository.findAll();
 	}
-	public Orders insert(Orders orders) {//新增
+	public Orders insert(Orders orders) {
 		if (orders != null) {
 			return orderRepository.save(orders);
 		}
@@ -42,25 +39,19 @@ public class OrdersServiceImpl  {
 		}		
 	}
 	
-	public Orders update(Integer orderNo,Orders orders) {//修改訂單
-		Orders oldOrders=orderRepository.findById(orderNo).get();
-		if(oldOrders!=null && orderRepository.findById(orderNo)!=null) {						
-				return orderRepository.save(orders);											
+	public Orders update(Orders orders) {//修改訂單
+		if(orderRepository.findById(orders.getOrderNo())!=null) {
+			return orderRepository.save(orders);			
 		}	
 		return null;
 	}
 	
-	public Optional<Orders> findByOrderNo(Integer ordersNo) {//單筆搜尋
+	public Optional<Orders> findByOrderNo(Integer ordersNo) {//找訂單
 		
 		return orderRepository.findById(ordersNo);
 	}
-	public List<OrderDetail> findOrderDetail(Integer ordersNo){//訂單詳細內容
+	public List<OrderDetail> findOrderDetail(Integer ordersNo){//找訂單詳細內容
 		return orderRepository.findById(ordersNo).get().getOrderDetail();		
 	}
 	
-	public List<Orders> findBymemberNo(Integer MemberNo) {// 依會員編號查詢訂單
-
-			return orderRepository.findBymemberNo(MemberNo);
-
-	}
 }
