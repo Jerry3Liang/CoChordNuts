@@ -24,6 +24,11 @@ public class CustomerCase implements Serializable {
     @OneToMany(mappedBy = "caseNo", cascade = CascadeType.ALL)
     private List<CaseDetail> caseDetails = new ArrayList<>();
 
+    // 客戶編號
+    @ManyToOne // 與Member關聯
+    @JoinColumn(name = "memberNo", referencedColumnName = "memberNo")
+    private Member customerCaseMember;
+
     //問題主旨
     @Column(name = "subject")
     private String subject;
@@ -31,9 +36,6 @@ public class CustomerCase implements Serializable {
     //客服問題回覆狀態 => 未回覆： 0   回覆中： 1   回覆完成： 2
     @Column(name = "status")
     private Integer status;
-
-    @Column(name = "memberName")
-    private String memberName;
 
     //無參數 Constructor
     public CustomerCase() {}
@@ -75,6 +77,14 @@ public class CustomerCase implements Serializable {
 
     public void setCaseDetails(List<CaseDetail> caseDetails) {
         this.caseDetails = caseDetails;
+    }
+
+        public Member getMemberNo() {
+        return customerCaseMember;
+    }
+
+    public void setMemberNo(Member customerCaseMember) {
+        this.customerCaseMember = customerCaseMember;
     }
 
     public String getSubject() {
