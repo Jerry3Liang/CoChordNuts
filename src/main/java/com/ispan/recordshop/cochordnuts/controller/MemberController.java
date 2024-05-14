@@ -175,5 +175,71 @@ public class MemberController {
         }
         return responseJson.toString();
     }
+	
+// 查詢多筆
+    @PostMapping("/members/find")
+    public String find(@RequestBody String json) {
+        JSONObject responseJson = new JSONObject();
 
+        JSONArray array = new JSONArray();
+        List<Member> members = memberService.find(json);
+        if (members != null && !members.isEmpty()) {
+            for (Member member : members) {
+                String birthday = DatetimeConverter.toString(member.getBirthday(), "yyyy-MM-dd");
+                String registerTime = DatetimeConverter.toString(member.getRegisterTime(), "yyyy-MM-dd");
+                String lastLoginTime = DatetimeConverter.toString(member.getLastLoginTime(), "yyyy-MM-dd");
+
+                JSONObject item = new JSONObject()
+                        .put("memberNo", member.getMemberNo())
+                        .put("name", member.getName())
+                        .put("password", member.getPassword())
+                        .put("birthday", birthday)
+                        .put("registerTime", registerTime)
+                        .put("lastLoginTime", lastLoginTime)
+                        .put("email", member.getEmail())
+                        .put("address", member.getAddress())
+                        .put("phone", member.getPhone())
+                        .put("recipient", member.getRecipient())
+                        .put("recipientAddress", member.getRecipientAddress())
+                        .put("recipientPhone", member.getRecipientPhone());
+                array.put(item);
+            }
+        }
+        responseJson.put("list", array);
+
+        long count = memberService.count(json);
+        responseJson.put("count", count);
+
+        return responseJson.toString();
+    }
+
+    // 查詢單筆
+    @GetMapping("/members/{pk}")
+    public String findById(@PathVariable(name = "pk") Integer id) {
+        JSONObject responseJson = new JSONObject();
+        JSONArray array = new JSONArray();
+        Member member = memberService.findById(id);
+        if (member != null) {
+            String birthday = DatetimeConverter.toString(member.getBirthday(), "yyyy-MM-dd");
+            String registerTime = DatetimeConverter.toString(member.getRegisterTime(), "yyyy-MM-dd");
+            String lastLoginTime = DatetimeConverter.toString(member.getLastLoginTime(), "yyyy-MM-dd");
+
+            JSONObject item = new JSONObject()
+                    .put("memberNo", member.getMemberNo())
+                    .put("name", member.getName())
+                    .put("password", member.getPassword())
+                    .put("birthday", birthday)
+                    .put("registerTime", registerTime)
+                    .put("lastLoginTime", lastLoginTime)
+                    .put("email", member.getEmail())
+                    .put("address", member.getAddress())
+                    .put("phone", member.getPhone())
+                    .put("recipient", member.getRecipient())
+                    .put("recipientAddress", member.getRecipientAddress())
+                    .put("recipientPhone", member.getRecipientPhone());
+            array.put(item);
+        }
+        responseJson.put("list", array);
+        return responseJson.toString();
+    }
 }
