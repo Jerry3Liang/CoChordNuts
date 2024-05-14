@@ -2,10 +2,10 @@ package com.ispan.recordshop.cochordnuts.controller;
 
 import java.util.List;
 import java.util.Objects;
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.model.Member;
+import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.service.impl.MemberService;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
-
-
 
 @RestController
 @CrossOrigin
@@ -108,7 +108,6 @@ public class MemberController {
             JSONObject obj = new JSONObject(json);
             String phone = obj.isNull("phone") ? null : obj.getString("phone");
             String email = obj.isNull("email") ? null : obj.getString("email");
-																   
 
             String oriPhone = memberService.getPhoneById(memberNo);
             String oriEmail = memberService.getEmailById(memberNo);
@@ -180,8 +179,8 @@ public class MemberController {
         }
         return responseJson.toString();
     }
-	
-// 查詢多筆
+
+    // 查詢多筆
     @PostMapping("/members/find")
     public String find(@RequestBody String json) {
         JSONObject responseJson = new JSONObject();
@@ -218,6 +217,30 @@ public class MemberController {
         return responseJson.toString();
     }
 
+    // 查詢多筆訂單
+    // @PostMapping("/members/findOr")
+    // public String findOrders(@RequestBody String json) {
+    // JSONObject responseJson = new JSONObject();
+
+    // JSONArray array = new JSONArray();
+    // List<Orders> orders = memberService.findOrders(json);
+    // if (orders != null && !orders.isEmpty()) {
+    // for (Orders order : orders) {
+
+    // JSONObject item = new JSONObject()
+    // .put("memberNo", order.getMemberNo())
+    // .put("orderNo", order.getOrderNo());
+    // array.put(item);
+    // }
+    // }
+    // responseJson.put("list", array);
+
+    // long count = memberService.countOrders(json);
+    // responseJson.put("count", count);
+
+    // return responseJson.toString();
+    // }
+
     // 查詢單筆
     @GetMapping("/members/{pk}")
     public String findById(@PathVariable(name = "pk") Integer id) {
@@ -247,4 +270,42 @@ public class MemberController {
         responseJson.put("list", array);
         return responseJson.toString();
     }
+
+    // 查詢會員訂單
+    // @GetMapping("/members/order/{pk}")
+    // public String findCaseByMemberNo(@PathVariable(name = "pk") Integer memberNo)
+    // {
+    // JSONObject responseJson = new JSONObject();
+    // JSONArray array = new JSONArray();
+    // List<Orders> orders = memberService.findByMemberNo(memberNo);
+    // if (!orders.isEmpty()) {
+    // for (Orders order : orders) {
+    // JSONObject item = new JSONObject()
+    // // .put("memberNo", order.getMemberNo())
+    // .put("orderNo", order.getOrderNo());
+    // array.put(item);
+    // }
+    // }
+    // responseJson.put("list", array);
+    // return responseJson.toString();
+    // }
+
+    // 查詢會員客服
+    @GetMapping("/members/case/{pk}")
+    public String findByMemberNo(@PathVariable(name = "pk") Integer memberNo) {
+        JSONObject responseJson = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<CustomerCase> customerCases = memberService.findCaseByMemberNo(memberNo);
+        if (!customerCases.isEmpty()) {
+            for (CustomerCase case1 : customerCases) {
+                JSONObject item = new JSONObject()
+                        // .put("memberNo", order.getMemberNo())
+                        .put("caseNo", case1.getCaseNO());
+                array.put(item);
+            }
+        }
+        responseJson.put("list", array);
+        return responseJson.toString();
+    }
+
 }
