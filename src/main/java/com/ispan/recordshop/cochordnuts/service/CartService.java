@@ -57,5 +57,41 @@ public class CartService {
         return cartRepo.save(cart);
     }
 
+
+	    // 找到對的購物車
+		public List<Cart> findUsersCartService(Integer loggedInUser){
+
+			return cartRepo.findMemberCartProducts(loggedInUser);
+		}
+	
+	
+	
+		public Cart findTheCartItemAndProduct(Integer loggedInUser, Integer productId){
+			return cartRepo.findByMemberAndProducts(loggedInUser, productId);
+		}
+	
+	
+	
+		@Transactional
+		public Cart addOneVolumn(Integer loggedInUser, Integer productId){
+	
+			Cart cart = cartRepo.findByMemberAndProducts(loggedInUser, productId);
+			cart.setCount(cart.getCount() + 1);
+	
+			return cart;
+		}
+	
+	
+		@Transactional
+		public void minusOneVolumn(Integer loggedInUser, Integer photoId){
+	
+			Cart cart = cartRepo.findByMemberAndProducts(loggedInUser, photoId);
+	
+			if(cart.getCount() == 1){
+				cartRepo.delete(cart);
+			}else{
+				cart.setCount(cart.getCount() - 1);
+			}
+		}
 	
 }
