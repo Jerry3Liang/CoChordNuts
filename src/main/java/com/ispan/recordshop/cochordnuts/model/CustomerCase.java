@@ -2,12 +2,13 @@ package com.ispan.recordshop.cochordnuts.model;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "Customer_Case")
-public class CustomerCase {
+public class CustomerCase implements Serializable {
 
     //問題回覆編號
     @Id
@@ -23,13 +24,6 @@ public class CustomerCase {
     @OneToMany(mappedBy = "caseNo", cascade = CascadeType.ALL)
     private List<CaseDetail> caseDetails = new ArrayList<>();
 
-    //客戶編號
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "memberNo")
-    private Member member;
-
-
-
     //問題主旨
     @Column(name = "subject")
     private String subject;
@@ -38,8 +32,26 @@ public class CustomerCase {
     @Column(name = "status")
     private Integer status;
 
+    @Column(name = "memberName")
+    private String memberName;
+
     //無參數 Constructor
     public CustomerCase() {}
+
+//    @JsonCreator
+//    public CustomerCase(@JsonProperty("caseNo") Integer caseNO,
+//                        Orders orders,
+//                        List<CaseDetail> caseDetails,
+//                        String subject,
+//                        Integer status,
+//                        String memberName) {
+//        this.caseNO = caseNO;
+//        this.orders = orders;
+//        this.caseDetails = caseDetails;
+//        this.subject = subject;
+//        this.status = status;
+//        this.memberName = memberName;
+//    }
 
     public Integer getCaseNO() {
         return caseNO;
@@ -63,14 +75,6 @@ public class CustomerCase {
 
     public void setCaseDetails(List<CaseDetail> caseDetails) {
         this.caseDetails = caseDetails;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
     }
 
     public String getSubject() {

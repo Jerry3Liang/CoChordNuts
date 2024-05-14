@@ -1,12 +1,16 @@
 package com.ispan.recordshop.cochordnuts.model;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "Case_Detail")
-public class CaseDetail {
+public class CaseDetail implements Serializable {
+
+
 
     //回覆問題詳細內容編號
     @Id
@@ -15,7 +19,6 @@ public class CaseDetail {
     private Integer caseDetailNo;
 
     //問題回覆編號
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "caseNo")
     private CustomerCase caseNo;
@@ -25,6 +28,8 @@ public class CaseDetail {
     private String message;
 
     //回覆時間
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "messageTime")
     private Date messageTime;
 
@@ -35,6 +40,15 @@ public class CaseDetail {
 
     //無參數 Constructor
     public CaseDetail(){}
+
+//    @JsonCreator
+//    public CaseDetail(Integer caseDetailNo, @JsonProperty("caseNo") CustomerCase caseNo, @JsonProperty("message") String message, Date messageTime, Employee employeeNo) {
+//        this.caseDetailNo = caseDetailNo;
+//        this.caseNo = caseNo;
+//        this.message = message;
+//        this.messageTime = messageTime;
+//        this.employeeNo = employeeNo;
+//    }
 
     public Integer getCaseDetailNo() {
         return caseDetailNo;
