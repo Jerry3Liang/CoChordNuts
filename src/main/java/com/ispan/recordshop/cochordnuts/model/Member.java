@@ -15,8 +15,8 @@ public class Member {
 	@Column(name = "memberNo")
 	private Integer memberNo; // 會員編號
 
-	// @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	// private List<CustomerCase> customerCases = new ArrayList<>(); //所有回覆
+	@OneToMany(mappedBy = "customerCaseMember")
+	private List<CustomerCase> customerCases = new ArrayList<>(); // 所有回覆
 
 	// @OneToMany(mappedBy = "memberNo")
 	// private List<Orders> orders = new ArrayList<>(); //所有訂單
@@ -84,14 +84,14 @@ public class Member {
 		this.memberNo = memberNo;
 	}
 
-	// public List<CustomerCase> getCustomerCases() {
-	// return customerCases;
-	// }
+	public List<CustomerCase> getCustomerCases() {
+		return customerCases;
+	}
 
-	// public void setCustomerCases(List<CustomerCase> customerCases) {
-	// this.customerCases = customerCases;
-	// }
-
+	public void setCustomerCases(List<CustomerCase> customerCases) {
+		this.customerCases = customerCases;
+	}
+	
 	// public List<Orders> getOrders() {
 	// return orders;
 	// }
