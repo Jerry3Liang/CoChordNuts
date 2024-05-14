@@ -17,7 +17,7 @@ public class CaseDetailRowMapper implements RowMapper<CaseDetailDto> {
         caseDetailDto.setMessage(rs.getString("message"));
         String temp = DatetimeConverter.toString(rs.getTimestamp("message_time"), "yyyy-MM-dd HH:mm:ss");
         caseDetailDto.setMessageTime(temp);
-        caseDetailDto.setEmployeeName(rs.getString("name"));
+        caseDetailDto.setEmployeeName(rs.getString("emp_name"));
 
         return caseDetailDto;
     }

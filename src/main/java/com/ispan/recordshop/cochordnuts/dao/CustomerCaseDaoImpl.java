@@ -18,7 +18,8 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     @Override
     public List<CustomerCaseDto> getCases(CustomerCaseParams customerCaseParams) {
-        String sql = "SELECT cc.case_no, cc.member_name, cc.subject, cd.message_time, ee.name, cc.status FROM customer_case cc " +
+        String sql = "SELECT cc.case_no, m.name, cc.subject, cd.message_time, ee.emp_name, cc.status FROM customer_case cc " +
+                "LEFT JOIN member m ON cc.member_no = m.member_no " +
                 "LEFT JOIN case_detail cd ON cc.case_no = cd.case_no " +
                 "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no WHERE 1 = 1";
 

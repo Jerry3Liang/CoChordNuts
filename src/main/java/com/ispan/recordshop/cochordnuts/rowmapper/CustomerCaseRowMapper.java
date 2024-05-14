@@ -12,10 +12,10 @@ public class CustomerCaseRowMapper implements RowMapper<CustomerCaseDto> {
     public CustomerCaseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
         CustomerCaseDto caseDto = new CustomerCaseDto();
         caseDto.setCaseNo(rs.getInt("case_no"));
-        caseDto.setCustomerName(rs.getString("member_name"));
+        caseDto.setCustomerName(rs.getString("name"));
         caseDto.setSubject(rs.getString("subject"));
         caseDto.setLastAnswerDate(rs.getTimestamp("message_time"));
-        caseDto.setAnswerEmployee(rs.getString("name"));
+        caseDto.setAnswerEmployee(rs.getString("emp_name"));
         caseDto.setStatus(rs.getInt("status"));
         return caseDto;
     }

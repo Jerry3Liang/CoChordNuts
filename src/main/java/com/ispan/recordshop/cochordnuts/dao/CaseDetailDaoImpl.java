@@ -19,7 +19,7 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
 
     @Override
     public List<CaseDetailDto> getAnswers(CustomerCaseParams customerCaseParams) {
-        String sql = "SELECT cd.case_detail_no, cd.case_no, cd.[message], cd.message_time, ee.name FROM case_detail cd\n" +
+        String sql = "SELECT cd.case_detail_no, cd.case_no, cd.[message], cd.message_time, ee.emp_name FROM case_detail cd\n" +
                      "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no WHERE 1 = 1";
 
         Map<String, Object> map = new HashMap<>();
