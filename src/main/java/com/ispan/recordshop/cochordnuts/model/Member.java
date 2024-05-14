@@ -1,6 +1,8 @@
 package com.ispan.recordshop.cochordnuts.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
