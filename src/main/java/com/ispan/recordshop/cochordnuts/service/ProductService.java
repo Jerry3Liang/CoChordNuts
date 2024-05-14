@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.ispan.recordshop.cochordnuts.model.Artist;
 import com.ispan.recordshop.cochordnuts.model.Product;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
@@ -36,6 +37,9 @@ public class ProductService {
 
 	@Autowired
 	private ProductRepository productRepo;
+	
+	@Autowired
+	private ArtistService artistService;
 
 	// 單一查詢
 	public Product findById(Integer id) {
@@ -64,6 +68,11 @@ public class ProductService {
 
 	}
 
+	// 查詢全部產品
+	public List<Product> findAll(){
+		return productRepo.findAll();
+	}
+	
 	// 修改產品
 	public Product modify(Product newProduct) {
 		if (newProduct != null && newProduct.getProductNo() != null) {
@@ -122,8 +131,8 @@ public class ProductService {
 		if(startDate != null) {
 			java.util.Date temp = DatetimeConverter.parse(startDate, "yyyy-MM-dd");
 //			java.sql.Date temp1 = new java.sql.Date(temp.getTime());
-			System.err.println(startDate);
-			System.out.println(temp);
+//			System.err.println(startDate);
+//			System.out.println(temp);
 			predicates.add(criteriaBuilder.greaterThan(table.get("publishedDate"), temp));
 		}
 		if(endDate != null) {
@@ -131,8 +140,17 @@ public class ProductService {
 			predicates.add(criteriaBuilder.lessThan(table.get("publishedDate"), temp));
 		}
 		if(artistName != null && artistName.length() != 0) {
-			Predicate p3 = criteriaBuilder.like(table.get("artist"), "%"+artistName+"%");
-			predicates.add(p3);
+			System.out.println(artistName);
+			List<Artist> artists = artistService.findByName(artistName);
+			if(!artists.isEmpty()) {
+				List<Integer> artistNos = new ArrayList<>();
+				for(Artist artist : artists) {
+					artistNos.add(artist.getArtistNo());
+				}
+				predicates.add(table.get("artist").get("artistNo").in(artistNos));
+			} else {
+				predicates.add(criteriaBuilder.equal(table.get("artist").get("artistNo"), 0));
+			}
 		}
 		//下拉選項用數字對照
 		if(style != null && style != 0) {
@@ -161,17 +179,29 @@ public class ProductService {
 		
 		List<Product> result = typedQuery.getResultList();
 		if(result != null && !result.isEmpty()) {
+//			System.out.println(result.toString());
+//			System.out.println(result.size());
 			return result;
 		} else {
 			return null;
 		}
 	}
 	
+	// 熱銷商品
+	public List<Product> findIsBest(Integer isBest){
+		return productRepo.findIsBest(isBest);
+	}
 	
 	
+	// 折扣商品
+	public List<Product> findIsDiscount(Integer isDiscount){
+		return productRepo.findIsDiscount(isDiscount);
+	}
 	
-	
-	
+	// 預購商品
+	public List<Product> findIsPreorder(Integer isPreorder){
+		return productRepo.findIsPreorder(isPreorder);
+	}
 	
 	
 	

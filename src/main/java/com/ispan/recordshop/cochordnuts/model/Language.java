@@ -27,6 +27,11 @@ public class Language {
 
 	public Language() {
 	}
+	
+	@Override
+	public String toString() {
+		return "Language [languageNo=" + languageNo + ", languageType=" + languageType + "]";
+	}
 
 	public Integer getLanguageNo() {
 		return languageNo;

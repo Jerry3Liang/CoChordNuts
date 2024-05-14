@@ -1,6 +1,7 @@
-package com.ispan.recordshop.cochordnuts.service;
+package com.ispan.recordshop.cochordnuts.service.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.json.JSONException;
@@ -11,7 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.ispan.recordshop.cochordnuts.model.Member;
 import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
-import com.ispan.util.DatetimeConverter;
+import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 
 @Service
 public class MemberService {
@@ -41,6 +42,77 @@ public class MemberService {
         }
         return false;
     }
+
+      public boolean existById(Integer memberNo) {
+        if (memberNo != null) {
+            return memberRepo.existsById(memberNo);
+        }
+        return false;
+    }
+
+    
+    // findAll start
+    public long count(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            return memberRepo.count(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<Member> find(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            return memberRepo.find(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    // findAll end
+
+    public Member findById(Integer memberNo) {
+        if (memberNo != null) {
+            Optional<Member> optional = memberRepo.findById(memberNo);
+            if (optional.isPresent()) {
+                return optional.get();
+            }
+        }
+        return null;
+    }
+
+    public String getPhoneByEmail(String email) {
+        Optional<Member> optional = memberRepo.findByEmail(email);
+        if (optional.isPresent()) {
+            Member member = optional.get();
+            return member.getPhone();
+        } else {
+            return null;
+        }
+    }
+
+     public String getPhoneById(Integer memberNo) {
+        Optional<Member> optional = memberRepo.findById(memberNo);
+        if (optional.isPresent()) {
+            Member member = optional.get();
+            return member.getPhone();
+        } else {
+            return null;
+        }
+    }
+
+    public String getEmailById(Integer memberNo) {
+        Optional<Member> optional = memberRepo.findById(memberNo);
+        if (optional.isPresent()) {
+            Member member = optional.get();
+            return member.getEmail();
+        } else {
+            return null;
+        }
+    }
+
 
     // 登入
     public Member login(String email, String password) {
@@ -103,6 +175,58 @@ public class MemberService {
         member.setLastLoginTime(new Date());
 
         return memberRepo.save(member);
+    }
+
+    // 修改個人資料
+    public Member modify(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            Integer memberNo = obj.isNull("memberNo") ? null : obj.getInt("memberNo");
+            String name = obj.isNull("name") ? null : obj.getString("name");
+            String email = obj.isNull("email") ? null : obj.getString("email");
+            String birthday = obj.isNull("birthday") ? null : obj.getString("birthday");
+            String address = obj.isNull("address") ? null : obj.getString("address");
+            String phone = obj.isNull("phone") ? null : obj.getString("phone");
+
+             if (memberNo != null) {
+                Optional<Member> optional = memberRepo.findById(memberNo);
+                if (optional.isPresent()) {
+                    Member update = optional.get();
+                    update.setName(name);
+                    update.setEmail(email);
+                    update.setAddress(address);
+                    update.setPhone(phone);
+                    if (birthday != null && birthday.length() != 0) {
+                        java.util.Date temp = DatetimeConverter.parse(birthday, "yyyy-MM-dd");
+                        update.setBirthday(temp);
+                    } else {
+                        update.setBirthday(null);
+                    }
+                    return memberRepo.save(update);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // 刪除，需要確認密碼
+    public boolean delete(Integer memberNo, String password) {
+        if (memberNo != null) {
+            Optional<Member> optional = memberRepo.findById(memberNo);
+            if (optional.isPresent()) {
+                Member member = optional.get();
+                String storedPasswordHash = member.getPassword();
+
+                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                if (passwordEncoder.matches(password, storedPasswordHash)) {
+                    memberRepo.deleteById(memberNo);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

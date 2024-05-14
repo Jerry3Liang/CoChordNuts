@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -62,26 +63,67 @@ public class ProductController {
 	
 	//多條件查詢
 	@PostMapping("/products/search")
-	public List<Product> searchByCondition(@RequestBody String obj) {
+	public ResponseEntity<?> searchByCondition(@RequestBody String obj) {
 		JSONObject json = new JSONObject(obj);
-//		System.out.println(json);
+//		System.out.println(json.toString());
 		List<Product> result = productService.search(json);
-		if(!result.isEmpty()) {
-			return result;
-//			System.out.println(result.size());
+		if(result != null && !result.isEmpty()) {
 //			System.out.println(result.toString());
+			return ResponseEntity.ok(result.toString());
 		} else {
-			System.out.println("notFound");
-			return null;
+			return ResponseEntity.notFound().build();
 		}
+	
+//		if(!result.isEmpty()) {
+////			System.out.println(result.toString());
+////			System.out.println(result.size());
+//			return result.toString();
+//		} else {
+////			System.out.println("notFound");
+//			return null;
+//		}
 		
 	}
 	
+	// 查詢全部
+	@GetMapping("/products/findAll")
+	public ResponseEntity<?> findAll(){
+		List<Product> result = productService.findAll();
+		if(result != null && !result.isEmpty()) {
+			return ResponseEntity.ok(result.toString());
+		}
+		return ResponseEntity.notFound().build();
+	}
 	
+	// 是否熱銷
+	@GetMapping("/products/isBest")
+	public ResponseEntity<?> isBest(){
+		List<Product> result = productService.findIsBest(1);
+		if(result != null && !result.isEmpty()) {
+			return ResponseEntity.ok(result.toString());
+		}
+		return ResponseEntity.notFound().build();
+	}
 	
+	// 是否折扣
+	@GetMapping("/products/isDiscount")
+	public ResponseEntity<?> isDiscount(){
+		List<Product> result = productService.findIsDiscount(1);
+		if(result != null && !result.isEmpty()) {
+			return ResponseEntity.ok(result.toString());
+		}
+		return ResponseEntity.notFound().build();
+	}
 	
-	
-	
+	// 是否預購
+	@GetMapping("/products/isPreorder")
+	public ResponseEntity<?> isPreorder(){
+		List<Product> result = productService.findIsPreorder(1);
+		if(result != null && !result.isEmpty()) {
+			return ResponseEntity.ok(result.toString());
+		}
+		return ResponseEntity.notFound().build();
+	}
 	
 	
 
