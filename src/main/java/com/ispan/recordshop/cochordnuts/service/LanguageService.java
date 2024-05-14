@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ispan.recordshop.cochordnuts.model.Language;
+import com.ispan.recordshop.cochordnuts.model.ProductStyle;
 import com.ispan.recordshop.cochordnuts.repository.LanguageRepository;
 
 @Service
@@ -20,6 +21,10 @@ public class LanguageService {
 	
 	public List<Language> findAll(){
 		return languageRepo.findAll();
+	}
+	
+	public Language findById(Integer id){
+		return languageRepo.findById(id).get();
 	}
 	
 

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.ispan.recordshop.cochordnuts.dto.ProductDTO;
 import com.ispan.recordshop.cochordnuts.model.Artist;
 import com.ispan.recordshop.cochordnuts.model.Product;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
@@ -40,17 +41,52 @@ public class ProductService {
 	
 	@Autowired
 	private ArtistService artistService;
-
+//	@Autowired
+//	private ProductStyleService prodStyleService;
+//	@Autowired
+//	private LanguageService languageService;
+//	@Autowired
+//	private MusicYearService musicYearService;
+	
 	// 單一查詢
-	public Product findById(Integer id) {
+	public ProductDTO findById(Integer id) {
 		if(id == null) {
 			return null;
 		}
 		Optional<Product> optional = productRepo.findById(id);
 		if (optional.isPresent()) {
-			return optional.get();
+			Product pro = optional.get();
+			ProductDTO productDTO = new ProductDTO();
+			productDTO.setProductNo(pro.getProductNo());
+			productDTO.setProductName(pro.getProductName());
+			productDTO.setUnitPrice(pro.getUnitPrice());
+			productDTO.setDescribe(pro.getDescribe());
+			productDTO.setDiscount(pro.getDiscount());
+			productDTO.setPhoto(pro.getPhoto());
+			productDTO.setStyleType(pro.getProductStyle().getStyleType());
+			productDTO.setArtistType(pro.getArtist().getArtistName());
+			productDTO.setLanguageType(pro.getLanguage().getLanguageType());
+			productDTO.setMusicYear(pro.getMusicYear().getGeneration());
+			return productDTO;
 		}
 		return null;
+	}
+	
+	// 刪除商品
+	public boolean delete(Integer id) {
+		if(productRepo.existsById(id)) {
+			productRepo.deleteById(id);
+			return true;
+		}
+		return false;
+	}
+	
+	// 查詢商品是否存在
+	public boolean existById(Integer id) {
+		if(id!=null) {
+			return productRepo.existsById(id);
+		}
+		return false;
 	}
 
 	// 新增產品
@@ -69,8 +105,25 @@ public class ProductService {
 	}
 
 	// 查詢全部產品
-	public List<Product> findAll(){
-		return productRepo.findAll();
+	public List<ProductDTO> findAll(){
+		List<Product> products = productRepo.findAll();
+		List<ProductDTO> productsDTO = new ArrayList<>();
+		ProductDTO productDTO = null;
+		for(Product pro : products) {
+			productDTO = new ProductDTO();
+			productDTO.setProductNo(pro.getProductNo());
+			productDTO.setProductName(pro.getProductName());
+			productDTO.setUnitPrice(pro.getUnitPrice());
+			productDTO.setDescribe(pro.getDescribe());
+			productDTO.setDiscount(pro.getDiscount());
+			productDTO.setPhoto(pro.getPhoto());
+			productDTO.setStyleType(pro.getProductStyle().getStyleType());
+			productDTO.setArtistType(pro.getArtist().getArtistName());
+			productDTO.setLanguageType(pro.getLanguage().getLanguageType());
+			productDTO.setMusicYear(pro.getMusicYear().getGeneration());
+			productsDTO.add(productDTO);
+		}
+		return productsDTO;
 	}
 	
 	// 修改產品

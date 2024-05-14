@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ispan.recordshop.cochordnuts.model.Artist;
+import com.ispan.recordshop.cochordnuts.model.ProductStyle;
 import com.ispan.recordshop.cochordnuts.repository.ArtistRepository;
 
 import jakarta.persistence.PersistenceContext;
@@ -35,6 +36,10 @@ public class ArtistService {
 
 	public List<Artist> findByName(String name) {
 		return artistRepository.findByNameLike(name);
+	}
+	
+	public Artist findById(Integer id){
+		return artistRepository.findById(id).get();
 	}
 
 }

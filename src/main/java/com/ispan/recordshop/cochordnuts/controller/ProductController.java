@@ -8,13 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ispan.recordshop.cochordnuts.dto.ProductDTO;
 import com.ispan.recordshop.cochordnuts.model.Product;
 import com.ispan.recordshop.cochordnuts.service.ProductService;
 
@@ -24,12 +27,14 @@ public class ProductController {
 	
 	@Autowired
 	private ProductService productService;
+	
+	private byte[] photo = null;
 
 	//新增產品
 	@PostMapping("/products/create")
 	public ResponseEntity<?> createProduct(@RequestBody Product product) {
 		if(product != null) {
-			Product result = productService.findById(product.getProductNo());
+			ProductDTO result = productService.findById(product.getProductNo());
 			if(result == null) {
 				Product newProd = productService.insert(product);
 				if(newProd != null) {
@@ -47,7 +52,7 @@ public class ProductController {
 	@PutMapping("/products/modify/{id}")
 	public ResponseEntity<?> modifyProduct(@PathVariable Integer id, @RequestBody Product product) {
 		if(product != null && product.getProductNo() != null && product.getProductNo() != 0) {
-			Product result = productService.findById(product.getProductNo());
+			ProductDTO result = productService.findById(product.getProductNo());
 			if(result != null) {
 				Product newProd = productService.modify(product);
 				if(newProd != null) {
@@ -59,6 +64,30 @@ public class ProductController {
 			}
 		}
 		return ResponseEntity.notFound().build();
+	}
+	
+	// 刪除商品
+	@DeleteMapping("/products/remove/{id}")
+	public ResponseEntity<Void> remove(@PathVariable Integer id){
+		if(id != null && id != 0) {
+			boolean result = productService.existById(id);
+			if(result) {
+				if(productService.delete(id))
+				return ResponseEntity.noContent().build();
+			}
+		}
+		return ResponseEntity.notFound().build();
+	}
+
+	// 拿圖片
+	@GetMapping(path="/products/photo/{id}", produces= {MediaType.IMAGE_JPEG_VALUE})
+	public @ResponseBody byte[] getPhoto(@PathVariable Integer id) {
+		ProductDTO result = productService.findById(id);
+		byte[] prodPhoto = this.photo;
+		if(result != null) {
+			prodPhoto = result.getPhoto();
+		}
+		return prodPhoto;
 	}
 	
 	//多條件查詢
@@ -88,9 +117,19 @@ public class ProductController {
 	// 查詢全部
 	@GetMapping("/products/findAll")
 	public ResponseEntity<?> findAll(){
-		List<Product> result = productService.findAll();
+		List<ProductDTO> result = productService.findAll();
 		if(result != null && !result.isEmpty()) {
-			return ResponseEntity.ok(result.toString());
+			return ResponseEntity.ok(result);
+		}
+		return ResponseEntity.notFound().build();
+	}
+	
+	// 單一查詢
+	@GetMapping("/products/detail/{id}")
+	public ResponseEntity<?> findById(@PathVariable Integer id) {
+		ProductDTO result = productService.findById(id);
+		if(result != null) {
+			return ResponseEntity.ok(result);
 		}
 		return ResponseEntity.notFound().build();
 	}
@@ -124,6 +163,7 @@ public class ProductController {
 		}
 		return ResponseEntity.notFound().build();
 	}
+	
 	
 	
 

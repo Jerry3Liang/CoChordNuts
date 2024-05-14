@@ -22,6 +22,10 @@ public class ProductStyleService {
 		return prodStyleRepo.findAll();
 	}
 	
+	public ProductStyle findById(Integer id){
+		return prodStyleRepo.findById(id).get();
+	}
+	
 	
 
 }

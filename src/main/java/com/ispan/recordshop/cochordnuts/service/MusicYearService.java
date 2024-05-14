@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ispan.recordshop.cochordnuts.model.MusicYear;
+import com.ispan.recordshop.cochordnuts.model.ProductStyle;
 import com.ispan.recordshop.cochordnuts.repository.MusicYearRepository;
 
 @Service
@@ -20,6 +21,10 @@ public class MusicYearService {
 	
 	public List<MusicYear> findAll(){
 		return musicYearRepo.findAll();
+	}
+	
+	public MusicYear findById(Integer id){
+		return musicYearRepo.findById(id).get();
 	}
 	
 	

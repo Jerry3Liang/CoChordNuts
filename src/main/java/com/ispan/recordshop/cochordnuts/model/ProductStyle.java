@@ -18,7 +18,9 @@ import jakarta.persistence.Table;
 @Table(name = "product_style")
 public class ProductStyle {
 
-	@OneToMany(mappedBy = "productStyle", cascade = CascadeType.ALL)
+	@OneToMany(
+			mappedBy = "productStyle",
+			cascade = CascadeType.ALL)
 	private Set<Product> products;
 
 //	@ManyToMany(mappedBy = "favoriteMusicType")
