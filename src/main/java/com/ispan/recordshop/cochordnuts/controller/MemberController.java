@@ -91,22 +91,25 @@ public class MemberController {
 
     // 修改
     @PutMapping("/members/{pk}")
-    public String modify(@PathVariable(name = "pk") String email, @RequestBody String json) {
+    public String modify(@PathVariable(name = "pk") Integer memberNo, @RequestBody String json) {
         JSONObject responseJson = new JSONObject();
-        if (email == null) {
+        if (memberNo == null) {
             responseJson.put("success", false);
-            responseJson.put("message", "email是必要欄位");
-        } else if (!memberService.existByEmail(email)) {
+            responseJson.put("message", "memberNo是必要欄位");
+        } else if (!memberService.existById(memberNo)) {
             responseJson.put("success", false);
-            responseJson.put("message", "email不存在");
+            responseJson.put("message", "memberNo不存在");
         } else {
             JSONObject obj = new JSONObject(json);
             String phone = obj.isNull("phone") ? null : obj.getString("phone");
+            String email = obj.isNull("email") ? null : obj.getString("email");
+																   
 
-            String oriPhone = memberService.getPhoneByEmail(email);
+            String oriPhone = memberService.getPhoneById(memberNo);
+            String oriEmail = memberService.getEmailById(memberNo);
 
-            if (Objects.equals(phone, oriPhone)) {
-
+            // 若email和phone都沒有改變，則進行其他項目的修改
+            if (Objects.equals(phone, oriPhone) && Objects.equals(email, oriEmail)) {
                 Member member = memberService.modify(json);
                 if (member == null) {
                     responseJson.put("success", false);
@@ -116,13 +119,24 @@ public class MemberController {
                     responseJson.put("message", "修改成功");
                 }
             } else {
+                boolean phoneExists = phone != null && memberService.existByPhone(phone);
+                boolean emailExists = email != null && memberService.existByEmail(email);
 
-                boolean phoneExists = memberService.existByPhone(phone);
-                if (phoneExists) {
+                // 若新的電話和email都已存在
+                if (!Objects.equals(phone, oriPhone) && !Objects.equals(email, oriEmail) && phoneExists
+                        && emailExists) {
+                    responseJson.put("success", false);
+                    responseJson.put("message", "新的電話號碼和email都已存在");
+                } else if (Objects.equals(email, oriEmail) && phoneExists) {
+                    // 若新的電話已存在
                     responseJson.put("success", false);
                     responseJson.put("message", "新的電話號碼已存在");
+                } else if (Objects.equals(phone, oriPhone) && emailExists) {
+                    // 若新的email已存在
+                    responseJson.put("success", false);
+                    responseJson.put("message", "新的email已存在");
                 } else {
-
+                    // 其他情況下，進行修改
                     Member member = memberService.modify(json);
                     if (member == null) {
                         responseJson.put("success", false);
