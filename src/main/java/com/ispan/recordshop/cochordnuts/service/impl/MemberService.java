@@ -1,6 +1,7 @@
 package com.ispan.recordshop.cochordnuts.service.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.json.JSONException;
@@ -49,11 +50,64 @@ public class MemberService {
         return false;
     }
 
+    
+    // findAll start
+    public long count(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            return memberRepo.count(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<Member> find(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            return memberRepo.find(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    // findAll end
+
+    public Member findById(Integer memberNo) {
+        if (memberNo != null) {
+            Optional<Member> optional = memberRepo.findById(memberNo);
+            if (optional.isPresent()) {
+                return optional.get();
+            }
+        }
+        return null;
+    }
+
     public String getPhoneByEmail(String email) {
         Optional<Member> optional = memberRepo.findByEmail(email);
         if (optional.isPresent()) {
             Member member = optional.get();
             return member.getPhone();
+        } else {
+            return null;
+        }
+    }
+
+     public String getPhoneById(Integer memberNo) {
+        Optional<Member> optional = memberRepo.findById(memberNo);
+        if (optional.isPresent()) {
+            Member member = optional.get();
+            return member.getPhone();
+        } else {
+            return null;
+        }
+    }
+
+    public String getEmailById(Integer memberNo) {
+        Optional<Member> optional = memberRepo.findById(memberNo);
+        if (optional.isPresent()) {
+            Member member = optional.get();
+            return member.getEmail();
         } else {
             return null;
         }
@@ -127,15 +181,15 @@ public class MemberService {
     public Member modify(String json) {
         try {
             JSONObject obj = new JSONObject(json);
-
+            Integer memberNo = obj.isNull("memberNo") ? null : obj.getInt("memberNo");
             String name = obj.isNull("name") ? null : obj.getString("name");
             String email = obj.isNull("email") ? null : obj.getString("email");
             String birthday = obj.isNull("birthday") ? null : obj.getString("birthday");
             String address = obj.isNull("address") ? null : obj.getString("address");
             String phone = obj.isNull("phone") ? null : obj.getString("phone");
 
-            if (email != null && phone != null) {
-                Optional<Member> optional = memberRepo.findByEmail(email);
+             if (memberNo != null) {
+                Optional<Member> optional = memberRepo.findById(memberNo);
                 if (optional.isPresent()) {
                     Member update = optional.get();
                     update.setName(name);
