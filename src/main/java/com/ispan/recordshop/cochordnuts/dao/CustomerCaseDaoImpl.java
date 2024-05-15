@@ -2,7 +2,10 @@ package com.ispan.recordshop.cochordnuts.dao;
 
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseDto;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
+import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
+import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.rowmapper.CustomerCaseRowMapper;
+import com.ispan.recordshop.cochordnuts.rowmapper.ShowCustomerCaseRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -36,7 +39,7 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
         map.put("fetch", customerCaseParams.getFetch());
         map.put("offset", customerCaseParams.getOffset());
 
-        List<CustomerCaseDto> caseList = namedParameterJdbcTemplate.query(sql, map, new CustomerCaseRowMapper());
+        List<CustomerCaseDto> caseList = namedParameterJdbcTemplate.query(sql, map, new ShowCustomerCaseRowMapper());
 
         return caseList;
     }
@@ -53,6 +56,34 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
         Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
 
         return total;
+    }
+
+    @Override
+    public CustomerCaseRequest getCaseById(Integer customerCaseNo) {
+        String sql = "SELECT case_no, subject, status, order_no, member_no FROM customer_case " +
+                     "WHERE case_no = :customerCaseNo";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("customerCaseNo", customerCaseNo);
+
+        List<CustomerCaseRequest> caseRequestList = namedParameterJdbcTemplate.query(sql, map, new CustomerCaseRowMapper());
+
+        if(caseRequestList.size() > 0){
+            return caseRequestList.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void updateCaseStatus(Integer customerCaseNo, CustomerCaseRequest customerCaseRequest) {
+        String sql = "UPDATE customer_case SET status = :status WHERE case_no = :caseNo";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("caseNo", customerCaseNo);
+        map.put("status", customerCaseRequest.getStatus());
+
+        namedParameterJdbcTemplate.update(sql, map);
     }
 
     private String addFilteringSql(String sql, Map<String, Object> map, CustomerCaseParams customerCaseParams){
