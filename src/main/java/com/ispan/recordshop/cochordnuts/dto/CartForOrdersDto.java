@@ -5,6 +5,13 @@ public class CartForOrdersDto {
 	private Integer unitPrice;
 	private Double discount;
 	private Long total;
+	private String productName;
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
 	public Integer getCount() {
 		return count;
 	}

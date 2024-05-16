@@ -89,12 +89,14 @@ public class OrdersServiceImpl  {
 		List<Map<String, Object>> results = orderRepository.findCartByMemberNo(memberNo);
 		if(results!=null) {			
 			for (Map<String, Object> row : results) {
-				CartForOrdersDto cart = new CartForOrdersDto();//將MAP取得的資料丟進新建的Cart
+				CartForOrdersDto cart = new CartForOrdersDto();//將MAP取得的資料丟進新建的CartDto
 				cart.setCount((Integer)row.get("Count"));
 				Integer productNo =(Integer) row.get("product_productNo");//取得Map中會員編號
-				Product product=productRepository.findById(productNo).get();//依會員編號取得product物件
-				cart.setDiscount(product.getDiscount());;//將取得的product物件丟入Cart
-				cart.setUnitPrice(product.getUnitPrice());
+				Product product=productRepository.findById(productNo).get();//依會員編號取得product物件				
+				//將取得的product物件丟入Cart
+				cart.setDiscount(product.getDiscount());//折扣
+				cart.setUnitPrice(product.getUnitPrice());//單價
+				cart.setProductName(product.getProductName());//商品名稱
 				cart.setTotal();
 				cartArray.add(cart);//cart存入陣列
 			}
