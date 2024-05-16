@@ -31,8 +31,7 @@ public class OrderDetailServiceImpl {
 	@Autowired
 	private ProductRepository productRepository;
 
-	@Autowired
-	private ProductService productService;
+
 
 	@Autowired
 	private MemberRepository memberRepo;
@@ -52,11 +51,11 @@ public class OrderDetailServiceImpl {
 		if(results!=null) {
 		
 			for (Map<String, Object> row : results) {
-				Cart cart = new Cart();
+				Cart cart = new Cart();//將MAP取得的資料丟進新建的Cart
 				cart.setProduct(productRepository.findById(1).get());
 				cart.setCount((Integer) row.get("Count"));
 				cart.setMember(memberRepo.findById(1).get());
-				cartArray.add(cart);
+				cartArray.add(cart);//Cart存入CartArray
 								
 			}
 			OrderDetail orderdetail = new OrderDetail();

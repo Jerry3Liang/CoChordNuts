@@ -12,6 +12,9 @@ import com.ispan.recordshop.cochordnuts.model.OrderDetail;
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Integer>  {
 	@Query(value = "SELECT * FROM Cart WHERE member_memberNo = :memberNo", nativeQuery = true)
 	public List<Cart> findCartByMemberNo(@Param("memberNo")Integer memberNo);
+	
+//	@Query("")
+//	public List<OrderDetail> findOrderDetailByOrderNo(@Param("OrderNo")Integer OrderNo);
 
 	
 }
