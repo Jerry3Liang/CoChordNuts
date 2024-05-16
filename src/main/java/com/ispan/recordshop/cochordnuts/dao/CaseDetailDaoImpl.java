@@ -1,12 +1,17 @@
 package com.ispan.recordshop.cochordnuts.dao;
 
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
+import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
-import com.ispan.recordshop.cochordnuts.rowmapper.CaseDetailRowMapper;
+import com.ispan.recordshop.cochordnuts.rowmapper.ShowCaseDetailRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +37,7 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
         map.put("fetch", customerCaseParams.getFetch());
         map.put("offset", customerCaseParams.getOffset());
 
-        List<CaseDetailDto> anwserList = namedParameterJdbcTemplate.query(sql, map, new CaseDetailRowMapper());
-
-        return anwserList;
+        return namedParameterJdbcTemplate.query(sql, map, new ShowCaseDetailRowMapper());
     }
 
     @Override
@@ -46,8 +49,38 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
         //查詢條件
         //sql = addFilteringSql(sql, map, customerCaseParams);
 
-        Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+        return namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+    }
 
-        return total;
+    @Override
+    public Integer answerContent(CaseDetailRequest caseDetailRequest) {
+        String sql = "INSERT INTO case_detail ([message], message_time, case_no, employee_no) " +
+                     "VALUES (:answerMessage, :lastMessageDate, :customerCaseNo, :employeeNo)";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("answerMessage", caseDetailRequest.getAnswerMessage());
+        Date now = new Date();
+        map.put("lastMessageDate", now);
+        map.put("customerCaseNo", caseDetailRequest.getCustomerCaseNo());
+        map.put("employeeNo", caseDetailRequest.getEmployeeNo());
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
+
+        return keyHolder.getKey().intValue();
+    }
+
+    @Override
+    public List<CaseDetailDto> findByCaseNo(Integer caseNo) {
+        String sql = "SELECT cd.case_detail_no, cd.case_no, cd.[message], cd.message_time, ee.emp_name FROM case_detail cd " +
+                     "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
+                     "WHERE cd.case_no = :caseNo " +
+                     "ORDER BY cd.message_time DESC";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("caseNo", caseNo);
+
+        return namedParameterJdbcTemplate.query(sql, map, new ShowCaseDetailRowMapper());
     }
 }

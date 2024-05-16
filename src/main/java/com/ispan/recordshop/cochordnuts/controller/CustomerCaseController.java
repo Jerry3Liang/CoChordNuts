@@ -3,7 +3,6 @@ package com.ispan.recordshop.cochordnuts.controller;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseDto;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
-import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.service.CustomerCaseService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -13,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/rest")

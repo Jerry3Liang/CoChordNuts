@@ -1,6 +1,7 @@
 package com.ispan.recordshop.cochordnuts.controller;
 
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
+import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.model.CaseDetail;
 import com.ispan.recordshop.cochordnuts.service.CaseDetailService;
@@ -8,7 +9,6 @@ import com.ispan.recordshop.cochordnuts.util.Page;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +29,7 @@ public class CaseDetailController {
 
             //排序 Sorting
             @RequestParam(defaultValue = "message_time") String orderby,
-            @RequestParam(defaultValue = "asc") String sort,
+            @RequestParam(defaultValue = "desc") String sort,
 
             //分頁 Pagination
             @RequestParam(defaultValue = "5") @Max(1000) @Min(0) Integer fetch,
@@ -59,21 +59,31 @@ public class CaseDetailController {
     }
 
     @PostMapping("/Answer")
-    public ResponseEntity<?> createAnswerContent(@RequestBody CaseDetailDto detail){
-        if(detail != null && detail.getCaseDetailNo() != null && detail.getCaseDetailNo() != 0){
-            boolean exists = caseDetailService.existById(detail.getCaseDetailNo());
-            if(!exists){
-                CaseDetail caseDetail = caseDetailService.answerContent(detail);
-                if(caseDetail != null){
-                    String uri = "http://localhost:8080/rest/findContent/" + detail.getCaseDetailNo();
-                    return ResponseEntity.created(URI.create(uri))
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(caseDetail);
-                }
-            }
-        }
+    public ResponseEntity<CaseDetail> createAnswerContent(@RequestBody CaseDetailRequest detailRequest){
+        Integer caseDetailId = caseDetailService.answerContent(detailRequest);
+        CaseDetail caseDetail = caseDetailService.findById(caseDetailId);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.created(URI.create("http://localhost:8080/rest/findContent/" + caseDetailId)).body(caseDetail);
+    }
+
+    @GetMapping("/findContent/{pk}")
+    public ResponseEntity<?> findAnswerById(@PathVariable(name = "pk") Integer id){
+        CaseDetail caseDetail = caseDetailService.findById(id);
+        if(caseDetail != null){
+            return ResponseEntity.ok(caseDetail);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/findCaseContent/{caseNo}")
+    public ResponseEntity<?> findAnswerByCaseNo(@PathVariable(name = "caseNo") Integer caseNo){
+        List<CaseDetailDto> caseDetails = caseDetailService.findByCaseNo(caseNo);
+        if(caseDetails != null){
+            return ResponseEntity.ok(caseDetails);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/Answer/{pk}")

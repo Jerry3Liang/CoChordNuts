@@ -3,7 +3,6 @@ package com.ispan.recordshop.cochordnuts.dao;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseDto;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
-import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.rowmapper.CustomerCaseRowMapper;
 import com.ispan.recordshop.cochordnuts.rowmapper.ShowCustomerCaseRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +38,7 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
         map.put("fetch", customerCaseParams.getFetch());
         map.put("offset", customerCaseParams.getOffset());
 
-        List<CustomerCaseDto> caseList = namedParameterJdbcTemplate.query(sql, map, new ShowCustomerCaseRowMapper());
-
-        return caseList;
+        return namedParameterJdbcTemplate.query(sql, map, new ShowCustomerCaseRowMapper());
     }
 
     @Override
@@ -68,7 +65,7 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
 
         List<CustomerCaseRequest> caseRequestList = namedParameterJdbcTemplate.query(sql, map, new CustomerCaseRowMapper());
 
-        if(caseRequestList.size() > 0){
+        if(!caseRequestList.isEmpty()){
             return caseRequestList.get(0);
         } else {
             return null;

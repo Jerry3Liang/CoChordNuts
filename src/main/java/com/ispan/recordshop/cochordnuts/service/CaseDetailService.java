@@ -1,6 +1,7 @@
 package com.ispan.recordshop.cochordnuts.service;
 
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
+import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.model.CaseDetail;
 
@@ -12,10 +13,14 @@ public interface CaseDetailService {
 
     Integer countAnswer(CustomerCaseParams customerCaseParams);
 
-    CaseDetail answerContent(CaseDetailDto content);
+    Integer answerContent(CaseDetailRequest caseRequest);
 
     CaseDetail updateContent(CaseDetailDto updateContent);
 
+
+    CaseDetail findById(Integer id);
+
+    List<CaseDetailDto> findByCaseNo(Integer caseNo);
 
     boolean existById(Integer id);
 }

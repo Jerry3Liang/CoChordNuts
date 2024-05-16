@@ -1,24 +1,21 @@
 package com.ispan.recordshop.cochordnuts.rowmapper;
 
-import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
-import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
+import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CaseDetailRowMapper implements RowMapper<CaseDetailDto> {
-
+public class CaseDetailRowMapper implements RowMapper<CaseDetailRequest> {
     @Override
-    public CaseDetailDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-        CaseDetailDto caseDetailDto = new CaseDetailDto();
-        caseDetailDto.setCaseDetailNo(rs.getInt("case_detail_no"));
-        caseDetailDto.setCaseNo(rs.getInt("case_no"));
-        caseDetailDto.setMessage(rs.getString("message"));
-        String temp = DatetimeConverter.toString(rs.getTimestamp("message_time"), "yyyy-MM-dd HH:mm:ss");
-        caseDetailDto.setMessageTime(temp);
-        caseDetailDto.setEmployeeName(rs.getString("emp_name"));
+    public CaseDetailRequest mapRow(ResultSet rs, int rowNum) throws SQLException {
+        CaseDetailRequest caseRequest = new CaseDetailRequest();
+        caseRequest.setCaseDetailNo(rs.getInt("case_detail_no"));
+        caseRequest.setCustomerCaseNo(rs.getInt("case_no"));
+        caseRequest.setAnswerMessage(rs.getString("message"));
+        caseRequest.setLastMessageDate(rs.getString("message_time"));
+        caseRequest.setEmployeeNo(rs.getInt("employee_no"));
 
-        return caseDetailDto;
+        return caseRequest;
     }
 }

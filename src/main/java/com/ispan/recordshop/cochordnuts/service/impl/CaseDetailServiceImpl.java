@@ -2,6 +2,7 @@ package com.ispan.recordshop.cochordnuts.service.impl;
 
 import com.ispan.recordshop.cochordnuts.dao.CaseDetailDao;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
+import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.model.CaseDetail;
 import com.ispan.recordshop.cochordnuts.repository.CaseDetailRepository;
@@ -36,24 +37,12 @@ public class CaseDetailServiceImpl implements CaseDetailService {
 
     /**
      * 新增回覆內容
-     * @param content: 畫面接收的輸入內容
+     * @param caseRequest: 畫面接收的輸入內容
      * @return CaseDetail 物件所儲存的資料
      */
     @Override
-    public CaseDetail answerContent(CaseDetailDto content) {
-        if(content != null && content.getCaseDetailNo() != null){
-            Optional<CaseDetail> optional = caseDetailRepository.findById(content.getCaseDetailNo());
-            if(optional.isEmpty()){
-                CaseDetail detail = optional.get();
-                detail.setMessage(content.getMessage());
-                Date temp = DatetimeConverter.parse(content.getMessageTime(), "yyyy-MM-dd HH:mm:ss");
-                detail.setMessageTime(temp);
-
-                return caseDetailRepository.save(detail);
-            }
-        }
-
-        return null;
+    public Integer answerContent(CaseDetailRequest caseRequest) {
+        return caseDetailDao.answerContent(caseRequest);
     }
 
     /**
@@ -74,6 +63,27 @@ public class CaseDetailServiceImpl implements CaseDetailService {
             originContent.setMessageTime(temp);
             caseDetailRepository.save(originContent);
             return originContent;
+        }
+
+        return null;
+    }
+
+    @Override
+    public CaseDetail findById(Integer id) {
+        if(id != null){
+            Optional<CaseDetail> optional = caseDetailRepository.findById(id);
+            if(optional.isPresent()){
+                return optional.get();
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<CaseDetailDto> findByCaseNo(Integer caseNo) {
+        if(caseNo != null){
+            return caseDetailDao.findByCaseNo(caseNo);
         }
 
         return null;

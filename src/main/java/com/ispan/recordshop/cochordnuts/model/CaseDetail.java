@@ -41,15 +41,6 @@ public class CaseDetail implements Serializable {
     //無參數 Constructor
     public CaseDetail(){}
 
-//    @JsonCreator
-//    public CaseDetail(Integer caseDetailNo, @JsonProperty("caseNo") CustomerCase caseNo, @JsonProperty("message") String message, Date messageTime, Employee employeeNo) {
-//        this.caseDetailNo = caseDetailNo;
-//        this.caseNo = caseNo;
-//        this.message = message;
-//        this.messageTime = messageTime;
-//        this.employeeNo = employeeNo;
-//    }
-
     public Integer getCaseDetailNo() {
         return caseDetailNo;
     }

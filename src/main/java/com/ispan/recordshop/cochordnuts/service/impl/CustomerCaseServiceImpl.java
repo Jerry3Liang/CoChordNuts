@@ -41,6 +41,11 @@ public class CustomerCaseServiceImpl implements CustomerCaseService {
         return customerCaseDao.getCaseById(customerCaseNo);
     }
 
+    /**
+     * 根據案件編號變更回覆狀態
+     * @param customerCaseNo: 主鍵
+     * @param customerCaseRequest: Data transfer object
+     */
     @Override
     public void updateCaseStatus(Integer customerCaseNo, CustomerCaseRequest customerCaseRequest) {
         customerCaseDao.updateCaseStatus(customerCaseNo, customerCaseRequest);
