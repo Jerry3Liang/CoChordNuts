@@ -1,10 +1,13 @@
 package com.ispan.recordshop.cochordnuts.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ispan.recordshop.cochordnuts.dto.ArtistDTO;
+import com.ispan.recordshop.cochordnuts.dto.StyleDTO;
 import com.ispan.recordshop.cochordnuts.model.ProductStyle;
 import com.ispan.recordshop.cochordnuts.repository.ProductStyleRepository;
 
@@ -18,8 +21,17 @@ public class ProductStyleService {
 		return prodStyleRepo.save(style);
 	}
 	
-	public List<ProductStyle> findAll(){
-		return prodStyleRepo.findAll();
+	public List<StyleDTO> findAll(){
+		List<ProductStyle> types = prodStyleRepo.findAll();
+		List<StyleDTO> result = new ArrayList<>();
+		StyleDTO styleDTO = null;
+		for(ProductStyle type : types) {
+			styleDTO = new StyleDTO();
+			styleDTO.setStyleNo(type.getStyleNo());
+			styleDTO.setStyleType(type.getStyleType());
+			result.add(styleDTO);
+		}
+		return result;
 	}
 	
 	public ProductStyle findById(Integer id){

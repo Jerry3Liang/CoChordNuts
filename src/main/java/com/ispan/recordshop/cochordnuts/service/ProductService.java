@@ -61,6 +61,7 @@ public class ProductService {
 			productDTO.setProductName(pro.getProductName());
 			productDTO.setUnitPrice(pro.getUnitPrice());
 			productDTO.setDescribe(pro.getDescribe());
+			productDTO.setPublishedDate(DatetimeConverter.toString(pro.getPublishedDate(), "yyyy-MM-dd"));
 			productDTO.setDiscount(pro.getDiscount());
 			productDTO.setPhoto(pro.getPhoto());
 			productDTO.setStyleType(pro.getProductStyle().getStyleType());
@@ -115,6 +116,7 @@ public class ProductService {
 			productDTO.setProductName(pro.getProductName());
 			productDTO.setUnitPrice(pro.getUnitPrice());
 			productDTO.setDescribe(pro.getDescribe());
+			productDTO.setPublishedDate(DatetimeConverter.toString(pro.getPublishedDate(), "yyyy-MM-dd"));
 			productDTO.setDiscount(pro.getDiscount());
 			productDTO.setPhoto(pro.getPhoto());
 			productDTO.setStyleType(pro.getProductStyle().getStyleType());
