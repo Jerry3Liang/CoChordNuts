@@ -3,6 +3,7 @@ package com.ispan.recordshop.cochordnuts.service.impl;
 import com.ispan.recordshop.cochordnuts.dao.CustomerCaseDao;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseDto;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
+import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
 import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.repository.CustomerCaseRepository;
 import com.ispan.recordshop.cochordnuts.service.CustomerCaseService;
@@ -33,6 +34,16 @@ public class CustomerCaseServiceImpl implements CustomerCaseService {
     @Override
     public Integer countCase(CustomerCaseParams customerCaseParams) {
         return customerCaseDao.countCase(customerCaseParams);
+    }
+
+    @Override
+    public CustomerCaseRequest getCaseById(Integer customerCaseNo) {
+        return customerCaseDao.getCaseById(customerCaseNo);
+    }
+
+    @Override
+    public void updateCaseStatus(Integer customerCaseNo, CustomerCaseRequest customerCaseRequest) {
+        customerCaseDao.updateCaseStatus(customerCaseNo, customerCaseRequest);
     }
 
     /**

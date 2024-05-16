@@ -15,7 +15,8 @@ public class Employee {
 
 	@OneToMany(mappedBy = "employeeNo", cascade = CascadeType.ALL)
 	private List<CaseDetail> caseDetails = new ArrayList<>();
-	
+
+	@Column(name = "empName")
 	private String name; //員工姓名
 	
 	private String password; //員工密碼

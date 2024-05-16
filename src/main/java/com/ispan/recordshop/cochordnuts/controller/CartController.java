@@ -8,10 +8,12 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ispan.recordshop.cochordnuts.model.Cart;
 import com.ispan.recordshop.cochordnuts.model.Product;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
 import com.ispan.recordshop.cochordnuts.service.CartService;
@@ -37,8 +39,6 @@ public class CartController {
         if(memberId == null){
         	responseObj.put("message", "請登入會員");
         	return responseObj.toString();
-//        	   responseObj.put("message", "請登入會員");
-//            return responseObj.toString();
         }
 
         cartService.addToCartService(memberId, productId);
@@ -49,5 +49,68 @@ public class CartController {
         return responseObj.toString();
 	
     }
-	
+
+	@PostMapping("/cart/list")
+    public String listCart(HttpSession session){
+        JSONObject responseObj = new JSONObject();
+
+        Integer memberId = (Integer) session.getAttribute("loggedInUser");
+
+        if(memberId == null){
+            responseObj.put("message", "請登入會員");
+            return responseObj.toString();
+        }
+
+        List<Cart> cartList = cartService.findUsersCartService(memberId);
+
+        return cartList.toString();
+    }
+
+
+
+    @GetMapping("/cart/addOne")
+    public String addOneCount(Integer productId, HttpSession session) {
+        JSONObject responseObj = new JSONObject();
+        Integer loginUserId = (Integer) session.getAttribute("loggedInUser");
+
+        if(loginUserId == null){
+            responseObj.put("message", "請登入會員");
+            return responseObj.toString();
+        }
+
+        cartService.addOneVolumn(loginUserId, productId);
+
+        List<Cart> cartList = cartService.findUsersCartService(loginUserId);
+
+        return cartList.toString();
+    }
+
+
+
+
+
+    @GetMapping("/cart/minusOne")
+    public String minusOneCount(Integer productId, HttpSession session) {
+        JSONObject responseObj = new JSONObject();
+        Integer loginUserId = (Integer) session.getAttribute("loginUserId");
+
+        if(loginUserId == null){
+            responseObj.put("message", "請登入會員");
+            return responseObj.toString();
+        }
+
+        cartService.minusOneVolumn(loginUserId, productId);
+
+        List<Cart> cartList = cartService.findUsersCartService(loginUserId);
+
+        return cartList.toString();
+    }
+
+    
+    
+
+
+
+
+
 }

@@ -2,6 +2,8 @@ package com.ispan.recordshop.cochordnuts.controller;
 
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseDto;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
+import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
+import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.service.CustomerCaseService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -54,6 +56,23 @@ public class CustomerCaseController {
         page.setResults(caseList);
 
         return ResponseEntity.ok().body(page);
+    }
+
+    @PutMapping("/customerCase/{pk}")
+    public ResponseEntity<CustomerCaseRequest> updateCaseStatus(@PathVariable(name = "pk") Integer customerCaseNo, @RequestBody CustomerCaseRequest customerCaseRequest){
+        CustomerCaseRequest caseRequest = customerCaseService.getCaseById(customerCaseNo);
+
+        if(caseRequest == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        customerCaseService.updateCaseStatus(customerCaseNo, customerCaseRequest);
+
+        CustomerCaseRequest updateCustomerCaseRequest = customerCaseService.getCaseById(customerCaseNo);
+
+        return ResponseEntity.ok().body(updateCustomerCaseRequest);
+
+
     }
 
     @DeleteMapping("/customerCase/{pk}")
