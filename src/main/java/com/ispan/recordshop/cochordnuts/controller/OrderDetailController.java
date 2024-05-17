@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ispan.recordshop.cochordnuts.dto.CartForOrdersDto;
 import com.ispan.recordshop.cochordnuts.model.OrderDetail;
 import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.repository.OrderRepository;
@@ -85,12 +86,12 @@ public class OrderDetailController {
 		return responseJson.toString();
 	}
 	
-	@PostMapping("/orderDetail/insert/{orderNo}") 
-	public String insert(@PathVariable Integer orderNo) {
+	@PostMapping("/orderDetail/insert") 
+	public String insert(@RequestBody CartForOrdersDto cartDto) {
 		JSONObject responseJson = new JSONObject();
-		Orders od = orderRepository.findById(orderNo).get();//依OrderNo找出orders
-		boolean rs = orderDetailServiceImpl.insert(od);
-		if(rs) {
+		
+		OrderDetail rs = orderDetailServiceImpl.insert(cartDto);
+		if(rs!=null) {
 			responseJson.put("success", true);
 			responseJson.put("message", "新增成功");
 		}else {

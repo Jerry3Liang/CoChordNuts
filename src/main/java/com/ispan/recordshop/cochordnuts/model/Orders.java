@@ -185,9 +185,10 @@ public class Orders {
 	}
 
 	public void setReceiptNo() {
-		if(completeDate!=null) {
+		if(this.createDate!=null) {
 			Integer r = 16620962+orderNo;
-			this.receiptNo = r.toString();
+			String R = "HA-"+ r.toString();
+			this.receiptNo =R;
 		}else {
 			this.receiptNo="";
 		}

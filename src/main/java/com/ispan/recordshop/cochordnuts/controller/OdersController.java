@@ -18,6 +18,7 @@ import com.ispan.recordshop.cochordnuts.dto.CartForOrdersDto;
 import com.ispan.recordshop.cochordnuts.model.Member;
 import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
+import com.ispan.recordshop.cochordnuts.service.impl.OrderDetailServiceImpl;
 import com.ispan.recordshop.cochordnuts.service.impl.OrdersServiceImpl;
 
 
@@ -30,8 +31,12 @@ public class OdersController {
 	
 	@Autowired
 	private MemberRepository memberRepository;
+
+	@Autowired
+	private OrderDetailServiceImpl orderDetailServiceImpl;
 	
 
+	@SuppressWarnings("unused")
 	@PostMapping("/orders/insert/{MemberNo}") // 前台下單 User輸入運送方式、付款方式等等
 	public String create(@RequestBody Orders od,@PathVariable Integer MemberNo) {
 		JSONObject responseJson = new JSONObject(od);
@@ -43,16 +48,25 @@ public class OdersController {
 		od.setStatus();	
 		od.setLastModifiedDate();
 		od.setFreight();
-
 		Orders order = ordersServiceImpl.insert(od);
 		if(order!=null) {
-			order.setReceiptNo();
+			od.setReceiptNo();
 		}
-		ordersServiceImpl.insert(order);
-		
+		System.out.println(order.getOrderNo());
 		if (order != null) {
 			responseJson.put("success", true);
 			responseJson.put("message", "新增成功");
+			responseJson.put("orderNo", od.getOrderNo());
+			responseJson.put("memberNo", MemberNo);
+			List<CartForOrdersDto> carts=ordersServiceImpl.findCartByMember2(MemberNo,order);//依會員編號找到Cart
+			Integer i =1;
+			for(CartForOrdersDto cart :carts) {
+				orderDetailServiceImpl.insert(cart);
+				i++;			
+			}
+			responseJson.put("orderDetailInsert", i);
+	
+			
 			
 		} else {
 			responseJson.put("success", false);
@@ -135,7 +149,7 @@ public class OdersController {
 	}
 	
 	
-	@GetMapping("/orders/findCartByMemberNo/{memberNo}")
+	@GetMapping("/orders/findCartByMemberNo/{memberNo}")//依會員編號找到Cart 將cart及member傳到前端
 	public String findCartByMemberNo(@PathVariable Integer memberNo) {
 		JSONObject responseJson = new JSONObject();
 		JSONArray array = new JSONArray();
@@ -149,11 +163,13 @@ public class OdersController {
 			JSONObject item = new JSONObject(cart);
 			array.put(item);
 		}
-		responseJson.put("cartList", array);
+		responseJson.put("cartList", array);//將Cart以CartDto物件傳到前端
+		//只取前端所需屬性
 		responseJson.put("name", name);
 		responseJson.put("email", email);
 		responseJson.put("phone", phone);
 		responseJson.put("address", address);
+		
 		
 		return responseJson.toString();
 	}

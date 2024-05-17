@@ -1,21 +1,19 @@
 package com.ispan.recordshop.cochordnuts.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ispan.recordshop.cochordnuts.model.Cart;
+import com.ispan.recordshop.cochordnuts.dto.CartForOrdersDto;
 import com.ispan.recordshop.cochordnuts.model.OrderDetail;
 import com.ispan.recordshop.cochordnuts.model.Orders;
+import com.ispan.recordshop.cochordnuts.model.Product;
 import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
 import com.ispan.recordshop.cochordnuts.repository.OrderDetailRepository;
 import com.ispan.recordshop.cochordnuts.repository.OrderRepository;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
-import com.ispan.recordshop.cochordnuts.service.ProductService;
 
 @Service
 public class OrderDetailServiceImpl {
@@ -41,39 +39,22 @@ public class OrderDetailServiceImpl {
 		return orderDetailRepository.findAll();
 	}
 
-	@Transactional
-	public boolean insert(Orders od) {// 新增OrderDetail
-
-		List<Cart> cartArray = new ArrayList<>();
-
-		List<Map<String, Object>> results = orderRepository.findCartByMemberNo(1);
-		results.forEach((list) -> System.out.println(list.entrySet()));
-		if(results!=null) {
-		
-			for (Map<String, Object> row : results) {
-				Cart cart = new Cart();//將MAP取得的資料丟進新建的Cart
-				cart.setProduct(productRepository.findById(1).get());
-				cart.setCount((Integer) row.get("Count"));
-				cart.setMember(memberRepo.findById(1).get());
-				cartArray.add(cart);//Cart存入CartArray
-								
-			}
-			OrderDetail orderdetail = new OrderDetail();
-			for (Cart aCart : cartArray) {
-				orderdetail.setProductBoughtCount(aCart.getCount());
-				orderdetail.setProductNo(aCart.getProduct());
-				orderdetail.setDiscount();
-				orderdetail.setOrderNo(od);			
-				orderdetail.setProductTotalPay();
-				orderDetailRepository.save(orderdetail);
-			}
-			
-			
-			return true;
-			
-		}
-		return false;
 	
+	public OrderDetail insert(CartForOrdersDto cartDto) {// 新增OrderDetail
+		Orders od = orderRepository.findById(cartDto.getOrderNo()).get();//依OrderNo找出orders
+		Product pd=productRepository.findById(cartDto.getProductNo()).get();//依productNo找出product
+		OrderDetail orderdetail=new OrderDetail();
+		orderdetail.setOrderNo(od);
+		orderdetail.setProductNo(pd);
+		orderdetail.setDiscount();//取得商品折扣
+		orderdetail.setProductBoughtCount(cartDto.getCount());//從購物車抓出購買數量
+		orderdetail.setProductTotalPay();//計算單一品項小計
+		if(orderdetail!=null) {
+			return orderDetailRepository.save(orderdetail);
+		}
+		return null;
+		
+
 		
 	}
 

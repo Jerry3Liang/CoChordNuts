@@ -6,6 +6,21 @@ public class CartForOrdersDto {
 	private Double discount;
 	private Long total;
 	private String productName;
+	private Integer productNo;
+	private Integer orderNo;
+	
+	public Integer getOrderNo() {
+		return orderNo;
+	}
+	public void setOrderNo(Integer orderNo) {
+		this.orderNo = orderNo;
+	}	
+	public Integer getProductNo() {
+		return productNo;
+	}
+	public void setProductNo(Integer productNo) {
+		this.productNo = productNo;
+	}
 	public String getProductName() {
 		return productName;
 	}
