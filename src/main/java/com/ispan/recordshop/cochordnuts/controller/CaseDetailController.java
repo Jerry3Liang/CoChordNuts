@@ -3,8 +3,10 @@ package com.ispan.recordshop.cochordnuts.controller;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
+import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
 import com.ispan.recordshop.cochordnuts.model.CaseDetail;
 import com.ispan.recordshop.cochordnuts.service.CaseDetailService;
+import com.ispan.recordshop.cochordnuts.service.CustomerCaseService;
 import com.ispan.recordshop.cochordnuts.util.Page;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -21,6 +23,9 @@ public class CaseDetailController {
 
     @Autowired
     private CaseDetailService caseDetailService;
+
+    @Autowired
+    private CustomerCaseService caseService;
 
     @GetMapping("/allAnswer")
     public ResponseEntity<Page<CaseDetailDto>> findAllCase(
@@ -62,6 +67,9 @@ public class CaseDetailController {
     public ResponseEntity<CaseDetail> createAnswerContent(@RequestBody CaseDetailRequest detailRequest){
         Integer caseDetailId = caseDetailService.answerContent(detailRequest);
         CaseDetail caseDetail = caseDetailService.findById(caseDetailId);
+        CustomerCaseRequest customerCaseRequest = caseService.getCaseById(caseDetail.getCaseNo().getCaseNO());
+        customerCaseRequest.setStatus(1);
+        caseService.updateCaseStatus(customerCaseRequest.getCustomerCaseNo(), customerCaseRequest);
 
         return ResponseEntity.created(URI.create("http://localhost:8080/rest/findContent/" + caseDetailId)).body(caseDetail);
     }

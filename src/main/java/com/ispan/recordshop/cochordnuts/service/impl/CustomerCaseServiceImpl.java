@@ -32,6 +32,11 @@ public class CustomerCaseServiceImpl implements CustomerCaseService {
     }
 
     @Override
+    public Integer createCase(CustomerCaseRequest customerCaseRequest) {
+        return customerCaseDao.createCase(customerCaseRequest);
+    }
+
+    @Override
     public Integer countCase(CustomerCaseParams customerCaseParams) {
         return customerCaseDao.countCase(customerCaseParams);
     }
@@ -39,6 +44,18 @@ public class CustomerCaseServiceImpl implements CustomerCaseService {
     @Override
     public CustomerCaseRequest getCaseById(Integer customerCaseNo) {
         return customerCaseDao.getCaseById(customerCaseNo);
+    }
+
+    @Override
+    public CustomerCase findById(Integer caseNo) {
+        if(caseNo != null){
+            Optional<CustomerCase> optional = caseRepository.findById(caseNo);
+            if(optional.isPresent()){
+                return optional.get();
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -75,4 +92,5 @@ public class CustomerCaseServiceImpl implements CustomerCaseService {
 
         return false;
     }
+
 }

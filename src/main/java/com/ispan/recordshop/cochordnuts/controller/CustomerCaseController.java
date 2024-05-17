@@ -3,6 +3,7 @@ package com.ispan.recordshop.cochordnuts.controller;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseDto;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
+import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.service.CustomerCaseService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -27,7 +29,7 @@ public class CustomerCaseController {
 
             //排序 Sorting
             @RequestParam(defaultValue = "message_time") String orderby,
-            @RequestParam(defaultValue = "asc") String sort,
+            @RequestParam(defaultValue = "desc") String sort,
 
             //分頁 Pagination
             @RequestParam(defaultValue = "5") @Max(1000) @Min(0) Integer fetch,
@@ -54,6 +56,24 @@ public class CustomerCaseController {
         page.setResults(caseList);
 
         return ResponseEntity.ok().body(page);
+    }
+
+    @PostMapping("/createCustomerCase")
+    public ResponseEntity<CustomerCase> createCustomerCase(@RequestBody CustomerCaseRequest customerCaseRequest){
+        Integer caseNo = customerCaseService.createCase(customerCaseRequest);
+        CustomerCase customerCase = customerCaseService.findById(caseNo);
+
+        return ResponseEntity.created(URI.create("http://localhost:8080/rest/findCase/" + caseNo)).body(customerCase);
+    }
+
+    @GetMapping("/findCase/{pk}")
+    public ResponseEntity<?> findCaseById(@PathVariable(name = "pk") Integer id){
+        CustomerCase customerCase = customerCaseService.findById(id);
+        if(customerCase != null){
+            return ResponseEntity.ok(customerCase);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/customerCase/{pk}")

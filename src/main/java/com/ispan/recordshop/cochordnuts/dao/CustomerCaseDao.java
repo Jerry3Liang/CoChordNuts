@@ -12,6 +12,8 @@ public interface CustomerCaseDao {
 
     Integer countCase(CustomerCaseParams customerCaseParams);
 
+    Integer createCase(CustomerCaseRequest customerCaseRequest);
+
     CustomerCaseRequest getCaseById(Integer customerCaseNo);
 
     void updateCaseStatus(Integer customerCaseNo, CustomerCaseRequest customerCaseRequest);
