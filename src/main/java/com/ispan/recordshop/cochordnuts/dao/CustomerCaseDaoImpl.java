@@ -6,7 +6,10 @@ import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
 import com.ispan.recordshop.cochordnuts.rowmapper.CustomerCaseRowMapper;
 import com.ispan.recordshop.cochordnuts.rowmapper.ShowCustomerCaseRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -20,10 +23,11 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     @Override
     public List<CustomerCaseDto> getCases(CustomerCaseParams customerCaseParams) {
-        String sql = "SELECT cc.case_no, m.name, cc.subject, cd.message_time, ee.emp_name, cc.status FROM customer_case cc " +
+        String sql = "SELECT MIN(cc.case_no) case_no, m.name, cc.subject, MAX(cd.message_time) message_time, MIN(ee.emp_name) emp_name, cc.status FROM customer_case cc " +
                 "LEFT JOIN member m ON cc.member_no = m.member_no " +
                 "LEFT JOIN case_detail cd ON cc.case_no = cd.case_no " +
-                "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no WHERE 1 = 1";
+                "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
+                "GROUP BY cc.case_no, cc.subject, cc.status, m.name";
 
         Map<String, Object> map = new HashMap<>();
 
@@ -32,11 +36,11 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
 
         //排序
         sql = sql + " ORDER BY " +customerCaseParams.getOrderby() + " " + customerCaseParams.getSort();
-
-        //分頁
-        sql = sql + " OFFSET :offset ROWS FETCH NEXT :fetch ROWS ONLY";
-        map.put("fetch", customerCaseParams.getFetch());
-        map.put("offset", customerCaseParams.getOffset());
+//
+//        //分頁
+//        sql = sql + " OFFSET :offset ROWS FETCH NEXT :fetch ROWS ONLY";
+//        map.put("fetch", customerCaseParams.getFetch());
+//        map.put("offset", customerCaseParams.getOffset());
 
         return namedParameterJdbcTemplate.query(sql, map, new ShowCustomerCaseRowMapper());
     }
@@ -53,6 +57,24 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
         Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
 
         return total;
+    }
+
+    @Override
+    public Integer createCase(CustomerCaseRequest customerCaseRequest) {
+        String sql = "INSERT INTO customer_case (subject, status, member_no, order_no) " +
+                     "VALUES (:subject, :status, :memberNo, :orderNo)";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("subject", customerCaseRequest.getSubject());
+        map.put("status", customerCaseRequest.getStatus());
+        map.put("memberNo", customerCaseRequest.getMemberNo());
+        map.put("orderNo", customerCaseRequest.getOrderNo());
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
+
+        return keyHolder.getKey().intValue();
     }
 
     @Override
