@@ -32,26 +32,26 @@ public class ProductController {
 
 	//新增產品
 	@PostMapping("/products/create")
-	public void createProduct(@RequestBody Product product) {
-//	public ResponseEntity<?> createProduct(@RequestBody Product product) {
-		if(product.getPhoto() == null) {
-			System.out.println("空的");
-		} else {
-			System.out.println("有東西");
-		}
-//		if(product != null) {
-//			ProductDTO result = productService.findById(product.getProductNo());
-//			if(result == null) {
-//				Product newProd = productService.insert(product);
-//				if(newProd != null) {
-//					String uri = "http://localhost:8080/products/create"+product.getProductNo();
-//					return ResponseEntity.created(URI.create(uri))
-//							.contentType(MediaType.APPLICATION_JSON)
-//							.body(newProd);
-//				}
-//			}
+//	public void createProduct(@RequestBody Product product) {
+	public ResponseEntity<?> createProduct(@RequestBody Product product) {
+//		if(product.getPhoto() == null) {
+//			System.out.println("空的");
+//		} else {
+//			System.out.println("有東西");
 //		}
-//		return ResponseEntity.noContent().build();
+		if(product != null) {
+			ProductDTO result = productService.findById(product.getProductNo());
+			if(result == null) {
+				Product newProd = productService.insert(product);
+				if(newProd != null) {
+					String uri = "http://localhost:8080/products/create"+product.getProductNo();
+					return ResponseEntity.created(URI.create(uri))
+							.contentType(MediaType.APPLICATION_JSON)
+							.body(newProd);
+				}
+			}
+		}
+		return ResponseEntity.noContent().build();
 	}
 	
 	//商品修改
