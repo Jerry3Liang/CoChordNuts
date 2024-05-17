@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
@@ -160,9 +160,8 @@ public class Orders {
 	}
 
 	public void setStatus() {
-		
 		if(preparationDate==null && dispatchDate==null && completeDate==null ) {
-			this.status="成功下單";
+			this.status="訂單成立";
 		}else if (preparationDate!=null && dispatchDate==null && completeDate==null) {
 			this.status="備貨中";
 		}else if(preparationDate!=null && dispatchDate!=null && completeDate==null) {
@@ -200,9 +199,7 @@ public class Orders {
 	}
 
 	public void setTotalPay(Long totalPay) {
-		for (OrderDetail anOrder : orderDetail) {
-			this.totalPay += anOrder.getProductTotalPay();
-		}
+		this.totalPay=totalPay;
 	}
 
 	public Integer getTotalCount() {
@@ -210,9 +207,9 @@ public class Orders {
 	}
 
 	public void setTotalCount(Integer totalCount) {
-		for (OrderDetail anOrder : orderDetail) {
-			this.totalCount += anOrder.getProductBoughtCount();
-		}
+		
+			this.totalCount=totalCount;
+		
 	}
 
 	public Integer getFreight() {
@@ -303,5 +300,8 @@ public class Orders {
 	public void setRecipientPhone(String recipientPhone) {
 		this.recipientPhone = recipientPhone;
 	}
+
+
+	
 
 }

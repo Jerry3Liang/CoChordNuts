@@ -1,19 +1,22 @@
 package com.ispan.recordshop.cochordnuts.service.impl;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
+import com.ispan.recordshop.cochordnuts.dto.CartForOrdersDto;
 import com.ispan.recordshop.cochordnuts.model.Cart;
-import com.ispan.recordshop.cochordnuts.model.Member;
 import com.ispan.recordshop.cochordnuts.model.OrderDetail;
 import com.ispan.recordshop.cochordnuts.model.Orders;
-import com.ispan.recordshop.cochordnuts.repository.OrderDetailRepository;
+import com.ispan.recordshop.cochordnuts.model.Product;
+import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
 import com.ispan.recordshop.cochordnuts.repository.OrderRepository;
+import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
 
 
 @Service
@@ -21,6 +24,15 @@ public class OrdersServiceImpl  {
 
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	@Autowired
+	private MemberRepository memberRepository;
+	
+	@Autowired
+	private ProductRepository productRepository;
+
+	@Autowired
+	private MemberRepository memberRepo;
 	
 	public List<Orders> selectAll() {//搜尋全部
 		return orderRepository.findAll();
@@ -45,8 +57,16 @@ public class OrdersServiceImpl  {
 	public Orders update(Integer orderNo,Orders orders) {//修改訂單
 		Orders oldOrders=orderRepository.findById(orderNo).get();
 		if(oldOrders!=null && orderRepository.findById(orderNo)!=null) {
-			    orders.setOrderNo(orderNo);
-				return orderRepository.save(orders);											
+//			Member m = memberRepository.findById(1).get();
+			
+			oldOrders.setOrderNo(orderNo);
+//			oldOrders.setRecipientAddress(orders.getRecipientAddress());
+//			oldOrders.setRecipient(orders.getRecipient());
+//			oldOrders.setRecipientPhone(orders.getRecipientPhone());
+//			oldOrders.setDeliverType(orders.getDeliverType());
+			oldOrders.setStatus();
+			    
+				return orderRepository.save(oldOrders);											
 		}	
 		return null;
 	}
@@ -64,4 +84,25 @@ public class OrdersServiceImpl  {
 			return orderRepository.findBymemberNo(MemberNo);
 
 	}
+	public List<CartForOrdersDto> findCartByMember(Integer memberNo) {
+		List<CartForOrdersDto> cartArray = new ArrayList<>();
+		List<Map<String, Object>> results = orderRepository.findCartByMemberNo(memberNo);
+		if(results!=null) {			
+			for (Map<String, Object> row : results) {
+				CartForOrdersDto cart = new CartForOrdersDto();//將MAP取得的資料丟進新建的CartDto
+				cart.setCount((Integer)row.get("Count"));
+				Integer productNo =(Integer) row.get("product_productNo");//取得Map中會員編號
+				Product product=productRepository.findById(productNo).get();//依會員編號取得product物件				
+				//將取得的product物件丟入Cart
+				cart.setDiscount(product.getDiscount());//折扣
+				cart.setUnitPrice(product.getUnitPrice());//單價
+				cart.setProductName(product.getProductName());//商品名稱
+				cart.setTotal();
+				cartArray.add(cart);//cart存入陣列
+			}
+		
+		
+	}
+		return cartArray;
+}
 }
