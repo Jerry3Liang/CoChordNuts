@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Customer_Case")
+@Table(name = "customer_case")
 public class CustomerCase implements Serializable {
 
     //問題回覆編號
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "caseNo")
-    private Integer caseNO;
+    private Integer caseNo;
 
     //訂單編號
     @OneToOne(cascade = CascadeType.ALL)
@@ -40,27 +40,12 @@ public class CustomerCase implements Serializable {
     //無參數 Constructor
     public CustomerCase() {}
 
-//    @JsonCreator
-//    public CustomerCase(@JsonProperty("caseNo") Integer caseNO,
-//                        Orders orders,
-//                        List<CaseDetail> caseDetails,
-//                        String subject,
-//                        Integer status,
-//                        String memberName) {
-//        this.caseNO = caseNO;
-//        this.orders = orders;
-//        this.caseDetails = caseDetails;
-//        this.subject = subject;
-//        this.status = status;
-//        this.memberName = memberName;
-//    }
-
     public Integer getCaseNO() {
-        return caseNO;
+        return caseNo;
     }
 
     public void setCaseNO(Integer caseNO) {
-        this.caseNO = caseNO;
+        this.caseNo = caseNO;
     }
 
     public Orders getOrders() {

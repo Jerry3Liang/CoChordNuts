@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "Case_Detail")
+@Table(name = "case_detail")
 public class CaseDetail implements Serializable {
 
 

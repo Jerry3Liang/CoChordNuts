@@ -13,6 +13,10 @@ public interface CaseDetailDao {
 
     Integer answerContent(CaseDetailRequest caseDetailRequest);
 
+    void updateContent(Integer caseDetailNo, CaseDetailRequest caseDetailRequest);
+
     List<CaseDetailDto> findByCaseNo(Integer caseNo);
+
+    CaseDetailRequest getCaseDetailById(Integer caseDetailNo);
 
 }

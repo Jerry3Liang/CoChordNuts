@@ -3,7 +3,6 @@ package com.ispan.recordshop.cochordnuts.controller;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseDto;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
-import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.service.CustomerCaseService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -59,16 +58,16 @@ public class CustomerCaseController {
     }
 
     @PostMapping("/createCustomerCase")
-    public ResponseEntity<CustomerCase> createCustomerCase(@RequestBody CustomerCaseRequest customerCaseRequest){
+    public ResponseEntity<CustomerCaseRequest> createCustomerCase(@RequestBody CustomerCaseRequest customerCaseRequest){
         Integer caseNo = customerCaseService.createCase(customerCaseRequest);
-        CustomerCase customerCase = customerCaseService.findById(caseNo);
+        CustomerCaseRequest customerCase = customerCaseService.getCaseById(caseNo);
 
         return ResponseEntity.created(URI.create("http://localhost:8080/rest/findCase/" + caseNo)).body(customerCase);
     }
 
     @GetMapping("/findCase/{pk}")
     public ResponseEntity<?> findCaseById(@PathVariable(name = "pk") Integer id){
-        CustomerCase customerCase = customerCaseService.findById(id);
+        CustomerCaseRequest customerCase = customerCaseService.getCaseById(id);
         if(customerCase != null){
             return ResponseEntity.ok(customerCase);
         } else {

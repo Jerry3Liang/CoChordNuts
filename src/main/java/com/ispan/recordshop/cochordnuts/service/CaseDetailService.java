@@ -15,8 +15,9 @@ public interface CaseDetailService {
 
     Integer answerContent(CaseDetailRequest caseRequest);
 
-    CaseDetail updateContent(CaseDetailDto updateContent);
+    void updateContent(Integer caseDetailNo, CaseDetailRequest caseDetailRequest);
 
+    CaseDetailRequest getCaseDetailById(Integer caseDetailNo);
 
     CaseDetail findById(Integer id);
 

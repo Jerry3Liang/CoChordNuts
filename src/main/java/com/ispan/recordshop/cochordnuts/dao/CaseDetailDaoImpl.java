@@ -3,6 +3,7 @@ package com.ispan.recordshop.cochordnuts.dao;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
+import com.ispan.recordshop.cochordnuts.rowmapper.CaseDetailRowMapper;
 import com.ispan.recordshop.cochordnuts.rowmapper.ShowCaseDetailRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -72,6 +73,19 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
     }
 
     @Override
+    public void updateContent(Integer caseDetailNo, CaseDetailRequest caseDetailRequest) {
+        String sql = "UPDATE case_detail SET message = :answerMessage, message_time = :lastMessageDate WHERE case_no = :caseDetailNo";
+        Map<String, Object> map = new HashMap<>();
+        map.put("caseDetailNo", caseDetailNo);
+        map.put("answerMessage", caseDetailRequest.getAnswerMessage());
+        Date now = new Date();
+        map.put("lastMessageDate", now);
+
+
+        namedParameterJdbcTemplate.update(sql, map);
+    }
+
+    @Override
     public List<CaseDetailDto> findByCaseNo(Integer caseNo) {
         String sql = "SELECT cd.case_detail_no, cd.case_no, cd.[message], cd.message_time, ee.emp_name FROM case_detail cd " +
                      "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
@@ -82,5 +96,22 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
         map.put("caseNo", caseNo);
 
         return namedParameterJdbcTemplate.query(sql, map, new ShowCaseDetailRowMapper());
+    }
+
+    @Override
+    public CaseDetailRequest getCaseDetailById(Integer caseDetailNo) {
+        String sql = "SELECT case_detail_no, message, message_time, case_no, employee_no FROM case_detail" +
+                     " WHERE case_detail_no = :caseDetailNo";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("caseDetailNo", caseDetailNo);
+
+        List<CaseDetailRequest> caseDetailRequestList = namedParameterJdbcTemplate.query(sql, map, new CaseDetailRowMapper());
+
+        if(!caseDetailRequestList.isEmpty()){
+            return caseDetailRequestList.get(0);
+        } else {
+            return null;
+        }
     }
 }

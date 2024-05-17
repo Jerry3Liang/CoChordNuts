@@ -4,7 +4,6 @@ import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
-import com.ispan.recordshop.cochordnuts.model.CaseDetail;
 import com.ispan.recordshop.cochordnuts.service.CaseDetailService;
 import com.ispan.recordshop.cochordnuts.service.CustomerCaseService;
 import com.ispan.recordshop.cochordnuts.util.Page;
@@ -64,21 +63,21 @@ public class CaseDetailController {
     }
 
     @PostMapping("/Answer")
-    public ResponseEntity<CaseDetail> createAnswerContent(@RequestBody CaseDetailRequest detailRequest){
+    public ResponseEntity<CaseDetailRequest> createAnswerContent(@RequestBody CaseDetailRequest detailRequest){
         Integer caseDetailId = caseDetailService.answerContent(detailRequest);
-        CaseDetail caseDetail = caseDetailService.findById(caseDetailId);
-        CustomerCaseRequest customerCaseRequest = caseService.getCaseById(caseDetail.getCaseNo().getCaseNO());
+        CaseDetailRequest caseDetailRequest = caseDetailService.getCaseDetailById(caseDetailId);
+        CustomerCaseRequest customerCaseRequest = caseService.getCaseById(caseDetailRequest.getCustomerCaseNo());
         customerCaseRequest.setStatus(1);
         caseService.updateCaseStatus(customerCaseRequest.getCustomerCaseNo(), customerCaseRequest);
 
-        return ResponseEntity.created(URI.create("http://localhost:8080/rest/findContent/" + caseDetailId)).body(caseDetail);
+        return ResponseEntity.created(URI.create("http://localhost:8080/rest/findContent/" + caseDetailId)).body(caseDetailRequest);
     }
 
     @GetMapping("/findContent/{pk}")
     public ResponseEntity<?> findAnswerById(@PathVariable(name = "pk") Integer id){
-        CaseDetail caseDetail = caseDetailService.findById(id);
-        if(caseDetail != null){
-            return ResponseEntity.ok(caseDetail);
+        CaseDetailRequest caseDetailRequest = caseDetailService.getCaseDetailById(id);
+        if(caseDetailRequest != null){
+            return ResponseEntity.ok(caseDetailRequest);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -95,17 +94,17 @@ public class CaseDetailController {
     }
 
     @PutMapping("/Answer/{pk}")
-    public ResponseEntity<?> updateAnswerContent(@PathVariable(name = "pk") Integer id, @RequestBody CaseDetailDto caseDetail){
-        if(caseDetail != null && caseDetail.getCaseDetailNo() != null && caseDetail.getCaseDetailNo() != 0){
-            boolean exists = caseDetailService.existById(caseDetail.getCaseDetailNo());
-            if(exists){
-                CaseDetail detail = caseDetailService.updateContent(caseDetail);
-                if(detail != null){
-                    return ResponseEntity.ok(detail);
-                }
-            }
+    public ResponseEntity<?> updateAnswerContent(@PathVariable(name = "pk") Integer id, @RequestBody CaseDetailRequest caseDetailRequest){
+        CaseDetailRequest detailRequest = caseDetailService.getCaseDetailById(id);
+
+        if(detailRequest == null){
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.notFound().build();
+        caseDetailService.updateContent(id, caseDetailRequest);
+
+        CaseDetailRequest updateCaseDetailRequest = caseDetailService.getCaseDetailById(id);
+
+        return ResponseEntity.ok().body(updateCaseDetailRequest);
     }
 }

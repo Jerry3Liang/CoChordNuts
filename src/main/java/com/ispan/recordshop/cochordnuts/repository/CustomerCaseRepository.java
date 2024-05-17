@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface CustomerCaseRepository extends JpaRepository<CustomerCase, Integer> {
 
     @Query("from CustomerCase c where c.customerCaseMember.memberNo = :memberNo")
-    public List<CustomerCase> findByMemberNo(Integer memberNo);
+    List<CustomerCase> findByMemberNo(Integer memberNo);
 }

@@ -7,12 +7,10 @@ import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.model.CaseDetail;
 import com.ispan.recordshop.cochordnuts.repository.CaseDetailRepository;
 import com.ispan.recordshop.cochordnuts.service.CaseDetailService;
-import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,27 +43,17 @@ public class CaseDetailServiceImpl implements CaseDetailService {
         return caseDetailDao.answerContent(caseRequest);
     }
 
-    /**
-     * 修改回覆內容
-     * @param updateContent: 畫面接收的修改內容
-     * @return CaseDetail 物件所修改的資料
-     */
+
     @Transactional
     @Override
-    public CaseDetail updateContent(CaseDetailDto updateContent) {
+    public void updateContent(Integer caseDetailNo, CaseDetailRequest caseDetailRequest) {
+        caseDetailDao.updateContent(caseDetailNo, caseDetailRequest);
+    }
 
-        Optional<CaseDetail> optional = caseDetailRepository.findById(updateContent.getCaseDetailNo());
 
-        if(optional.isPresent()){
-            CaseDetail originContent = optional.get();
-            originContent.setMessage(updateContent.getMessage());
-            Date temp = DatetimeConverter.parse(updateContent.getMessageTime(), "yyyy-MM-dd HH:mm:ss");
-            originContent.setMessageTime(temp);
-            caseDetailRepository.save(originContent);
-            return originContent;
-        }
-
-        return null;
+    @Override
+    public CaseDetailRequest getCaseDetailById(Integer caseDetailNo) {
+        return caseDetailDao.getCaseDetailById(caseDetailNo);
     }
 
     @Override
