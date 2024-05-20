@@ -96,6 +96,14 @@ public class OrderDetail {
 		return productNo.getProductNo();
 	}
 	
+	public String getProductName() {
+		return productNo.getProductName();
+	}
+	
+	public Integer getProductUnitPrice() {
+		return productNo.getUnitPrice();
+	}
+	
 
 	public void setProductNo(Product productNo) {
 		this.productNo = productNo;

@@ -13,6 +13,8 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
 	@Query(value = "SELECT * FROM Cart WHERE member_memberNo = :memberNo", nativeQuery = true)
 	public List<Cart> findCartByMemberNo(@Param("memberNo")Integer memberNo);
 	
+	@Query(value = "SELECT * FROM OrderDetail WHERE orderNo = :orderNo", nativeQuery = true)
+	public List<OrderDetail> findOrderDetailByOrderNo(@Param("orderNo")Integer OrderNo);
 //	@Query("")
 //	public List<OrderDetail> findOrderDetailByOrderNo(@Param("OrderNo")Integer OrderNo);
 

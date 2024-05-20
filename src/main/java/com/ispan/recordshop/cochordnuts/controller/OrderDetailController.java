@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispan.recordshop.cochordnuts.dto.CartForOrdersDto;
+import com.ispan.recordshop.cochordnuts.dto.OrderDetailDto;
 import com.ispan.recordshop.cochordnuts.model.OrderDetail;
-import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.repository.OrderRepository;
 import com.ispan.recordshop.cochordnuts.service.impl.OrderDetailServiceImpl;
 
@@ -51,8 +51,19 @@ public class OrderDetailController {
 	@GetMapping("/orderDetail/findByOdNo/{odNo}")
 	public String findByOdNo(@PathVariable Integer odNo) {// 依訂單編號 查詢單筆orderDetail
 		JSONObject responseJson = new JSONObject();
-		OrderDetail orderDetail = orderDetailServiceImpl.findByOdNo(odNo);
-		responseJson.put("orderDetail", orderDetail);
+		JSONArray array = new JSONArray();
+		List<OrderDetail> orderDetail = orderDetailServiceImpl.findByOdNo(odNo);
+		for(OrderDetail anOd : orderDetail) {
+			OrderDetailDto Dto = new OrderDetailDto();
+			Dto.setCount(anOd.getProductBoughtCount());
+			Dto.setProductName(anOd.getProductName());
+			Dto.setPrice(anOd.getProductUnitPrice());
+			Dto.setTotal(anOd.getProductTotalPay());
+			Dto.setDiscount(anOd.getDiscount());	
+			JSONObject item = new JSONObject(Dto);
+			array.put(item);
+		}
+		responseJson.put("orderDetailDto", array);
 
 		return responseJson.toString();
 	}

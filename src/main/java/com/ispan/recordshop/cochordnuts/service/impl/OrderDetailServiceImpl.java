@@ -78,9 +78,9 @@ public class OrderDetailServiceImpl {
 		return false;
 	}
 
-	public OrderDetail findByOdNo(Integer OdNo) {// 依訂單編號查詢
+	public List<OrderDetail> findByOdNo(Integer OdNo) {// 依訂單編號查詢
 		if (orderRepository.findById(OdNo) != null) {
-			return orderDetailRepository.findById(OdNo).get();
+			return orderDetailRepository.findOrderDetailByOrderNo(OdNo);
 		}
 		return null;
 
