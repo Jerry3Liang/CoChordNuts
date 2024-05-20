@@ -20,43 +20,51 @@ import com.ispan.recordshop.cochordnuts.service.CartService;
 
 import jakarta.servlet.http.HttpSession;
 
-@CrossOrigin
 @RestController
+@CrossOrigin
 public class CartController {
 
-	@Autowired
-	private CartService cartService;
-	
-	@Autowired
-	private ProductRepository productRepository;
- 
-	@PostMapping("/cart/add/")
-	public String JSONObject (Integer productId, HttpSession session){
-		JSONObject responseObj = new JSONObject();
+    @Autowired
+    private CartService cartService;
 
-		Integer memberId = (Integer) session.getAttribute("loggedInUser");
+    @Autowired
+    private ProductRepository productRepository;
 
-        if(memberId == null){
-        	responseObj.put("message", "請登入會員");
-        	return responseObj.toString();
+    @PostMapping("/cart/add")
+    public String addToCart(HttpSession session, @RequestBody String obj) {
+        JSONObject responseObj = new JSONObject();
+        JSONObject Objj = new JSONObject(obj);
+
+        // Integer memberId = (Integer) session.getAttribute("memberNo");
+
+        // Integer productId = Integer.parseInt(Objj.getString("id"));
+        Integer memberId = Integer.parseInt(Objj.getString("memberNo"));
+        Integer productId = Objj.getInt("id");
+
+        // String productId1 = productId.substring(0, productId.length() - 1);
+        // Integer productId2 = Integer.parseInt(productId1);
+
+        if (memberId == null) {
+            responseObj.put("message", "請登入會員");
+            return responseObj.toString();
         }
-
+        // int memberId = 1;
         cartService.addToCartService(memberId, productId);
-        
-        List<Product> allProducts = productRepository.findAll();
-		
-		responseObj.put("message", "成功");
+
+        // List<Product> allProducts = productRepository.findAll();
+
+        responseObj.put("message", "成功");
         return responseObj.toString();
-	
+
     }
 
-	@PostMapping("/cart/list")
-    public String listCart(HttpSession session){
+    @PostMapping("/cart/list")
+    public String listCart(HttpSession session) {
         JSONObject responseObj = new JSONObject();
 
         Integer memberId = (Integer) session.getAttribute("loggedInUser");
 
-        if(memberId == null){
+        if (memberId == null) {
             responseObj.put("message", "請登入會員");
             return responseObj.toString();
         }
@@ -66,14 +74,12 @@ public class CartController {
         return cartList.toString();
     }
 
-
-
     @GetMapping("/cart/addOne")
     public String addOneCount(Integer productId, HttpSession session) {
         JSONObject responseObj = new JSONObject();
         Integer loginUserId = (Integer) session.getAttribute("loggedInUser");
 
-        if(loginUserId == null){
+        if (loginUserId == null) {
             responseObj.put("message", "請登入會員");
             return responseObj.toString();
         }
@@ -85,16 +91,12 @@ public class CartController {
         return cartList.toString();
     }
 
-
-
-
-
     @GetMapping("/cart/minusOne")
     public String minusOneCount(Integer productId, HttpSession session) {
         JSONObject responseObj = new JSONObject();
         Integer loginUserId = (Integer) session.getAttribute("loginUserId");
 
-        if(loginUserId == null){
+        if (loginUserId == null) {
             responseObj.put("message", "請登入會員");
             return responseObj.toString();
         }
@@ -105,12 +107,5 @@ public class CartController {
 
         return cartList.toString();
     }
-
-    
-    
-
-
-
-
 
 }
