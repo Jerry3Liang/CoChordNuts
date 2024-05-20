@@ -30,7 +30,7 @@ public class Member {
 	@Column(name = "name")
 	private String name; // 會員姓名
 
-	@Column(name = "password")
+	@Column(name = "password", columnDefinition = "nvarchar(MAX)")
 	private String password; // 會員密碼
 
 	@Column(name = "email")
