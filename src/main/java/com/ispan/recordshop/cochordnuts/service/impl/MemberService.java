@@ -1,5 +1,6 @@
 package com.ispan.recordshop.cochordnuts.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -219,6 +220,7 @@ public class MemberService {
                     }
 
                     insert.setAddress(address);
+
                     insert.setRegisterTime(new Date());
                     insert.setPhone(phone);
 
@@ -232,10 +234,27 @@ public class MemberService {
     }
 
     // 登出
-    public Member logout(Member member) {
-        member.setLastLoginTime(new Date());
+    public Member logout(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            Integer memberNo = obj.isNull("memberNo") ? null : obj.getInt("memberNo");
 
-        return memberRepo.save(member);
+            if (memberNo != null) {
+                Optional<Member> optional = memberRepo.findById(memberNo);
+                if (optional.isPresent()) {
+                    Member update = optional.get();
+                    String lastLoginTime = obj.isNull("lastLoginTime") ? null : obj.getString("lastLoginTime");
+                    java.util.Date loginTime = DatetimeConverter.parse(lastLoginTime, "yyyy-MM-dd HH:mm:ss");
+                    update.setLastLoginTime(loginTime);
+                    return memberRepo.save(update);
+                } else {
+                    return null;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // 修改個人資料
@@ -248,6 +267,9 @@ public class MemberService {
             String birthday = obj.isNull("birthday") ? null : obj.getString("birthday");
             String address = obj.isNull("address") ? null : obj.getString("address");
             String phone = obj.isNull("phone") ? null : obj.getString("phone");
+            String recipient = obj.isNull("recipient") ? null : obj.getString("recipient");
+            String recipientAddress = obj.isNull("recipientAddress") ? null : obj.getString("recipientAddress");
+            String recipientPhone = obj.isNull("recipientPhone") ? null : obj.getString("recipientPhone");
 
             if (memberNo != null) {
                 Optional<Member> optional = memberRepo.findById(memberNo);
@@ -263,6 +285,9 @@ public class MemberService {
                     } else {
                         update.setBirthday(null);
                     }
+                    update.setRecipient(recipient);
+                    update.setRecipientAddress(recipientAddress);
+                    update.setRecipientPhone(recipientPhone);
                     return memberRepo.save(update);
                 }
             }
