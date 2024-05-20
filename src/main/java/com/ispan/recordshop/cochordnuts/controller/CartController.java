@@ -4,6 +4,7 @@ package com.ispan.recordshop.cochordnuts.controller;
 
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -59,19 +60,32 @@ public class CartController {
     }
 
     @PostMapping("/cart/list")
-    public String listCart(HttpSession session) {
+    public String listCart(HttpSession session, @RequestBody String memberIdObj) {
         JSONObject responseObj = new JSONObject();
+        JSONObject memberObj = new JSONObject(memberIdObj);
 
-        Integer memberId = (Integer) session.getAttribute("loggedInUser");
+        Integer memberId = Integer.parseInt(memberObj.getString("memberNo"));
 
         if (memberId == null) {
             responseObj.put("message", "請登入會員");
             return responseObj.toString();
+        } else {
+
+            JSONArray array = new JSONArray();
+            List<Cart> cartList = cartService.findUsersCartService(memberId);
+            for (Cart item : cartList) {
+
+                Product itemProduct = item.getProduct();
+                JSONObject itemObj = new JSONObject()
+                        .put("photo", itemProduct.getPhoto())
+                        .put("price", itemProduct.getUnitPrice())
+                        .put("discount", itemProduct.getDiscount())
+                        .put("count", item.getCount());
+                array.put(itemObj);
+            }
+            responseObj.put("list", array);
+            return responseObj.toString();
         }
-
-        List<Cart> cartList = cartService.findUsersCartService(memberId);
-
-        return cartList.toString();
     }
 
     @GetMapping("/cart/addOne")
