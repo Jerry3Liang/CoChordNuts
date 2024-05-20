@@ -143,9 +143,9 @@ public class ProductController {
 	// 是否熱銷
 	@GetMapping("/products/isBest")
 	public ResponseEntity<?> isBest(){
-		List<Product> result = productService.findIsBest(1);
+		List<ProductDTO> result = productService.findIsBest(1);
 		if(result != null && !result.isEmpty()) {
-			return ResponseEntity.ok(result.toString());
+			return ResponseEntity.ok(result);
 		}
 		return ResponseEntity.notFound().build();
 	}
@@ -153,9 +153,9 @@ public class ProductController {
 	// 是否折扣
 	@GetMapping("/products/isDiscount")
 	public ResponseEntity<?> isDiscount(){
-		List<Product> result = productService.findIsDiscount(1);
+		List<ProductDTO> result = productService.findIsDiscount(1);
 		if(result != null && !result.isEmpty()) {
-			return ResponseEntity.ok(result.toString());
+			return ResponseEntity.ok(result);
 		}
 		return ResponseEntity.notFound().build();
 	}
@@ -163,9 +163,9 @@ public class ProductController {
 	// 是否預購
 	@GetMapping("/products/isPreorder")
 	public ResponseEntity<?> isPreorder(){
-		List<Product> result = productService.findIsPreorder(1);
+		List<ProductDTO> result = productService.findIsPreorder(1);
 		if(result != null && !result.isEmpty()) {
-			return ResponseEntity.ok(result.toString());
+			return ResponseEntity.ok(result);
 		}
 		return ResponseEntity.notFound().build();
 	}
