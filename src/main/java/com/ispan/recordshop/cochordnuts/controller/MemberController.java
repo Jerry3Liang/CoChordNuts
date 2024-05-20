@@ -121,6 +121,7 @@ public class MemberController {
                 } else {
                     responseJson.put("success", true);
                     responseJson.put("message", "修改成功");
+                    responseJson.put("userName", member.getName());
                 }
             } else {
                 boolean phoneExists = phone != null && memberService.existByPhone(phone);
@@ -148,6 +149,7 @@ public class MemberController {
                     } else {
                         responseJson.put("success", true);
                         responseJson.put("message", "修改成功");
+                        responseJson.put("userName", member.getName());
                     }
                 }
             }
@@ -190,13 +192,12 @@ public class MemberController {
         if (members != null && !members.isEmpty()) {
             for (Member member : members) {
                 String birthday = DatetimeConverter.toString(member.getBirthday(), "yyyy-MM-dd");
-                String registerTime = DatetimeConverter.toString(member.getRegisterTime(), "yyyy-MM-dd");
-                String lastLoginTime = DatetimeConverter.toString(member.getLastLoginTime(), "yyyy-MM-dd");
+                String registerTime = DatetimeConverter.toString(member.getRegisterTime(), "yyyy-MM-dd HH:mm");
+                String lastLoginTime = DatetimeConverter.toString(member.getLastLoginTime(), "yyyy-MM-dd HH:mm");
 
                 JSONObject item = new JSONObject()
                         .put("memberNo", member.getMemberNo())
                         .put("name", member.getName())
-                        .put("password", member.getPassword())
                         .put("birthday", birthday)
                         .put("registerTime", registerTime)
                         .put("lastLoginTime", lastLoginTime)
@@ -243,19 +244,18 @@ public class MemberController {
 
     // 查詢單筆
     @GetMapping("/members/{pk}")
-    public String findById(@PathVariable(name = "pk") Integer id) {
+    public String findById(@PathVariable(name = "pk") Integer memberNo) {
         JSONObject responseJson = new JSONObject();
         JSONArray array = new JSONArray();
-        Member member = memberService.findById(id);
+        Member member = memberService.findById(memberNo);
         if (member != null) {
             String birthday = DatetimeConverter.toString(member.getBirthday(), "yyyy-MM-dd");
-            String registerTime = DatetimeConverter.toString(member.getRegisterTime(), "yyyy-MM-dd");
-            String lastLoginTime = DatetimeConverter.toString(member.getLastLoginTime(), "yyyy-MM-dd");
+            String registerTime = DatetimeConverter.toString(member.getRegisterTime(), "yyyy-MM-dd HH:mm");
+            String lastLoginTime = DatetimeConverter.toString(member.getLastLoginTime(), "yyyy-MM-dd HH:mm");
 
             JSONObject item = new JSONObject()
                     .put("memberNo", member.getMemberNo())
                     .put("name", member.getName())
-                    .put("password", member.getPassword())
                     .put("birthday", birthday)
                     .put("registerTime", registerTime)
                     .put("lastLoginTime", lastLoginTime)
