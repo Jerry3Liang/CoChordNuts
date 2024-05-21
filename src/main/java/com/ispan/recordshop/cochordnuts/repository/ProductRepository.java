@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.ispan.recordshop.cochordnuts.model.Language;
 import com.ispan.recordshop.cochordnuts.model.Product;
+import com.ispan.recordshop.cochordnuts.model.ProductStyle;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 	
@@ -23,6 +25,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	
 	@Query("from Product where isPreorder = :n")
 	List<Product> findIsPreorder(@Param("n") Integer isPreorder);
+	
+	@Query("from Product where language = :n")
+	List<Product> findByLanguage(@Param("n") Language language);
+	
+	@Query("from Product where productStyle = :n")
+	List<Product> findByStyle(@Param("n") ProductStyle style);
+	
 	
 
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -101,23 +102,14 @@ public class ProductController {
 	public ResponseEntity<?> searchByCondition(@RequestBody String obj) {
 		JSONObject json = new JSONObject(obj);
 //		System.out.println(json.toString());
-		List<Product> result = productService.search(json);
+		List<ProductDTO> result = productService.search(json);
 		if(result != null && !result.isEmpty()) {
 //			System.out.println(result.toString());
-			return ResponseEntity.ok(result.toString());
+			return ResponseEntity.ok(result);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
 	
-//		if(!result.isEmpty()) {
-////			System.out.println(result.toString());
-////			System.out.println(result.size());
-//			return result.toString();
-//		} else {
-////			System.out.println("notFound");
-//			return null;
-//		}
-		
 	}
 	
 	// 查詢全部
@@ -130,7 +122,7 @@ public class ProductController {
 		return ResponseEntity.notFound().build();
 	}
 	
-	// 單一查詢
+	// 單一查詢回傳ProductDTO
 	@GetMapping("/products/detail/{id}")
 	public ResponseEntity<?> findById(@PathVariable Integer id) {
 		ProductDTO result = productService.findById(id);
@@ -139,6 +131,17 @@ public class ProductController {
 		}
 		return ResponseEntity.notFound().build();
 	}
+	
+	// 單一查詢回傳Product
+	@GetMapping("/products/detailProduct/{id}")
+	public ResponseEntity<?> findByIdReturnProduct(@PathVariable Integer id) {
+		Product result = productService.findByIdReturnProduct(id);
+		if(result != null) {
+			return ResponseEntity.ok(result);
+		}
+		return ResponseEntity.notFound().build();
+	}
+	
 	
 	// 是否熱銷
 	@GetMapping("/products/isBest")
@@ -170,6 +173,25 @@ public class ProductController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	// 依語言查詢商品 華語/日韓/西洋
+	@GetMapping("/products/languageFind")
+	public ResponseEntity<?> languageFind(@RequestParam Integer languageNo){
+		List<ProductDTO> result = productService.findByLanguage(languageNo);
+		if(result != null && !result.isEmpty()) {
+			return ResponseEntity.ok(result);
+		}
+		return ResponseEntity.notFound().build();
+	} 
+	
+	// 依音樂類型查詢商品 流行/搖滾
+	@GetMapping("/products/styleFind")
+	public ResponseEntity<?> styleFind(@RequestParam Integer styleNo){
+		List<ProductDTO> result = productService.findByStyle(styleNo);
+		if(result != null && !result.isEmpty()) {
+			return ResponseEntity.ok(result);
+		}
+		return ResponseEntity.notFound().build();
+	} 
 	
 	
 

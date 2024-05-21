@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 
 import com.ispan.recordshop.cochordnuts.dto.ProductDTO;
 import com.ispan.recordshop.cochordnuts.model.Artist;
+import com.ispan.recordshop.cochordnuts.model.Language;
 import com.ispan.recordshop.cochordnuts.model.Product;
+import com.ispan.recordshop.cochordnuts.model.ProductStyle;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 
@@ -41,14 +43,28 @@ public class ProductService {
 	
 	@Autowired
 	private ArtistService artistService;
-//	@Autowired
-//	private ProductStyleService prodStyleService;
-//	@Autowired
-//	private LanguageService languageService;
+	@Autowired
+	private ProductStyleService prodStyleService;
+	@Autowired
+	private LanguageService languageService;
 //	@Autowired
 //	private MusicYearService musicYearService;
 	
-	// 單一查詢
+	// 單一查詢回傳Product
+	public Product findByIdReturnProduct(Integer id) {
+		if(id == null) {
+			return null;
+		}
+		Optional<Product> optional = productRepo.findById(id);
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+		return null;
+	}
+	
+	
+	
+	// 單一查詢回傳ProductDTO
 	public ProductDTO findById(Integer id) {
 		if(id == null) {
 			return null;
@@ -144,7 +160,7 @@ public class ProductService {
 	}
 	
 	//多條件查詢
-	public List<Product> search(JSONObject obj) {
+	public List<ProductDTO> search(JSONObject obj) {
 		//判斷欄位是否空白
 		Integer productNo = obj.isNull("productNo")? null : obj.getInt("productNo");
 		String productName = obj.isNull("productName")? null : obj.getString("productName");
@@ -236,15 +252,32 @@ public class ProductService {
 		TypedQuery<Product> typedQuery = this.getSession().createQuery(criteriaQuery)
 				.setMaxResults(rows);
 		
-		List<Product> result = typedQuery.getResultList();
-		if(result != null && !result.isEmpty()) {
-//			System.out.println(result.toString());
-//			System.out.println(result.size());
-			return result;
+		List<Product> products = typedQuery.getResultList();
+		if(products != null && !products.isEmpty()) {
+			List<ProductDTO> productsDTO = new ArrayList<>();
+			ProductDTO productDTO = null;
+			for(Product pro : products) {
+				productDTO = new ProductDTO();
+				productDTO.setProductNo(pro.getProductNo());
+				productDTO.setProductName(pro.getProductName());
+				productDTO.setUnitPrice(pro.getUnitPrice());
+				productDTO.setDescribe(pro.getDescribe());
+				productDTO.setPublishedDate(DatetimeConverter.toString(pro.getPublishedDate(), "yyyy-MM-dd"));
+				productDTO.setDiscount(pro.getDiscount());
+				productDTO.setPhoto(pro.getPhoto());
+				productDTO.setStyleType(pro.getProductStyle().getStyleType());
+				productDTO.setArtistType(pro.getArtist().getArtistName());
+				productDTO.setLanguageType(pro.getLanguage().getLanguageType());
+				productDTO.setMusicYear(pro.getMusicYear().getGeneration());
+				productsDTO.add(productDTO);
+			}
+			return productsDTO;
+			
 		} else {
 			return null;
 		}
 	}
+	
 	
 	// 熱銷商品
 	public List<ProductDTO> findIsBest(Integer isBest){
@@ -317,8 +350,57 @@ public class ProductService {
 		return productsDTO;
 	}
 	
+	// 依語言查詢商品 華語/日韓/西洋
+		public List<ProductDTO> findByLanguage(Integer languageNo){
+			Language language = languageService.findById(languageNo);
+			List<Product> products = productRepo.findByLanguage(language);
+			List<ProductDTO> productsDTO = new ArrayList<>();
+			ProductDTO productDTO = null;
+			for(Product pro : products) {
+				productDTO = new ProductDTO();
+				productDTO.setProductNo(pro.getProductNo());
+				productDTO.setProductName(pro.getProductName());
+				productDTO.setUnitPrice(pro.getUnitPrice());
+				productDTO.setDescribe(pro.getDescribe());
+				productDTO.setPublishedDate(DatetimeConverter.toString(pro.getPublishedDate(), "yyyy-MM-dd"));
+				productDTO.setDiscount(pro.getDiscount());
+				productDTO.setPhoto(pro.getPhoto());
+				productDTO.setStyleType(pro.getProductStyle().getStyleType());
+				productDTO.setArtistType(pro.getArtist().getArtistName());
+				productDTO.setLanguageType(pro.getLanguage().getLanguageType());
+				productDTO.setMusicYear(pro.getMusicYear().getGeneration());
+				productsDTO.add(productDTO);
+			}
+			return productsDTO;
+		}
 	
-	
+		// 依音樂類型查詢商品 流行/搖滾
+		public List<ProductDTO> findByStyle(Integer styleNo){
+			ProductStyle style = prodStyleService.findById(styleNo);
+			List<Product> products = productRepo.findByStyle(style);
+			List<ProductDTO> productsDTO = new ArrayList<>();
+			ProductDTO productDTO = null;
+			for(Product pro : products) {
+				productDTO = new ProductDTO();
+				productDTO.setProductNo(pro.getProductNo());
+				productDTO.setProductName(pro.getProductName());
+				productDTO.setUnitPrice(pro.getUnitPrice());
+				productDTO.setDescribe(pro.getDescribe());
+				productDTO.setPublishedDate(DatetimeConverter.toString(pro.getPublishedDate(), "yyyy-MM-dd"));
+				productDTO.setDiscount(pro.getDiscount());
+				productDTO.setPhoto(pro.getPhoto());
+				productDTO.setStyleType(pro.getProductStyle().getStyleType());
+				productDTO.setArtistType(pro.getArtist().getArtistName());
+				productDTO.setLanguageType(pro.getLanguage().getLanguageType());
+				productDTO.setMusicYear(pro.getMusicYear().getGeneration());
+				productsDTO.add(productDTO);
+			}
+			return productsDTO;
+		}
+		
+		
+		
+		
 	
 
 }
