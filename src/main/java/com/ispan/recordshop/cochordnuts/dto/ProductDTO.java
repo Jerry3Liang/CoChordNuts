@@ -20,7 +20,9 @@ public class ProductDTO {
 	private String languageType; //語言
 	private String musicYear; //音樂年份
 	private Integer productStatus; //商品狀態
-	
+	private Integer isDiscount; //是否為折扣商品
+	private Integer isBest; //是否為暢銷商品
+	private Integer isPreorder; //是否為預購商品
 	
 	public ProductDTO() {
 	}

@@ -1,6 +1,7 @@
 package com.ispan.recordshop.cochordnuts.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,6 +82,9 @@ public class ProductService {
 			productDTO.setDescribe(pro.getDescribe());
 			productDTO.setPublishedDate(DatetimeConverter.toString(pro.getPublishedDate(), "yyyy-MM-dd"));
 			productDTO.setDiscount(pro.getDiscount());
+			productDTO.setIsBest(pro.getIsBest());
+			productDTO.setIsDiscount(pro.getIsDiscount());
+			productDTO.setIsPreorder(pro.getIsPreorder());
 			productDTO.setPhoto(pro.getPhoto());
 			productDTO.setStyleType(pro.getProductStyle().getStyleType());
 			productDTO.setArtistType(pro.getArtist().getArtistName());
@@ -111,6 +115,7 @@ public class ProductService {
 	// 新增產品
 	public Product insert(Product product) {
 		if(product != null ) {
+			product.setLastModifiedDate(new Date());
 			return productRepo.save(product);
 		}
 		return null;
@@ -153,6 +158,7 @@ public class ProductService {
 		if (newProduct != null && newProduct.getProductNo() != null) {
 			Optional<Product> optional = productRepo.findById(newProduct.getProductNo());
 			if (optional.isPresent()) {
+				newProduct.setLastModifiedDate(new Date());
 				return productRepo.save(newProduct);
 			}
 		}

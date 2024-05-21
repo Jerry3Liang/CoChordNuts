@@ -174,8 +174,9 @@ public class ProductController {
 	}
 	
 	// 依語言查詢商品 華語/日韓/西洋
-	@GetMapping("/products/languageFind")
-	public ResponseEntity<?> languageFind(@RequestParam Integer languageNo){
+	@GetMapping("/products/languageFind/{languageNo}")
+	public ResponseEntity<?> languageFind(@PathVariable Integer languageNo){
+		System.out.println(languageNo);
 		List<ProductDTO> result = productService.findByLanguage(languageNo);
 		if(result != null && !result.isEmpty()) {
 			return ResponseEntity.ok(result);
