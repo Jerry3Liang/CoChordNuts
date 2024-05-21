@@ -157,6 +157,34 @@ public class MemberController {
         return responseJson.toString();
     }
 
+    // 修改密碼
+    @PutMapping("/member/changepwd/{pk}")
+    public String modifyPwd(@PathVariable(name = "pk") Integer memberNo, @RequestBody String json) {
+        JSONObject responseJson = new JSONObject();
+        JSONObject obj = new JSONObject(json);
+        String oriPassword = obj.isNull("oriPassword") ? null : obj.getString("oriPassword");
+        String password = obj.isNull("password") ? null : obj.getString("password");
+        System.out.println("memberNo=" + memberNo + "/password=" + password + "/ori=" + oriPassword);
+        if (memberNo == null || oriPassword == null || password == null) {
+            responseJson.put("success", false);
+            responseJson.put("message", "memberNo和password是必要欄位");
+        } else if (!memberService.existById(memberNo)) {
+            responseJson.put("success", false);
+            responseJson.put("message", "memberNo不存在");
+        } else {
+            Member member = memberService.modifyPwd(json);
+
+            if (member == null) {
+                responseJson.put("success", false);
+                responseJson.put("message", "修改失敗");
+            } else {
+                responseJson.put("success", true);
+                responseJson.put("message", "修改成功");
+            }
+        }
+        return responseJson.toString();
+    }
+
     // 刪除，需要確認密碼
     @DeleteMapping("/members/{pk}")
     public String remove(@PathVariable(name = "pk") Integer memberNo, @RequestBody String json) {
