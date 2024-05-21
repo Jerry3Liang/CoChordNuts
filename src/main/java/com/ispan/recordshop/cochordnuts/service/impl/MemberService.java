@@ -297,6 +297,34 @@ public class MemberService {
         return null;
     }
 
+    // 修改密碼
+    public Member modifyPwd(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            Integer memberNo = obj.isNull("memberNo") ? null : obj.getInt("memberNo");
+            String oriPassword = obj.isNull("oriPassword") ? null : obj.getString("oriPassword");
+
+            if (memberNo != null) {
+                Optional<Member> optional = memberRepo.findById(memberNo);
+                if (optional.isPresent()) {
+                    Member member = optional.get();
+                    String storedPasswordHash = member.getPassword();
+                    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                    if (passwordEncoder.matches(oriPassword, storedPasswordHash)) {
+                        String bcryptPassword = bcrypt.encode(obj.getString("password"));
+                        member.setPassword(bcryptPassword);
+                        return memberRepo.save(member);
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // 刪除，需要確認密碼
     public boolean delete(Integer memberNo, String password) {
         if (memberNo != null) {
