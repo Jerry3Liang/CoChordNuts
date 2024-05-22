@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ispan.recordshop.cochordnuts.dto.ArtistDTO;
 import com.ispan.recordshop.cochordnuts.model.Artist;
 import com.ispan.recordshop.cochordnuts.service.ArtistService;
 
@@ -26,10 +27,10 @@ public class ArtistController {
 	}
 
 	@GetMapping("/product/artist/find")
-	public String findAll() {
+	public List<ArtistDTO> findAll() {
 //		return artistService.findAll();
-		List<Artist> result = artistService.findAll();
-		return result.toString();
+		List<ArtistDTO> result = artistService.findAll();
+		return result;
 	}
 
 	@PostMapping("/product/artist/findByName")

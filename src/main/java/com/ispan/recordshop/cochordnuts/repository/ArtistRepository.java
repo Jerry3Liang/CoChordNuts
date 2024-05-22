@@ -10,7 +10,7 @@ import com.ispan.recordshop.cochordnuts.model.Artist;
 
 public interface ArtistRepository extends JpaRepository<Artist, Integer> {
 	
-	@Query("from Artist where artistName like %:n%")
-	public List<Artist> findByNameLike(@Param("n") String name);
+	@Query("from Artist where artistName like %:name%")
+	public List<Artist> findByNameLike(@Param("name") String name);
 
 }

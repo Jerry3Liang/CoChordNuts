@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ispan.recordshop.cochordnuts.dto.MusicYearDTO;
 import com.ispan.recordshop.cochordnuts.model.MusicYear;
 import com.ispan.recordshop.cochordnuts.service.MusicYearService;
 
@@ -25,7 +26,7 @@ public class MusicYearController {
 	}
 	
 	@GetMapping("/product/musicYear/find")
-	public List<MusicYear> findAll(){
+	public List<MusicYearDTO> findAll(){
 		return musicYearService.findAll();
 	}
 	
