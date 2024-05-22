@@ -93,7 +93,7 @@ public class CustomerCaseController {
 
     }
 
-    @DeleteMapping("/customerCase/{pk}")
+    @DeleteMapping("/customerCaseDelete/{pk}")
     public ResponseEntity<Void> remove(@PathVariable(name = "pk") Integer id){
         if(id != null && id != 0){
             boolean exists = customerCaseService.existById(id);
