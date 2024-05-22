@@ -165,7 +165,7 @@ public class ProductService {
 		return null;
 	}
 	
-	//多條件查詢
+	//多條件查詢 回傳ProductDTO
 	public List<ProductDTO> search(JSONObject obj) {
 		//判斷欄位是否空白
 		Integer productNo = obj.isNull("productNo")? null : obj.getInt("productNo");
@@ -175,11 +175,13 @@ public class ProductService {
 		String startDate = obj.isNull("startDate")? null : obj.getString("startDate");
 		String endDate = obj.isNull("endDate")? null : obj.getString("endDate");
 		String artistName = obj.isNull("artistName")? null : obj.getString("artistName");
+		Integer productStatus = obj.isNull("productStatus")? null : obj.getInt("productStatus");
 		Integer style = obj.isNull("style")? null : obj.getInt("style");
 		Integer language = obj.isNull("language")? null : obj.getInt("language");
 		
 		//設定排列預設值
-		int rows = obj.isNull("rows") ? 15 : obj.getInt("rows");
+		int start = obj.isNull("start") ? 0 : obj.getInt("start");
+		int rows = obj.isNull("rows") ? 16 : obj.getInt("rows");
 		String order = obj.isNull("order") ? "productNo" : obj.getString("order");
 		boolean direction = obj.isNull("direction") ? false : obj.getBoolean("direction");
 		
@@ -196,6 +198,9 @@ public class ProductService {
 		if(productNo != null) {
 			Predicate p1 = criteriaBuilder.equal(table.get("productNo"), productNo);
 			predicates.add(p1);
+		}
+		if(productStatus != null) {
+			predicates.add(criteriaBuilder.equal(table.get("productStatus"), productStatus));
 		}
 		if(productName != null && productName.length() != 0) {
 			System.out.println(productName);
@@ -214,11 +219,11 @@ public class ProductService {
 //			java.sql.Date temp1 = new java.sql.Date(temp.getTime());
 //			System.err.println(startDate);
 //			System.out.println(temp);
-			predicates.add(criteriaBuilder.greaterThan(table.get("publishedDate"), temp));
+			predicates.add(criteriaBuilder.greaterThanOrEqualTo(table.get("publishedDate"), temp));
 		}
 		if(endDate != null) {
 			java.util.Date temp = DatetimeConverter.parse(endDate, "yyyy-MM-dd");
-			predicates.add(criteriaBuilder.lessThan(table.get("publishedDate"), temp));
+			predicates.add(criteriaBuilder.lessThanOrEqualTo(table.get("publishedDate"), temp));
 		}
 		if(artistName != null && artistName.length() != 0) {
 			System.out.println(artistName);
@@ -256,6 +261,7 @@ public class ProductService {
 		}
 		
 		TypedQuery<Product> typedQuery = this.getSession().createQuery(criteriaQuery)
+				.setFirstResult(start)
 				.setMaxResults(rows);
 		
 		List<Product> products = typedQuery.getResultList();
@@ -283,6 +289,105 @@ public class ProductService {
 			return null;
 		}
 	}
+	
+	
+	//多條件查詢 回傳結果數量 long
+		public long searchCount(JSONObject obj) {
+			//判斷欄位是否空白
+			Integer productNo = obj.isNull("productNo")? null : obj.getInt("productNo");
+			String productName = obj.isNull("productName")? null : obj.getString("productName");
+			Double startPrice = obj.isNull("startPrice") ? null : obj.getDouble("startPrice") ;
+			Double endPrice = obj.isNull("endPrice") ? null : obj.getDouble("endPrice") ;
+			String startDate = obj.isNull("startDate")? null : obj.getString("startDate");
+			String endDate = obj.isNull("endDate")? null : obj.getString("endDate");
+			String artistName = obj.isNull("artistName")? null : obj.getString("artistName");
+			Integer productStatus = obj.isNull("productStatus")? null : obj.getInt("productStatus");
+			Integer style = obj.isNull("style")? null : obj.getInt("style");
+			Integer language = obj.isNull("language")? null : obj.getInt("language");
+			
+			//Criteria Connect
+			CriteriaBuilder criteriaBuilder = this.getSession().getCriteriaBuilder();
+			CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+			
+			//from product table
+			Root<Product> table = criteriaQuery.from(Product.class);
+			
+			//select count(*)
+			criteriaQuery = criteriaQuery.select(criteriaBuilder.count(table));
+			
+			//where start
+			List<Predicate> predicates = new ArrayList<>();
+			
+			if(productNo != null) {
+				Predicate p1 = criteriaBuilder.equal(table.get("productNo"), productNo);
+				predicates.add(p1);
+			}
+			if(productStatus != null) {
+				predicates.add(criteriaBuilder.equal(table.get("productStatus"), productStatus));
+			}
+			if(productName != null && productName.length() != 0) {
+				System.out.println(productName);
+				Predicate p2 = criteriaBuilder.like(table.get("productName"), "%"+productName+"%");
+				predicates.add(p2);
+			}
+			if(startPrice != null) {
+				predicates.add(criteriaBuilder.greaterThanOrEqualTo(table.get("unitPrice"), startPrice));
+			}
+			if(endPrice != null) {
+				predicates.add(criteriaBuilder.lessThanOrEqualTo(table.get("unitPrice"), endPrice));
+			}
+			//日期比較 處理~~~~
+			if(startDate != null) {
+				java.util.Date temp = DatetimeConverter.parse(startDate, "yyyy-MM-dd");
+				predicates.add(criteriaBuilder.greaterThanOrEqualTo(table.get("publishedDate"), temp));
+			}
+			if(endDate != null) {
+				java.util.Date temp = DatetimeConverter.parse(endDate, "yyyy-MM-dd");
+				predicates.add(criteriaBuilder.lessThanOrEqualTo(table.get("publishedDate"), temp));
+			}
+			if(artistName != null && artistName.length() != 0) {
+				System.out.println(artistName);
+				List<Artist> artists = artistService.findByName(artistName);
+				if(!artists.isEmpty()) {
+					List<Integer> artistNos = new ArrayList<>();
+					for(Artist artist : artists) {
+						artistNos.add(artist.getArtistNo());
+					}
+					predicates.add(table.get("artist").get("artistNo").in(artistNos));
+				} else {
+					predicates.add(criteriaBuilder.equal(table.get("artist").get("artistNo"), 0));
+				}
+			}
+			//下拉選項用數字對照
+			if(style != null && style != 0) {
+				predicates.add(criteriaBuilder.equal(table.get("productStyle"), style));
+			}
+			//下拉選項用數字對照
+			if(language != null && language != 0) {
+				predicates.add(criteriaBuilder.equal(table.get("language"), language));
+			}
+			
+			if(predicates != null && !predicates.isEmpty()) {
+				Predicate[] array = predicates.toArray(new Predicate[0]);
+				criteriaQuery = criteriaQuery.where(array);
+			}
+			//where end		
+			
+			TypedQuery<Long> typedQuery = this.getSession().createQuery(criteriaQuery);
+					
+			Long result = typedQuery.getSingleResult();
+			
+			if(result != null) {
+				return result.longValue();
+			} else {
+				return 0;
+			}
+		}
+	
+	
+	
+	
+	
 	
 	
 	// 熱銷商品

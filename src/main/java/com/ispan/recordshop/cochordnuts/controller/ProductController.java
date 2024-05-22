@@ -66,7 +66,7 @@ public class ProductController {
 					String uri = "http://localhost:8080/products/modify"+product.getProductNo();
 					return ResponseEntity.created(URI.create(uri))
 							.contentType(MediaType.APPLICATION_JSON)
-							.body(newProd);
+							.body(newProd.toString());
 				}
 			}
 		}
@@ -97,15 +97,26 @@ public class ProductController {
 		return prodPhoto;
 	}
 	
-	//多條件查詢
+	//多條件查詢 傳回List<ProductDTO>
 	@PostMapping("/products/search")
 	public ResponseEntity<?> searchByCondition(@RequestBody String obj) {
 		JSONObject json = new JSONObject(obj);
-//		System.out.println(json.toString());
 		List<ProductDTO> result = productService.search(json);
 		if(result != null && !result.isEmpty()) {
-//			System.out.println(result.toString());
 			return ResponseEntity.ok(result);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	
+	}
+	
+	//多條件查詢 傳回結果個數
+	@PostMapping("/products/searchCount")
+	public ResponseEntity<?> searchCountByCondition(@RequestBody String obj) {
+		JSONObject json = new JSONObject(obj);
+		long resultCount = productService.searchCount(json);
+		if(resultCount != 0) {
+			return ResponseEntity.ok(resultCount);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
