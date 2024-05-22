@@ -90,7 +90,7 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
         String sql = "SELECT cd.case_detail_no, cd.case_no, cd.[message], cd.message_time, ee.emp_name FROM case_detail cd " +
                      "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
                      "WHERE cd.case_no = :caseNo " +
-                     "ORDER BY cd.message_time DESC";
+                     "ORDER BY cd.message_time ASC";
 
         Map<String, Object> map = new HashMap<>();
         map.put("caseNo", caseNo);

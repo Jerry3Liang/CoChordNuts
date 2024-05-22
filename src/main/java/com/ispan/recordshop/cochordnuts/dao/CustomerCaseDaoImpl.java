@@ -37,11 +37,11 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
 
         //排序
         sql = sql + " ORDER BY " +customerCaseParams.getOrderby() + " " + customerCaseParams.getSort();
-//
-//        //分頁
-//        sql = sql + " OFFSET :offset ROWS FETCH NEXT :fetch ROWS ONLY";
-//        map.put("fetch", customerCaseParams.getFetch());
-//        map.put("offset", customerCaseParams.getOffset());
+
+        //分頁
+        sql = sql + " OFFSET :offset ROWS FETCH NEXT :fetch ROWS ONLY";
+        map.put("fetch", customerCaseParams.getFetch());
+        map.put("offset", customerCaseParams.getOffset());
 
         return namedParameterJdbcTemplate.query(sql, map, new ShowCustomerCaseRowMapper());
     }
@@ -67,7 +67,7 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
 
         Map<String, Object> map = new HashMap<>();
         map.put("subject", customerCaseRequest.getSubject());
-        map.put("status", customerCaseRequest.getStatus());
+        map.put("status", 0);
         map.put("memberNo", customerCaseRequest.getMemberNo());
         map.put("orderNo", customerCaseRequest.getOrderNo());
 
