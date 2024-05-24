@@ -54,18 +54,32 @@ public class OrdersServiceImpl  {
 	@Autowired
 	private MemberRepository memberRepo;
 	
-	public Integer findOrderCount() {
-		return orderRepository.findOrderCount();
+	public Integer findOrderCount(Integer num) {
+		return orderRepository.findOrderCount(num);
+	}
+	public Integer findAllOrderCount() {
+		return orderRepository.findAllOrderCount();
 	}
 
 	public List<Orders> selectAll(JSONObject obj) {//搜尋全部
 		int start = obj.isNull("start") ? 0 : obj.getInt("start");
 		int rows = obj.isNull("rows") ? 10 : obj.getInt("rows");
+		String num =obj.isNull("num") ? "" : obj.getString("num");
 		CriteriaBuilder criteriaBuilder = this.getSession().getCriteriaBuilder();
 		CriteriaQuery<Orders> criteriaQuery = criteriaBuilder.createQuery(Orders.class);
 		Root<Orders> table = criteriaQuery.from(Orders.class);
 		criteriaQuery.select(table);
+		List<Predicate> predicates = new ArrayList<>();
+		if(num !=null && num !="") {
+		    predicates.add(criteriaBuilder.like(table.get("orderNo").as(String.class), "%" + num + "%"));
+		}
+		
+		if(predicates!=null && !predicates.isEmpty()) {
+			Predicate[] array = predicates.toArray(new Predicate[0]);
+			criteriaQuery = criteriaQuery.where(array);
+		}
 		criteriaQuery = criteriaQuery.orderBy(criteriaBuilder.desc(table.get("orderNo")));
+		
 		TypedQuery<Orders> typedQuery = this.getSession().createQuery(criteriaQuery)
 				.setFirstResult(start)
 				.setMaxResults(rows);

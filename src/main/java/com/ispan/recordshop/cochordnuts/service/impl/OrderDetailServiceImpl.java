@@ -89,11 +89,4 @@ public class OrderDetailServiceImpl {
 
 	}
 
-//	public Page<Orders> findOrdersPage(Integer pageNum){
-//		Pageable pgb = PageRequest.of(pageNum - 1, 10, Sort.Direction.ASC, "orderNo");
-//		Page<Orders> p =orderRepository.findAll(pgb);
-//		return p;
-//	}
-
-
 }

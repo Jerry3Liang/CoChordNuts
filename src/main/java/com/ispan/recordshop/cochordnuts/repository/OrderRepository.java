@@ -22,7 +22,9 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
 	@Query(value="Select count(*) from Orders where memberNo = :memberNo",nativeQuery = true)
 	public Integer findMemberByMemberNoCount(@Param("memberNo") Integer memberNo);
 	
-	@Query(value="Select count(*) from Orders" ,nativeQuery = true)
-	public Integer findOrderCount();
+	@Query(value="SELECT COUNT(*) FROM Orders WHERE orderNo LIKE CONCAT('%', :orderNo, '%')", nativeQuery = true)
+	public Integer findOrderCount(@Param("orderNo") Integer orderNo);
 	
+	@Query(value="SELECT COUNT(*) FROM Orders ", nativeQuery = true)
+	public Integer findAllOrderCount();
 }

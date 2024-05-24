@@ -117,8 +117,15 @@ public class OdersController {
 		System.out.println("findAll");
 		JSONObject responseJson = new JSONObject();
 		JSONObject obj = new JSONObject(json);
+		Integer count;
 		JSONArray array = new JSONArray();
-		Integer count = ordersServiceImpl.findOrderCount();
+		if(obj.getString("num")!=null && obj.getString("num")!="") {
+			Integer num =Integer.parseInt(obj.getString("num")) ;
+			count = ordersServiceImpl.findOrderCount(num);
+		}else {
+			count=ordersServiceImpl.findAllOrderCount();
+		}
+		
 		List<Orders> orders = ordersServiceImpl.selectAll(obj);
 		
 		for (Orders order : orders) {			
