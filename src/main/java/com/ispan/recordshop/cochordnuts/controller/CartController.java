@@ -7,17 +7,18 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ispan.recordshop.cochordnuts.dto.ProductDTO;
 import com.ispan.recordshop.cochordnuts.model.Cart;
 import com.ispan.recordshop.cochordnuts.model.Product;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
 import com.ispan.recordshop.cochordnuts.service.CartService;
+import com.ispan.recordshop.cochordnuts.service.ProductService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -31,21 +32,30 @@ public class CartController {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private ProductService productService;
+
+    // @Autowired
+    // private Product product;
+
+    // @Autowired
+    // private ProductDTO productDTO;
+
     @PostMapping("/cart/add")
     public String addToCart(HttpSession session, @RequestBody String obj) {
         JSONObject responseObj = new JSONObject();
         JSONObject Objj = new JSONObject(obj);
 
         // Integer memberId = (Integer) session.getAttribute("memberNo");
-
         // Integer productId = Integer.parseInt(Objj.getString("id"));
+
         Integer memberId = Integer.parseInt(Objj.getString("memberNo"));
-        Integer productId = Objj.getInt("id");
+        Integer productId = Objj.getInt("productId");
 
         // String productId1 = productId.substring(0, productId.length() - 1);
         // Integer productId2 = Integer.parseInt(productId1);
 
-        if (memberId == null) {
+        if (memberId == 0) {
             responseObj.put("message", "請登入會員");
             return responseObj.toString();
         }
@@ -53,20 +63,22 @@ public class CartController {
         cartService.addToCartService(memberId, productId);
 
         // List<Product> allProducts = productRepository.findAll();
-
-        responseObj.put("message", "成功");
+        String productName = productService.findById(productId).getProductName();
+        responseObj
+                .put("message", "加入購物車 :)")
+                .put("productName", productName);
         return responseObj.toString();
 
     }
 
     @PostMapping("/cart/list")
     public String listCart(HttpSession session, @RequestBody String memberIdObj) {
+
         JSONObject responseObj = new JSONObject();
         JSONObject memberObj = new JSONObject(memberIdObj);
-
         Integer memberId = Integer.parseInt(memberObj.getString("memberNo"));
-
-        if (memberId == null) {
+        // String memberId = memberObj.getString("memberNo");
+        if (memberId == 0) {
             responseObj.put("message", "請登入會員");
             return responseObj.toString();
         } else {
@@ -77,10 +89,13 @@ public class CartController {
 
                 Product itemProduct = item.getProduct();
                 JSONObject itemObj = new JSONObject()
-                        .put("photo", itemProduct.getPhoto())
+                        .put("productId", itemProduct.getProductNo())
+                        .put("productName", itemProduct.getProductName())
+                        // .put("photo", itemProduct.getPhoto())
                         .put("price", itemProduct.getUnitPrice())
                         .put("discount", itemProduct.getDiscount())
-                        .put("count", item.getCount());
+                        .put("count", item.getCount())
+                        .put("artist", itemProduct.getArtist().getArtistName());
                 array.put(itemObj);
             }
             responseObj.put("list", array);
@@ -88,36 +103,49 @@ public class CartController {
         }
     }
 
-    @GetMapping("/cart/addOne")
-    public String addOneCount(Integer productId, HttpSession session) {
+    @PostMapping("/cart/addOne")
+    public String addOneCount(@RequestBody String obj, HttpSession session) {
         JSONObject responseObj = new JSONObject();
-        Integer loginUserId = (Integer) session.getAttribute("loggedInUser");
+        JSONObject cartItemObj = new JSONObject(obj);
 
-        if (loginUserId == null) {
+        Integer memberId = Integer.parseInt(cartItemObj.getString("memberNo"));
+        Integer productId = cartItemObj.getInt("productId");
+        Integer productStock = productService.findById(productId).getStock();
+
+        if (memberId == null) {
             responseObj.put("message", "請登入會員");
             return responseObj.toString();
+        } else if (productStock != 0) {
+
+            cartService.addOneVolumn(memberId, productId);
+
+            responseObj.put("message", "+ 1");
+            return responseObj.toString();
         }
-
-        cartService.addOneVolumn(loginUserId, productId);
-
-        List<Cart> cartList = cartService.findUsersCartService(loginUserId);
-
-        return cartList.toString();
+        {
+            responseObj.put("message", "目前已無庫存");
+            return responseObj.toString();
+        }
     }
 
-    @GetMapping("/cart/minusOne")
-    public String minusOneCount(Integer productId, HttpSession session) {
+    @PostMapping("/cart/minusOne")
+    public String minusOneCount(@RequestBody String obj, HttpSession session) {
         JSONObject responseObj = new JSONObject();
-        Integer loginUserId = (Integer) session.getAttribute("loginUserId");
+        JSONObject cartItemObj = new JSONObject(obj);
 
-        if (loginUserId == null) {
+        // Integer loginUserId = (Integer) session.getAttribute("loginUserId");
+        Integer memberId = Integer.parseInt(cartItemObj.getString("memberNo"));
+        Integer productId = cartItemObj.getInt("productId");
+        // Integer productStock = productService.findById(productId).getStock();
+
+        if (memberId == null) {
             responseObj.put("message", "請登入會員");
             return responseObj.toString();
         }
 
-        cartService.minusOneVolumn(loginUserId, productId);
+        cartService.minusOneVolumn(memberId, productId);
 
-        List<Cart> cartList = cartService.findUsersCartService(loginUserId);
+        List<Cart> cartList = cartService.findUsersCartService(memberId);
 
         return cartList.toString();
     }
