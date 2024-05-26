@@ -134,6 +134,7 @@ public class OrdersServiceImpl  {
 		int memberNo=obj.isNull("memberNo") ? 0 : obj.getInt("memberNo");
 		int start = obj.isNull("start") ? 0 : obj.getInt("start");
 		int rows = obj.isNull("rows") ? 10 : obj.getInt("rows");
+		String num =obj.isNull("num") ? "" : obj.getString("num");
 		CriteriaBuilder criteriaBuilder = this.getSession().getCriteriaBuilder();
 		CriteriaQuery<Orders> criteriaQuery = criteriaBuilder.createQuery(Orders.class);
 //		from Orders
@@ -142,6 +143,10 @@ public class OrdersServiceImpl  {
 		//where條件設定
 		Predicate p = criteriaBuilder.equal(table.get("memberNo"), memberRepo.findById(memberNo).get());//依memberNo找到orders
 		predicates.add(p);
+		if(num !=null && num !="") {
+		    predicates.add(criteriaBuilder.like(table.get("orderNo").as(String.class), "%" + num + "%"));
+		}
+		
 
 		if(predicates!=null && !predicates.isEmpty()) {
 			Predicate[] array = predicates.toArray(new Predicate[0]);//條件存入陣列
@@ -164,9 +169,14 @@ public class OrdersServiceImpl  {
 		int memberNo=obj.isNull("memberNo") ? 0 : obj.getInt("memberNo");
 		System.out.println(memberNo);
 		return orderRepository.findMemberByMemberNoCount(memberNo);
-		
-		
 	}
+	
+	public Integer findMemberByMemberNoAndOrderNoCount(JSONObject obj) {
+		int memberNo=obj.isNull("memberNo") ? 0 : obj.getInt("memberNo");
+		int OrderNo=obj.isNull("OrderNo") ? 0 : obj.getInt("OrderNo");
+		return orderRepository.findMemberByMemberNoAndOrderNoCount(memberNo,OrderNo);
+	}
+	
 	public List<CartForOrdersDto> findCartByMember(Integer memberNo) {
 		List<CartForOrdersDto> cartArray = new ArrayList<>();
 		List<Map<String, Object>> results = orderRepository.findCartByMemberNo(memberNo);

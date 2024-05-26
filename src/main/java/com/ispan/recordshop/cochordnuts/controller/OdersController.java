@@ -166,7 +166,14 @@ public class OdersController {
 		JSONObject responseJson = new JSONObject();
 		JSONObject obj = new JSONObject(json);
 		JSONArray array = new JSONArray();
-		Integer count = ordersServiceImpl.findfindBymemberNoCount(obj);
+		Integer count;
+		if(obj.getString("num")!=null && obj.getString("num")!="") {			 
+			count = ordersServiceImpl.findfindBymemberNoCount(obj);
+		}else {
+			count=ordersServiceImpl.findfindBymemberNoCount(obj);
+		}
+
+//		Integer count = ordersServiceImpl.findfindBymemberNoCount(obj);
 		List<Orders> orders = ordersServiceImpl.findBymemberNo(obj);
 		for (Orders Order : orders) {
 			JSONObject item = new JSONObject(Order);
@@ -180,9 +187,11 @@ public class OdersController {
 	@GetMapping("/orders/findCartByMemberNo/{memberNo}")//依會員編號找到Cart 將cart及member傳到前端
 	public String findCartByMemberNo(@PathVariable Integer memberNo) {
 		JSONObject responseJson = new JSONObject();
+		
 		JSONArray array = new JSONArray();
 		List<CartForOrdersDto> carts=ordersServiceImpl.findCartByMember(memberNo);
 		Member member = memberRepository.findById(memberNo).get();
+		JSONObject memberItem = new JSONObject(member);
 		String name = member.getName();
 		String email = member.getEmail();
 		String phone = member.getPhone();
@@ -191,12 +200,14 @@ public class OdersController {
 			JSONObject item = new JSONObject(cart);
 			array.put(item);
 		}
+		System.out.println(member);
 		responseJson.put("cartList", array);//將Cart以CartDto物件傳到前端
 		//只取前端所需屬性
 		responseJson.put("name", name);
 		responseJson.put("email", email);
 		responseJson.put("phone", phone);
 		responseJson.put("address", address);
+		responseJson.put("member", memberItem);
 		
 		
 		return responseJson.toString();
