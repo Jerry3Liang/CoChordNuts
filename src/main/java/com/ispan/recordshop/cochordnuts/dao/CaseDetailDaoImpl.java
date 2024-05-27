@@ -74,13 +74,10 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
 
     @Override
     public void updateContent(Integer caseDetailNo, CaseDetailRequest caseDetailRequest) {
-        String sql = "UPDATE case_detail SET message = :answerMessage, message_time = :lastMessageDate WHERE case_no = :caseDetailNo";
+        String sql = "UPDATE case_detail SET message = :answerMessage WHERE case_detail_no = :caseDetailNo";
         Map<String, Object> map = new HashMap<>();
         map.put("caseDetailNo", caseDetailNo);
         map.put("answerMessage", caseDetailRequest.getAnswerMessage());
-        Date now = new Date();
-        map.put("lastMessageDate", now);
-
 
         namedParameterJdbcTemplate.update(sql, map);
     }
@@ -100,7 +97,7 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
 
     @Override
     public CaseDetailRequest getCaseDetailById(Integer caseDetailNo) {
-        String sql = "SELECT case_detail_no, message, message_time, case_no, employee_no FROM case_detail" +
+        String sql = "SELECT case_detail_no, [message], message_time, case_no, employee_no FROM case_detail " +
                      " WHERE case_detail_no = :caseDetailNo";
 
         Map<String, Object> map = new HashMap<>();
@@ -110,6 +107,24 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
 
         if(!caseDetailRequestList.isEmpty()){
             return caseDetailRequestList.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public CaseDetailDto findCaseDetailById(Integer caseDetailNo) {
+        String sql = "SELECT cd.case_detail_no, cd.case_no, cd.[message], cd.message_time, ee.emp_name FROM case_detail cd " +
+                     "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
+                     "WHERE cd.case_detail_no = :caseDetailNo";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("caseDetailNo", caseDetailNo);
+
+        List<CaseDetailDto> caseDetailDtoList = namedParameterJdbcTemplate.query(sql, map, new ShowCaseDetailRowMapper());
+
+        if(!caseDetailDtoList.isEmpty()){
+            return caseDetailDtoList.get(0);
         } else {
             return null;
         }

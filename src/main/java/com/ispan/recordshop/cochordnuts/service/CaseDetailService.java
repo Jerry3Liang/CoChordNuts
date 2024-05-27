@@ -19,9 +19,13 @@ public interface CaseDetailService {
 
     CaseDetailRequest getCaseDetailById(Integer caseDetailNo);
 
+    CaseDetailDto findCaseDetailById(Integer caseDetailNo);
+
     CaseDetail findById(Integer id);
 
     List<CaseDetailDto> findByCaseNo(Integer caseNo);
+
+    boolean deleteCaseAnswerByCaseDetailNo(Integer caseDetailNo);
 
     boolean existById(Integer id);
 }

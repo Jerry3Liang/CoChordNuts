@@ -2,10 +2,12 @@ package com.ispan.recordshop.cochordnuts.rowmapper;
 
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class CaseDetailRowMapper implements RowMapper<CaseDetailRequest> {
     @Override
     public CaseDetailRequest mapRow(ResultSet rs, int rowNum) throws SQLException {

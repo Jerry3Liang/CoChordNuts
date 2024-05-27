@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import com.ispan.recordshop.cochordnuts.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,6 +55,10 @@ public class CustomerCaseController {
         page.setOffset(offset);
         page.setTotal(total);
         page.setResults(caseList);
+
+        //加上 response header
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Access-Control-Allow-Origin", "*");
 
         return ResponseEntity.ok().body(page);
     }

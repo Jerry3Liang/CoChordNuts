@@ -76,9 +76,9 @@ public class CaseDetailController {
 
     @GetMapping("/findContent/{pk}")
     public ResponseEntity<?> findAnswerById(@PathVariable(name = "pk") Integer id){
-        CaseDetailRequest caseDetailRequest = caseDetailService.getCaseDetailById(id);
-        if(caseDetailRequest != null){
-            return ResponseEntity.ok(caseDetailRequest);
+        CaseDetailDto caseDetailDto = caseDetailService.findCaseDetailById(id);
+        if(caseDetailDto != null){
+            return ResponseEntity.ok(caseDetailDto);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -108,4 +108,19 @@ public class CaseDetailController {
 
         return ResponseEntity.ok().body(updateCaseDetailRequest);
     }
+
+    @DeleteMapping("/caseAnswerDelete/{pk}")
+    public ResponseEntity<Void> remove(@PathVariable(name = "pk") Integer caseDetailNo){
+        if(caseDetailNo != null && caseDetailNo != 0){
+            boolean exists = caseDetailService.existById(caseDetailNo);
+            if(exists){
+                if(caseDetailService.deleteCaseAnswerByCaseDetailNo(caseDetailNo)){
+                    return ResponseEntity.noContent().build();
+                }
+            }
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
 }

@@ -5,6 +5,7 @@ import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.model.CaseDetail;
+import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.repository.CaseDetailRepository;
 import com.ispan.recordshop.cochordnuts.service.CaseDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,11 @@ public class CaseDetailServiceImpl implements CaseDetailService {
     }
 
     @Override
+    public CaseDetailDto findCaseDetailById(Integer caseDetailNo) {
+        return caseDetailDao.findCaseDetailById(caseDetailNo);
+    }
+
+    @Override
     public CaseDetail findById(Integer id) {
         if(id != null){
             Optional<CaseDetail> optional = caseDetailRepository.findById(id);
@@ -75,6 +81,19 @@ public class CaseDetailServiceImpl implements CaseDetailService {
         }
 
         return null;
+    }
+
+    @Override
+    public boolean deleteCaseAnswerByCaseDetailNo(Integer caseDetailNo) {
+        if(caseDetailNo != null){
+            Optional<CaseDetail> optional = caseDetailRepository.findById(caseDetailNo);
+            if(optional.isPresent()){
+                caseDetailRepository.deleteById(caseDetailNo);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

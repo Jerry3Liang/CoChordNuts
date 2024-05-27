@@ -19,4 +19,6 @@ public interface CaseDetailDao {
 
     CaseDetailRequest getCaseDetailById(Integer caseDetailNo);
 
+    CaseDetailDto findCaseDetailById(Integer caseDetailNo);
+
 }

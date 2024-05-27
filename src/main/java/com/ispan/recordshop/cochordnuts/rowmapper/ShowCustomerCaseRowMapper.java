@@ -3,10 +3,12 @@ package com.ispan.recordshop.cochordnuts.rowmapper;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseDto;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class ShowCustomerCaseRowMapper implements RowMapper<CustomerCaseDto> {
 
     @Override
