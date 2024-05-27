@@ -1,6 +1,5 @@
 package com.ispan.recordshop.cochordnuts.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -12,11 +11,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ispan.recordshop.cochordnuts.model.CustomerCase;
+import com.ispan.recordshop.cochordnuts.model.Favorite;
+import com.ispan.recordshop.cochordnuts.model.FavoriteId;
 import com.ispan.recordshop.cochordnuts.model.Member;
-import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.repository.CustomerCaseRepository;
+import com.ispan.recordshop.cochordnuts.repository.FavoriteRepository;
 import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
 import com.ispan.recordshop.cochordnuts.repository.OrderRepository;
+import com.ispan.recordshop.cochordnuts.repository.ProductStyleRepository;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 
 @Service
@@ -27,6 +29,12 @@ public class MemberService {
 
     @Autowired
     private OrderRepository orderRepo;
+
+    @Autowired
+    private ProductStyleRepository ProStyleRepo;
+
+    @Autowired
+    private FavoriteRepository favoriteRepo;
 
     @Autowired
     private CustomerCaseRepository caseRepo;
@@ -194,7 +202,7 @@ public class MemberService {
     }
 
     // 新增
-    public Member create(String json) {
+    public Member create(String json, List<Integer> favoriteIds) {
         try {
             JSONObject obj = new JSONObject(json);
             String name = obj.isNull("name") ? null : obj.getString("name");
@@ -223,8 +231,19 @@ public class MemberService {
 
                     insert.setRegisterTime(new Date());
                     insert.setPhone(phone);
+                    Member savedMember = memberRepo.save(insert);
 
-                    return memberRepo.save(insert);
+                    for (Integer productStyleId : favoriteIds) {
+                        Favorite favorite = new Favorite();
+                        FavoriteId favoriteId = new FavoriteId();
+                        favoriteId.setMemberId(savedMember.getMemberNo());
+                        favoriteId.setProductStyleId(productStyleId);
+                        favorite.setFavoriteId(favoriteId);
+                        favorite.setMember(savedMember);
+                        favorite.setProductStyle(ProStyleRepo.findById(productStyleId).orElse(null));
+                        favoriteRepo.save(favorite);
+                    }
+                    return savedMember;
                 }
             }
         } catch (JSONException e) {
