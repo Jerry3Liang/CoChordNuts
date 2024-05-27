@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -23,10 +25,6 @@ public class Member {
 	// @OneToMany(mappedBy = "memberNo")
 	// private List<Orders> orders = new ArrayList<>(); //所有訂單
 
-	// @ManyToMany
-	// @JoinTable(name = "member_favorite_style", joinColumns = @JoinColumn(name =
-	// "memberNo"), inverseJoinColumns = @JoinColumn(name = "styleNo"))
-	// private List<ProductStyle> favoriteMusicType = new ArrayList<>(); // 喜好音樂類型
 	@Column(name = "name")
 	private String name; // 會員姓名
 
@@ -44,14 +42,13 @@ public class Member {
 	@Column(name = "address")
 	private String address; // 地址
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "registerTime")
 	private Date registerTime; // 註冊日
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "lastLoginTime")
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastLoginTime; // 最後登入日
 
 	@Column(name = "phone")
@@ -70,7 +67,8 @@ public class Member {
 	public String toString() {
 		return "Member [" + " name=" + name + ", password=" + password + ", email=" + email
 				+ ", birthday=" + birthday
-				+ ", address=" + address + ", registerTime=" + registerTime + ", lastLoginTime=" + lastLoginTime
+				+ ", address=" + address + ", registerTime=" + registerTime
+				+ ", lastLoginTime=" + lastLoginTime
 				+ ", phone=" + phone + ", recipient=" + recipient + ", recipientAddress=" + recipientAddress
 				+ ", recipientPhone=" + recipientPhone + "]";
 	}
@@ -93,7 +91,7 @@ public class Member {
 	public void setCustomerCases(List<CustomerCase> customerCases) {
 		this.customerCases = customerCases;
 	}
-	
+
 	// public List<Orders> getOrders() {
 	// return orders;
 	// }
@@ -196,6 +194,13 @@ public class Member {
 
 	public void setRecipientPhone(String recipientPhone) {
 		this.recipientPhone = recipientPhone;
+	}
+
+	@PrePersist // 當物件狀態要轉移到 Persistent 狀態以前，先執行這個方法
+	public void onCreate() {
+		if (lastLoginTime == null) {
+			lastLoginTime = new Date();
+		}
 	}
 
 }
