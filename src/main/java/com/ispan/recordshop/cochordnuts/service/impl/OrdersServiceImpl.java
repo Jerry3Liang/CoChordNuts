@@ -6,11 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.hibernate.Session;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+
 import com.ispan.recordshop.cochordnuts.dto.CartForOrdersDto;
-import com.ispan.recordshop.cochordnuts.model.Cart;
+import com.ispan.recordshop.cochordnuts.model.Member;
 import com.ispan.recordshop.cochordnuts.model.OrderDetail;
 import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.model.Product;
@@ -18,10 +25,23 @@ import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
 import com.ispan.recordshop.cochordnuts.repository.OrderRepository;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
 
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
+
+
 
 @Service
 public class OrdersServiceImpl  {
-
+	@PersistenceContext
+	private Session session;
+	public Session getSession() {
+		return this.session;
+	}
 	@Autowired
 	private OrderRepository orderRepository;
 	
@@ -34,8 +54,43 @@ public class OrdersServiceImpl  {
 	@Autowired
 	private MemberRepository memberRepo;
 	
-	public List<Orders> selectAll() {//搜尋全部
-		return orderRepository.findAll();
+	public Integer findOrderCount(Integer num) {
+		return orderRepository.findOrderCount(num);
+	}
+	public Integer findAllOrderCount() {
+		return orderRepository.findAllOrderCount();
+	}
+
+	public List<Orders> selectAll(JSONObject obj) {//搜尋全部
+		int start = obj.isNull("start") ? 0 : obj.getInt("start");
+		int rows = obj.isNull("rows") ? 10 : obj.getInt("rows");
+		String num =obj.isNull("num") ? "" : obj.getString("num");
+		CriteriaBuilder criteriaBuilder = this.getSession().getCriteriaBuilder();
+		CriteriaQuery<Orders> criteriaQuery = criteriaBuilder.createQuery(Orders.class);
+		Root<Orders> table = criteriaQuery.from(Orders.class);
+		criteriaQuery.select(table);
+		List<Predicate> predicates = new ArrayList<>();
+		if(num !=null && num !="") {
+		    predicates.add(criteriaBuilder.like(table.get("orderNo").as(String.class), "%" + num + "%"));
+		}
+		
+		if(predicates!=null && !predicates.isEmpty()) {
+			Predicate[] array = predicates.toArray(new Predicate[0]);
+			criteriaQuery = criteriaQuery.where(array);
+		}
+		criteriaQuery = criteriaQuery.orderBy(criteriaBuilder.desc(table.get("orderNo")));
+		
+		TypedQuery<Orders> typedQuery = this.getSession().createQuery(criteriaQuery)
+				.setFirstResult(start)
+				.setMaxResults(rows);
+		
+		List<Orders> result = typedQuery.getResultList();
+		if(result!=null && !result.isEmpty()) {
+			return result;
+		} else {
+			return null;
+		}
+		
 	}
 	public Orders insert(Orders orders) {//新增
 		if (orders != null) {
@@ -54,19 +109,15 @@ public class OrdersServiceImpl  {
 		}		
 	}
 	
-	public Orders update(Integer orderNo,Orders orders) {//修改訂單
-		Orders oldOrders=orderRepository.findById(orderNo).get();
-		if(oldOrders!=null && orderRepository.findById(orderNo)!=null) {
-//			Member m = memberRepository.findById(1).get();
-			
-			oldOrders.setOrderNo(orderNo);
-//			oldOrders.setRecipientAddress(orders.getRecipientAddress());
-//			oldOrders.setRecipient(orders.getRecipient());
-//			oldOrders.setRecipientPhone(orders.getRecipientPhone());
-//			oldOrders.setDeliverType(orders.getDeliverType());
-			oldOrders.setStatus();
-			    
-				return orderRepository.save(oldOrders);											
+	public Orders update(Integer MemberNo,Orders orders) {//修改訂單狀態
+		Integer orderNo= orders.getOrderNo();
+//		Orders oldOrders=orderRepository.findById(orderNo).get();
+		if(orderRepository.findById(orderNo)!=null) {
+			Member m = memberRepository.findById(MemberNo).get();
+			orders.setMemberNo(m);
+			orders.setLastModifiedDate();
+//			orders.setStatus();
+				return orderRepository.save(orders);											
 		}	
 		return null;
 	}
@@ -79,11 +130,53 @@ public class OrdersServiceImpl  {
 		return orderRepository.findById(ordersNo).get().getOrderDetail();		
 	}
 	
-	public List<Orders> findBymemberNo(Integer MemberNo) {// 依會員編號查詢訂單
+	public List<Orders> findBymemberNo(JSONObject obj) {// 依會員編號查詢訂單
+		int memberNo=obj.isNull("memberNo") ? 0 : obj.getInt("memberNo");
+		int start = obj.isNull("start") ? 0 : obj.getInt("start");
+		int rows = obj.isNull("rows") ? 10 : obj.getInt("rows");
+		String num =obj.isNull("num") ? "" : obj.getString("num");
+		CriteriaBuilder criteriaBuilder = this.getSession().getCriteriaBuilder();
+		CriteriaQuery<Orders> criteriaQuery = criteriaBuilder.createQuery(Orders.class);
+//		from Orders
+		Root<Orders> table = criteriaQuery.from(Orders.class);
+		List<Predicate> predicates = new ArrayList<>();
+		//where條件設定
+		Predicate p = criteriaBuilder.equal(table.get("memberNo"), memberRepo.findById(memberNo).get());//依memberNo找到orders
+		predicates.add(p);
+		if(num !=null && num !="") {
+		    predicates.add(criteriaBuilder.like(table.get("orderNo").as(String.class), "%" + num + "%"));
+		}
+		
 
-			return orderRepository.findBymemberNo(MemberNo);
+		if(predicates!=null && !predicates.isEmpty()) {
+			Predicate[] array = predicates.toArray(new Predicate[0]);//條件存入陣列
+			criteriaQuery = criteriaQuery.where(array);//加到where中
+		}
+		criteriaQuery = criteriaQuery.orderBy(criteriaBuilder.desc(table.get("orderNo")));
+		TypedQuery<Orders> typedQuery = this.getSession().createQuery(criteriaQuery)
+				.setFirstResult(start)
+				.setMaxResults(rows);
+		
+		List<Orders> result = typedQuery.getResultList();
+		if(result!=null && !result.isEmpty()) {
+			return result;
+		} else {
+			return null;
+		}
 
 	}
+	public Integer findfindBymemberNoCount(JSONObject obj) {
+		int memberNo=obj.isNull("memberNo") ? 0 : obj.getInt("memberNo");
+		System.out.println(memberNo);
+		return orderRepository.findMemberByMemberNoCount(memberNo);
+	}
+	
+	public Integer findMemberByMemberNoAndOrderNoCount(JSONObject obj) {
+		int memberNo=obj.isNull("memberNo") ? 0 : obj.getInt("memberNo");
+		int OrderNo=obj.isNull("OrderNo") ? 0 : obj.getInt("OrderNo");
+		return orderRepository.findMemberByMemberNoAndOrderNoCount(memberNo,OrderNo);
+	}
+	
 	public List<CartForOrdersDto> findCartByMember(Integer memberNo) {
 		List<CartForOrdersDto> cartArray = new ArrayList<>();
 		List<Map<String, Object>> results = orderRepository.findCartByMemberNo(memberNo);
@@ -131,6 +224,5 @@ public class OrdersServiceImpl  {
 	}
 		return cartArray;
 }
-	
 	
 }

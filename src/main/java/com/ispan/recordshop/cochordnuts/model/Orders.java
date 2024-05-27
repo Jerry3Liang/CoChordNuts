@@ -164,10 +164,10 @@ public class Orders {
 			this.status="訂單成立";
 		}else if (preparationDate!=null && dispatchDate==null && completeDate==null) {
 			this.status="備貨中";
-		}else if(preparationDate!=null && dispatchDate!=null && completeDate==null) {
+		}else if(preparationDate!=null && dispatchDate!=null && completeDate==null){
 			this.status="已出貨";
-		}else {
-			this.status="完成訂單";
+		}else if(preparationDate!=null && dispatchDate!=null && completeDate!=null){
+			this.status="訂單完成";
 		}
 	
 	}

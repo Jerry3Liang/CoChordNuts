@@ -23,6 +23,10 @@ import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
 import com.ispan.recordshop.cochordnuts.service.impl.OrderDetailServiceImpl;
 import com.ispan.recordshop.cochordnuts.service.impl.OrdersServiceImpl;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+
+
 
 @RestController
 @CrossOrigin
@@ -78,10 +82,10 @@ public class OdersController {
 
 		return responseJson.toString();
 	}
-	@PutMapping("/orders/update/{orderNo}") // orders修改
-	public String update(@RequestBody Orders od,@PathVariable Integer orderNo) {
+	@PutMapping("/orders/update/{MemberNo}") // orders修改
+	public String update(@RequestBody Orders od,@PathVariable Integer MemberNo) {
 		JSONObject responseJson = new JSONObject();
-		Orders order = ordersServiceImpl.update(orderNo,od);
+		Orders order = ordersServiceImpl.update(MemberNo,od);
 		if (order != null) {
 			responseJson.put("success", true);
 			responseJson.put("message", "修改成功");
@@ -108,19 +112,28 @@ public class OdersController {
 	}
 
 
-	@GetMapping("/orders/findAll") // 後台訂單搜尋全部
-	public String findAll() {
+	@PostMapping("/orders/findAll") // 後台訂單搜尋全部
+	public String findAll(@RequestBody String json) {
 		System.out.println("findAll");
 		JSONObject responseJson = new JSONObject();
+		JSONObject obj = new JSONObject(json);
+		Integer count;
 		JSONArray array = new JSONArray();
-		List<Orders> orders = ordersServiceImpl.selectAll();
+		if(obj.getString("num")!=null && obj.getString("num")!="") {
+			Integer num =Integer.parseInt(obj.getString("num")) ;
+			count = ordersServiceImpl.findOrderCount(num);
+		}else {
+			count=ordersServiceImpl.findAllOrderCount();
+		}
 		
-		for (Orders order : orders) {
-			
+		List<Orders> orders = ordersServiceImpl.selectAll(obj);
+		
+		for (Orders order : orders) {			
 			JSONObject item = new JSONObject(order);
 			array.put(item);
 		}
 		responseJson.put("list", array);
+		responseJson.put("count", count);
 		System.out.println(responseJson.toString());
 		return responseJson.toString();
 	}
@@ -148,27 +161,37 @@ public class OdersController {
 
 	}
 
-
-	@GetMapping("/orders/findBymemberNo/{memberNo}")
-	public String findBymemberNo(@PathVariable Integer memberNo) {// 依會員編號
+	@PostMapping("/orders/findBymemberNo")
+	public String findBymemberNo(@RequestBody String json) {// 依會員編號
 		JSONObject responseJson = new JSONObject();
+		JSONObject obj = new JSONObject(json);
 		JSONArray array = new JSONArray();
-		List<Orders> orders = ordersServiceImpl.findBymemberNo(memberNo);
+		Integer count;
+		if(obj.getString("num")!=null && obj.getString("num")!="") {			 
+			count = ordersServiceImpl.findfindBymemberNoCount(obj);
+		}else {
+			count=ordersServiceImpl.findfindBymemberNoCount(obj);
+		}
+
+//		Integer count = ordersServiceImpl.findfindBymemberNoCount(obj);
+		List<Orders> orders = ordersServiceImpl.findBymemberNo(obj);
 		for (Orders Order : orders) {
 			JSONObject item = new JSONObject(Order);
 			array.put(item);
 		}
+		responseJson.put("count", count);
 		responseJson.put("memberOrders", array);
 		return responseJson.toString();
 	}
 	
-	
 	@GetMapping("/orders/findCartByMemberNo/{memberNo}")//依會員編號找到Cart 將cart及member傳到前端
 	public String findCartByMemberNo(@PathVariable Integer memberNo) {
 		JSONObject responseJson = new JSONObject();
+		
 		JSONArray array = new JSONArray();
 		List<CartForOrdersDto> carts=ordersServiceImpl.findCartByMember(memberNo);
 		Member member = memberRepository.findById(memberNo).get();
+		JSONObject memberItem = new JSONObject(member);
 		String name = member.getName();
 		String email = member.getEmail();
 		String phone = member.getPhone();
@@ -177,15 +200,30 @@ public class OdersController {
 			JSONObject item = new JSONObject(cart);
 			array.put(item);
 		}
+		System.out.println(member);
 		responseJson.put("cartList", array);//將Cart以CartDto物件傳到前端
 		//只取前端所需屬性
 		responseJson.put("name", name);
 		responseJson.put("email", email);
 		responseJson.put("phone", phone);
 		responseJson.put("address", address);
+		responseJson.put("member", memberItem);
 		
 		
 		return responseJson.toString();
 	}
-	
+//	@GetMapping("/orders/findOrderPage/{pageNum}")
+//	 public String findOrderPage(@PathVariable Integer pageNum) {
+//		JSONObject responseJson = new JSONObject();
+//		JSONArray array =new JSONArray();
+//		Page<Orders> order = ordersServiceImpl.findOrdersPage(pageNum);
+//		for(Orders o:order) {
+//			JSONObject item = new JSONObject(o);
+//			array.put(item);
+//		}
+//		responseJson.put("orderPage",array);
+//		return responseJson.toString();
+//		
+//		 
+//	 }
 }

@@ -17,7 +17,18 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
 	@Query(value = "SELECT * FROM Cart WHERE member_memberNo = :memberNo", nativeQuery = true)
 	public List<Map<String, Object>> findCartByMemberNo(@Param("memberNo")Integer memberNo);
 	
-	@Query(value="Select * from Member where memberNo = :memberNo",nativeQuery = true)
-	public List<Map<String, Object>> findMemberByMemberNo(@Param("memberNo") Integer memberNo);
-		
+//	@Query(value="Select * from Member where memberNo = :memberNo",nativeQuery = true)
+//	public List<Map<String, Object>> findMemberByMemberNo(@Param("memberNo") Integer memberNo);
+	@Query(value="Select count(*) from Orders where memberNo = :memberNo",nativeQuery = true)
+	public Integer findMemberByMemberNoCount(@Param("memberNo") Integer memberNo);
+	
+	//訂單編號模糊搜尋筆數-依會員搜尋訂單後
+	@Query(value="SELECT COUNT(*) FROM Orders WHERE memberNo = :memberNo AND orderNo LIKE %:orderNo%", nativeQuery = true)
+	public Integer findMemberByMemberNoAndOrderNoCount(@Param("memberNo") Integer memberNo, @Param("orderNo") Integer orderNo);
+	
+	@Query(value="SELECT COUNT(*) FROM Orders WHERE orderNo LIKE CONCAT('%', :orderNo, '%')", nativeQuery = true)
+	public Integer findOrderCount(@Param("orderNo") Integer orderNo);
+	
+	@Query(value="SELECT COUNT(*) FROM Orders ", nativeQuery = true)
+	public Integer findAllOrderCount();
 }
