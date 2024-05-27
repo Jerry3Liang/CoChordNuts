@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispan.recordshop.cochordnuts.model.CustomerCase;
@@ -45,7 +46,7 @@ public class MemberController {
 
     // 新增
     @PostMapping("/members")
-    public String create(@RequestBody String json) {
+    public String create(@RequestBody String json, @RequestParam("favoriteIds") List<Integer> favoriteIds) {
         JSONObject responseJson = new JSONObject();
         JSONObject obj = new JSONObject(json);
         String name = obj.isNull("name") ? null : obj.getString("name");
@@ -81,7 +82,7 @@ public class MemberController {
                     responseJson.put("message", "電話號碼已存在");
                 }
             } else {
-                Member member = memberService.create(json);
+                Member member = memberService.create(json, favoriteIds);
                 if (member == null) {
                     responseJson.put("success", false);
                     responseJson.put("message", "新增失敗");
@@ -194,7 +195,7 @@ public class MemberController {
 
         if (memberNo == null || password == null || password.isEmpty()) {
             responseJson.put("success", false);
-            responseJson.put("message", "memberNo 和 password 是必要欄位");
+            responseJson.put("message", "密碼是必要欄位");
         } else if (!memberService.existById(memberNo)) {
             responseJson.put("success", false);
             responseJson.put("message", "會員不存在");
