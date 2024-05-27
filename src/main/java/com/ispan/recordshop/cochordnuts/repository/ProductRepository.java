@@ -17,20 +17,20 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Query("from Product")
 	Page<Product> findAllByPages(Pageable pageable);
 	
-	@Query("from Product where isBest = :n")
-	List<Product> findIsBest(@Param("n") Integer isBest);
+	@Query("from Product where isBest = :n and productStatus = :m")
+	List<Product> findIsBest(@Param("n") Integer isBest, @Param("m") Integer productStatus);
 	
-	@Query("from Product where isDiscount = :n")
-	List<Product> findIsDiscount(@Param("n") Integer isDiscount);
+	@Query("from Product where isDiscount = :n and productStatus = :m")
+	List<Product> findIsDiscount(@Param("n") Integer isDiscount, @Param("m") Integer productStatus);
 	
-	@Query("from Product where isPreorder = :n")
-	List<Product> findIsPreorder(@Param("n") Integer isPreorder);
+	@Query("from Product where isPreorder = :n and productStatus = :m")
+	List<Product> findIsPreorder(@Param("n") Integer isPreorder, @Param("m") Integer productStatus);
 	
-	@Query("from Product where language = :n")
-	List<Product> findByLanguage(@Param("n") Language language);
+	@Query("from Product where language = :n and productStatus = :m")
+	List<Product> findByLanguage(@Param("n") Language language, @Param("m") Integer productStatus);
 	
-	@Query("from Product where productStyle = :n")
-	List<Product> findByStyle(@Param("n") ProductStyle style);
+	@Query("from Product where productStyle = :n and productStatus = :m")
+	List<Product> findByStyle(@Param("n") ProductStyle style, @Param("m") Integer productStatus);
 	
 	
 

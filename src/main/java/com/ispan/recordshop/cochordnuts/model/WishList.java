@@ -22,7 +22,6 @@ public class WishList {
 			referencedColumnName = "productNo")
 	private Product product;
 	
-//	再確認欄位名稱
 	@ManyToOne
 	@JoinColumn(
 			name = "memberNo",
@@ -31,6 +30,13 @@ public class WishList {
 	
 	public WishList() {
 	}
+	
+
+	@Override
+	public String toString() {
+		return "WishList [wishListNo=" + wishListNo + ", product=" + product + ", member=" + member + "]";
+	}
+
 
 	public Integer getWishListNo() {
 		return wishListNo;
@@ -48,13 +54,13 @@ public class WishList {
 		this.product = product;
 	}
 
-//	public Member getMember() {
-//		return member;
-//	}
-//
-//	public void setMember(Member member) {
-//		this.member = member;
-//	}
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
 	
 	
 	
