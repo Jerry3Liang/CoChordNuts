@@ -32,11 +32,6 @@ public class OrderDetailServiceImpl {
 	@Autowired
 	private ProductRepository productRepository;
 
-
-
-	@Autowired
-	private MemberRepository memberRepo;
-
 	public List<OrderDetail> selectAll() {
 
 		return orderDetailRepository.findAll();

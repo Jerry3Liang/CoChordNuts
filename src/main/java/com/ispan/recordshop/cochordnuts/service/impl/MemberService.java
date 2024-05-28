@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ispan.recordshop.cochordnuts.dto.MemberDTO;
 import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.model.Favorite;
 import com.ispan.recordshop.cochordnuts.model.FavoriteId;
@@ -205,21 +206,21 @@ public class MemberService {
     }
 
     // 新增
-    public Member create(String json, List<Integer> favoriteIds) {
+    public Member create(MemberDTO memberRequest) {
         try {
-            JSONObject obj = new JSONObject(json);
-            String name = obj.isNull("name") ? null : obj.getString("name");
-            String email = obj.isNull("email") ? null : obj.getString("email");
-            String birthday = obj.isNull("birthday") ? null : obj.getString("birthday");
-            String address = obj.isNull("address") ? null : obj.getString("address");
-            String phone = obj.isNull("phone") ? null : obj.getString("phone");
+            String name = memberRequest.getName();
+            String email = memberRequest.getEmail();
+            String birthday = memberRequest.getBirthday();
+            String address = memberRequest.getAddress();
+            String phone = memberRequest.getPhone();
+            List<Integer> favoriteIds = memberRequest.getFavoriteIds();
 
             if (email != null && phone != null) {
                 Optional<Member> optional = memberRepo.findByEmailAndPhone(email, phone);
                 if (optional.isEmpty()) {
                     Member insert = new Member();
                     insert.setName(name);
-                    String bcryptPassword = bcrypt.encode(obj.getString("password"));
+                    String bcryptPassword = bcrypt.encode(memberRequest.getPassword());
                     insert.setPassword(bcryptPassword);
                     insert.setEmail(email);
 
@@ -231,7 +232,6 @@ public class MemberService {
                     }
 
                     insert.setAddress(address);
-
                     insert.setRegisterTime(new Date());
                     insert.setPhone(phone);
                     Member savedMember = memberRepo.save(insert);
@@ -249,11 +249,60 @@ public class MemberService {
                     return savedMember;
                 }
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
+    // public Member create(String json, List<Integer> favoriteIds) {
+    // try {
+    // JSONObject obj = new JSONObject(json);
+    // String name = obj.isNull("name") ? null : obj.getString("name");
+    // String email = obj.isNull("email") ? null : obj.getString("email");
+    // String birthday = obj.isNull("birthday") ? null : obj.getString("birthday");
+    // String address = obj.isNull("address") ? null : obj.getString("address");
+    // String phone = obj.isNull("phone") ? null : obj.getString("phone");
+
+    // if (email != null && phone != null) {
+    // Optional<Member> optional = memberRepo.findByEmailAndPhone(email, phone);
+    // if (optional.isEmpty()) {
+    // Member insert = new Member();
+    // insert.setName(name);
+    // String bcryptPassword = bcrypt.encode(obj.getString("password"));
+    // insert.setPassword(bcryptPassword);
+    // insert.setEmail(email);
+
+    // if (birthday != null && birthday.length() != 0) {
+    // java.util.Date temp = DatetimeConverter.parse(birthday, "yyyy-MM-dd");
+    // insert.setBirthday(temp);
+    // } else {
+    // insert.setBirthday(null);
+    // }
+
+    // insert.setAddress(address);
+
+    // insert.setRegisterTime(new Date());
+    // insert.setPhone(phone);
+    // Member savedMember = memberRepo.save(insert);
+
+    // for (Integer productStyleId : favoriteIds) {
+    // Favorite favorite = new Favorite();
+    // FavoriteId favoriteId = new FavoriteId();
+    // favoriteId.setMemberId(savedMember.getMemberNo());
+    // favoriteId.setProductStyleId(productStyleId);
+    // favorite.setFavoriteId(favoriteId);
+    // favorite.setMember(savedMember);
+    // favorite.setProductStyle(ProStyleRepo.findById(productStyleId).orElse(null));
+    // favoriteRepo.save(favorite);
+    // }
+    // return savedMember;
+    // }
+    // }
+    // } catch (JSONException e) {
+    // e.printStackTrace();
+    // }
+    // return null;
+    // }
 
     // 登出
     public Member logout(String json) {
@@ -325,7 +374,7 @@ public class MemberService {
             JSONObject obj = new JSONObject(json);
             Integer memberNo = obj.isNull("memberNo") ? null : obj.getInt("memberNo");
             String oriPassword = obj.isNull("oriPassword") ? null : obj.getString("oriPassword");
-
+            System.out.println("memberNo=" + memberNo + "/ori=" + oriPassword);
             if (memberNo != null) {
                 Optional<Member> optional = memberRepo.findById(memberNo);
                 if (optional.isPresent()) {

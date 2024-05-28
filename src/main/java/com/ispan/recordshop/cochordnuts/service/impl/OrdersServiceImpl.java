@@ -173,8 +173,9 @@ public class OrdersServiceImpl  {
 	
 	public Integer findMemberByMemberNoAndOrderNoCount(JSONObject obj) {
 		int memberNo=obj.isNull("memberNo") ? 0 : obj.getInt("memberNo");
-		int OrderNo=obj.isNull("OrderNo") ? 0 : obj.getInt("OrderNo");
-		return orderRepository.findMemberByMemberNoAndOrderNoCount(memberNo,OrderNo);
+		int OrderNo=obj.isNull("num") ? 0 : obj.getInt("num");
+		
+		return orderRepository.findMemberByMemberNoAndOrderNoCount(memberNo,OrderNo) ;
 	}
 	
 	public List<CartForOrdersDto> findCartByMember(Integer memberNo) {

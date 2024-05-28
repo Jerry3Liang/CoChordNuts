@@ -98,11 +98,7 @@ public class Orders {
 	public void setOrderDetail(List<OrderDetail> orderDetail) {
 		this.orderDetail = orderDetail;
 	}
-
-//	public Member getMemberNo() {
-//		return memberNo;
-//	}
-
+	
 	public String getMemberName() {
 		return memberNo.getName();
 	}
@@ -191,10 +187,8 @@ public class Orders {
 			this.receiptNo =R;
 		}else {
 			this.receiptNo="";
-		}
-		
+		}		
 	}
-
 	public Long getTotalPay() {
 		return totalPay;
 	}
@@ -207,10 +201,8 @@ public class Orders {
 		return totalCount;
 	}
 
-	public void setTotalCount(Integer totalCount) {
-		
-			this.totalCount=totalCount;
-		
+	public void setTotalCount(Integer totalCount) {		
+			this.totalCount=totalCount;		
 	}
 
 	public Integer getFreight() {
@@ -301,8 +293,4 @@ public class Orders {
 	public void setRecipientPhone(String recipientPhone) {
 		this.recipientPhone = recipientPhone;
 	}
-
-
-	
-
 }
