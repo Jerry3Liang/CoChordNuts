@@ -1,9 +1,6 @@
 package com.ispan.recordshop.cochordnuts.controller;
 
-import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
-import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
-import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
-import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
+import com.ispan.recordshop.cochordnuts.dto.*;
 import com.ispan.recordshop.cochordnuts.service.CaseDetailService;
 import com.ispan.recordshop.cochordnuts.service.CustomerCaseService;
 import com.ispan.recordshop.cochordnuts.util.Page;
@@ -89,6 +86,16 @@ public class CaseDetailController {
         List<CaseDetailDto> caseDetails = caseDetailService.findByCaseNo(caseNo);
         if(caseDetails != null){
             return ResponseEntity.ok(caseDetails);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/findMemberAnswer/{memberNo}")
+    public ResponseEntity<?> findMemberAnswerByMemberNo(@PathVariable(name = "memberNo") Integer memberNo){
+        List<MemberAnswerDto> memberAnswerDto = caseDetailService.findMemberAnswerByMemberNo(memberNo);
+        if(memberAnswerDto != null){
+            return ResponseEntity.ok(memberAnswerDto);
         } else {
             return ResponseEntity.notFound().build();
         }

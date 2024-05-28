@@ -4,6 +4,7 @@ import com.ispan.recordshop.cochordnuts.dao.CaseDetailDao;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
+import com.ispan.recordshop.cochordnuts.dto.MemberAnswerDto;
 import com.ispan.recordshop.cochordnuts.model.CaseDetail;
 import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.repository.CaseDetailRepository;
@@ -94,6 +95,11 @@ public class CaseDetailServiceImpl implements CaseDetailService {
         }
 
         return false;
+    }
+
+    @Override
+    public List<MemberAnswerDto> findMemberAnswerByMemberNo(Integer memberNo) {
+        return caseDetailDao.findMemberAnswerByMemberNo(memberNo);
     }
 
     @Override

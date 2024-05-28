@@ -3,6 +3,11 @@ package com.ispan.recordshop.cochordnuts.controller;
 import java.util.List;
 import java.util.Objects;
 
+import com.ispan.recordshop.cochordnuts.dao.MemberDao;
+import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
+import com.ispan.recordshop.cochordnuts.model.Role;
+import com.ispan.recordshop.cochordnuts.service.EmployeeService;
+import com.ispan.recordshop.cochordnuts.service.RoleService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +33,12 @@ public class MemberController {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private EmployeeService employeeService;
 
     // 帳號是否存在
     @GetMapping("/products/email/{email}")
@@ -83,6 +94,9 @@ public class MemberController {
                 }
             } else {
                 Member member = memberService.create(json, favoriteIds);
+                //為 Employee 添加預設的 Role
+                Role normalRole = roleService.getRoleByName("ROLE_NORMAL_MEMBER");
+                employeeService.addRoleForEmployeeId(member.getMemberNo(), normalRole);
                 if (member == null) {
                     responseJson.put("success", false);
                     responseJson.put("message", "新增失敗");
@@ -329,7 +343,10 @@ public class MemberController {
             for (CustomerCase case1 : customerCases) {
                 JSONObject item = new JSONObject()
                         // .put("memberNo", order.getMemberNo())
-                        .put("caseNo", case1.getCaseNO());
+                        .put("caseNo", case1.getCaseNO())
+                        .put("orderNo", case1.getOrders().getOrderNo())
+                        .put("subject", case1.getSubject())
+                        .put("status", case1.getStatus());
                 array.put(item);
             }
         }

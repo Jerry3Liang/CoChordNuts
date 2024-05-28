@@ -4,6 +4,7 @@ import com.ispan.recordshop.cochordnuts.dao.CustomerCaseDao;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseDto;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
+import com.ispan.recordshop.cochordnuts.dto.MemberAnswerCaseDto;
 import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.repository.CustomerCaseRepository;
 import com.ispan.recordshop.cochordnuts.service.CustomerCaseService;
@@ -44,6 +45,11 @@ public class CustomerCaseServiceImpl implements CustomerCaseService {
     @Override
     public CustomerCaseRequest getCaseById(Integer customerCaseNo) {
         return customerCaseDao.getCaseById(customerCaseNo);
+    }
+
+    @Override
+    public List<MemberAnswerCaseDto> getCaseByMemberNo(Integer memberNo) {
+        return customerCaseDao.getCaseByMemberNo(memberNo);
     }
 
     @Override

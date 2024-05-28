@@ -3,7 +3,9 @@ package com.ispan.recordshop.cochordnuts.dao;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseDto;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
+import com.ispan.recordshop.cochordnuts.dto.MemberAnswerCaseDto;
 import com.ispan.recordshop.cochordnuts.rowmapper.CustomerCaseRowMapper;
+import com.ispan.recordshop.cochordnuts.rowmapper.MemberCaseAnswerRowMapper;
 import com.ispan.recordshop.cochordnuts.rowmapper.ShowCustomerCaseRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -25,10 +27,10 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
     @Override
     public List<CustomerCaseDto> getCases(CustomerCaseParams customerCaseParams) {
         String sql = "SELECT MIN(cc.case_no) case_no, m.name, cc.subject, MAX(cd.message_time) message_time, MIN(ee.emp_name) emp_name, cc.status FROM customer_case cc " +
-                "LEFT JOIN member m ON cc.member_no = m.member_no " +
-                "LEFT JOIN case_detail cd ON cc.case_no = cd.case_no " +
-                "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
-                "GROUP BY cc.case_no, cc.subject, cc.status, m.name";
+                     "LEFT JOIN member m ON cc.member_no = m.member_no " +
+                     "LEFT JOIN case_detail cd ON cc.case_no = cd.case_no " +
+                     "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
+                     "GROUP BY cc.case_no, cc.subject, cc.status, m.name";
 
         Map<String, Object> map = new HashMap<>();
 
@@ -93,6 +95,21 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<MemberAnswerCaseDto> getCaseByMemberNo(Integer memberNo) {
+        String sql = "SELECT MIN(cc.case_no) case_no, m.name, cc.subject, MAX(cd.message_time) message_time, MIN(ee.emp_name) emp_name, cc.status FROM customer_case cc " +
+                     "LEFT JOIN member m ON cc.member_no = m.member_no " +
+                     "LEFT JOIN case_detail cd ON cc.case_no = cd.case_no " +
+                     "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
+                     "WHERE cc.member_no = :memberNo " +
+                     "GROUP BY cc.case_no, cc.subject, cc.status, m.name";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("memberNo", memberNo);
+
+        return namedParameterJdbcTemplate.query(sql, map, new MemberCaseAnswerRowMapper());
     }
 
     @Transactional

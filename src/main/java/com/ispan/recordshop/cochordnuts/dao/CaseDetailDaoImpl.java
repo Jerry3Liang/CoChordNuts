@@ -3,7 +3,9 @@ package com.ispan.recordshop.cochordnuts.dao;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
+import com.ispan.recordshop.cochordnuts.dto.MemberAnswerDto;
 import com.ispan.recordshop.cochordnuts.rowmapper.CaseDetailRowMapper;
+import com.ispan.recordshop.cochordnuts.rowmapper.MemberAnswerRowMapper;
 import com.ispan.recordshop.cochordnuts.rowmapper.ShowCaseDetailRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -128,5 +130,19 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<MemberAnswerDto> findMemberAnswerByMemberNo(Integer memberNo) {
+        String sql = "SELECT cd.[message], cd.message_time, m.name FROM case_detail cd " +
+                     "LEFT JOIN customer_case cc ON cc.case_no = cd.case_no " +
+                     "LEFT JOIN member m ON cc.member_no = m.member_no " +
+                     "WHERE m.member_no = :memberNo";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("memberNo", memberNo);
+
+        return namedParameterJdbcTemplate.query(sql, map, new MemberAnswerRowMapper());
+
     }
 }
