@@ -52,9 +52,10 @@ public class MemberInOutController {
 		// 根據model執行結果，導向view
 		if (member == null) {
 			responseJson.put("success", false);
-			responseJson.put("message", "登入失敗");
+			responseJson.put("message", "請檢查帳號和密碼");
 		} else {
 			String lastLoginTime = DatetimeConverter.toString(new Date(), "yyyy-MM-dd HH:mm:ss");
+			String loginTime = DatetimeConverter.toString(member.getLastLoginTime(), "yyyy-MM-dd HH:mm:ss");
 
 			session.setAttribute("loginMember", member);
 			session.setAttribute("lastLoginTime", lastLoginTime);
@@ -62,6 +63,7 @@ public class MemberInOutController {
 			responseJson.put("success", true);
 			responseJson.put("message", "登入成功");
 			responseJson.put("lastLoginTime", lastLoginTime);
+			responseJson.put("loginTime", loginTime);
 		}
 
 		JSONObject user = new JSONObject()
@@ -69,16 +71,17 @@ public class MemberInOutController {
 				.put("email", member.getEmail());
 
 		String lastLoginTime = DatetimeConverter.toString(new Date(), "yyyy-MM-dd HH:mm:ss");
+		String loginTime = DatetimeConverter.toString(member.getLastLoginTime(), "yyyy-MM-dd HH:mm:ss");
 		String token = jsonWebTokenUtility.createEncryptedToken(user.toString(), null);
 		responseJson.put("token", token);
 		responseJson.put("userName", member.getName());
 		responseJson.put("user", member);
 		responseJson.put("memberNo", member.getMemberNo());
 		responseJson.put("lastLoginTime", lastLoginTime);
+		responseJson.put("loginTime", loginTime);
 
 		return responseJson.toString();
 	}
-
 	// 登出
 	@PostMapping("/logout")
 	public String logout(HttpSession session, @RequestBody String json) {
