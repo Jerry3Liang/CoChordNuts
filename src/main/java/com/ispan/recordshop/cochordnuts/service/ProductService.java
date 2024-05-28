@@ -392,7 +392,7 @@ public class ProductService {
 	
 	// 熱銷商品
 	public List<ProductDTO> findIsBest(Integer isBest){
-		List<Product> products = productRepo.findIsBest(isBest);
+		List<Product> products = productRepo.findIsBest(isBest, 1);
 		List<ProductDTO> productsDTO = new ArrayList<>();
 		ProductDTO productDTO = null;
 		for(Product pro : products) {
@@ -417,7 +417,7 @@ public class ProductService {
 	
 	// 折扣商品
 	public List<ProductDTO> findIsDiscount(Integer isDiscount){
-		List<Product> products = productRepo.findIsDiscount(isDiscount);
+		List<Product> products = productRepo.findIsDiscount(isDiscount, 1);
 		List<ProductDTO> productsDTO = new ArrayList<>();
 		ProductDTO productDTO = null;
 		for(Product pro : products) {
@@ -440,7 +440,7 @@ public class ProductService {
 	
 	// 預購商品
 	public List<ProductDTO> findIsPreorder(Integer isPreorder){
-		List<Product> products = productRepo.findIsPreorder(isPreorder);
+		List<Product> products = productRepo.findIsPreorder(isPreorder, 1);
 		List<ProductDTO> productsDTO = new ArrayList<>();
 		ProductDTO productDTO = null;
 		for(Product pro : products) {
@@ -464,7 +464,7 @@ public class ProductService {
 	// 依語言查詢商品 華語/日韓/西洋
 		public List<ProductDTO> findByLanguage(Integer languageNo){
 			Language language = languageService.findById(languageNo);
-			List<Product> products = productRepo.findByLanguage(language);
+			List<Product> products = productRepo.findByLanguage(language, 1);
 			List<ProductDTO> productsDTO = new ArrayList<>();
 			ProductDTO productDTO = null;
 			for(Product pro : products) {
@@ -488,7 +488,7 @@ public class ProductService {
 		// 依音樂類型查詢商品 流行/搖滾
 		public List<ProductDTO> findByStyle(Integer styleNo){
 			ProductStyle style = prodStyleService.findById(styleNo);
-			List<Product> products = productRepo.findByStyle(style);
+			List<Product> products = productRepo.findByStyle(style, 1);
 			List<ProductDTO> productsDTO = new ArrayList<>();
 			ProductDTO productDTO = null;
 			for(Product pro : products) {

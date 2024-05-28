@@ -112,14 +112,19 @@ public class CartController {
         Integer productId = cartItemObj.getInt("productId");
         Integer productStock = productService.findById(productId).getStock();
 
-        if (memberId == null) {
+        if (memberId == 0) {
             responseObj.put("message", "請登入會員");
             return responseObj.toString();
         } else if (productStock != 0) {
 
             cartService.addOneVolumn(memberId, productId);
 
-            responseObj.put("message", "+ 1");
+            ProductDTO itemProduct = productService.findById(productId);
+            Cart item = cartService.findTheCartItemAndProduct(memberId, productId);
+            responseObj
+                    .put("message", "+ 1")
+                    .put("price", itemProduct.getUnitPrice());
+            // .put("count", item.getCount());
             return responseObj.toString();
         }
         {
@@ -138,16 +143,17 @@ public class CartController {
         Integer productId = cartItemObj.getInt("productId");
         // Integer productStock = productService.findById(productId).getStock();
 
-        if (memberId == null) {
+        if (memberId == 0) {
             responseObj.put("message", "請登入會員");
             return responseObj.toString();
         }
 
         cartService.minusOneVolumn(memberId, productId);
 
-        List<Cart> cartList = cartService.findUsersCartService(memberId);
+        responseObj.put(obj, productId);
+        // List<Cart> cartList = cartService.findUsersCartService(memberId);
 
-        return cartList.toString();
+        return responseObj.toString();
     }
 
 }
