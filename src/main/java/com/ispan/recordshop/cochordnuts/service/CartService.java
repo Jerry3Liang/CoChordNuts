@@ -115,4 +115,10 @@ public class CartService {
 		}
 	}
 
+	@Transactional
+	public void deleteItemInCart(Integer loggedInUser, Integer photoId) {
+
+		Cart cart = cartRepo.findByMemberAndProducts(loggedInUser, photoId);
+		cartRepo.delete(cart);
+	}
 }
