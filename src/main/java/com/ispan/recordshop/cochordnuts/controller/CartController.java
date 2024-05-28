@@ -51,7 +51,7 @@ public class CartController {
 
         Integer memberId = Integer.parseInt(Objj.getString("memberNo"));
         Integer productId = Objj.getInt("productId");
-
+        Integer count = Objj.getInt("count");
         // String productId1 = productId.substring(0, productId.length() - 1);
         // Integer productId2 = Integer.parseInt(productId1);
 
@@ -60,7 +60,7 @@ public class CartController {
             return responseObj.toString();
         }
         // int memberId = 1;
-        cartService.addToCartService(memberId, productId);
+        cartService.addToCartService(memberId, productId, count);
 
         // List<Product> allProducts = productRepository.findAll();
         String productName = productService.findById(productId).getProductName();
