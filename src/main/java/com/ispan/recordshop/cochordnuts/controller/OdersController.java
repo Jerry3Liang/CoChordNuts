@@ -5,6 +5,9 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.ispan.recordshop.cochordnuts.dto.CartForOrdersDto;
 import com.ispan.recordshop.cochordnuts.dto.OrderDetailDto;
@@ -22,9 +26,6 @@ import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
 import com.ispan.recordshop.cochordnuts.service.impl.OrderDetailServiceImpl;
 import com.ispan.recordshop.cochordnuts.service.impl.OrdersServiceImpl;
-
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 
 
 
@@ -167,18 +168,20 @@ public class OdersController {
 		JSONObject obj = new JSONObject(json);
 		JSONArray array = new JSONArray();
 		Integer count;
-		if(obj.getString("num")!=null && obj.getString("num")!="") {			 
-			count = ordersServiceImpl.findfindBymemberNoCount(obj);
+		if(obj.getString("num")!=null && obj.getString("num")!="") {	
+			
+			count = ordersServiceImpl.findMemberByMemberNoAndOrderNoCount(obj);
+		
 		}else {
 			count=ordersServiceImpl.findfindBymemberNoCount(obj);
+		
 		}
-
-//		Integer count = ordersServiceImpl.findfindBymemberNoCount(obj);
 		List<Orders> orders = ordersServiceImpl.findBymemberNo(obj);
 		for (Orders Order : orders) {
 			JSONObject item = new JSONObject(Order);
 			array.put(item);
 		}
+		System.out.println("數量:"+count);
 		responseJson.put("count", count);
 		responseJson.put("memberOrders", array);
 		return responseJson.toString();
@@ -212,18 +215,38 @@ public class OdersController {
 		
 		return responseJson.toString();
 	}
-//	@GetMapping("/orders/findOrderPage/{pageNum}")
-//	 public String findOrderPage(@PathVariable Integer pageNum) {
-//		JSONObject responseJson = new JSONObject();
-//		JSONArray array =new JSONArray();
-//		Page<Orders> order = ordersServiceImpl.findOrdersPage(pageNum);
-//		for(Orders o:order) {
-//			JSONObject item = new JSONObject(o);
-//			array.put(item);
-//		}
-//		responseJson.put("orderPage",array);
-//		return responseJson.toString();
-//		
-//		 
-//	 }
+	
+	@PostMapping("/makePayment")
+	public ResponseEntity<String> makePayment(@RequestBody String requestBody) {
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.add("Content-Type", "application/json; charset=UTF-8");
+	    headers.add("X-LINE-ChannelId", "2005446685");
+	    headers.add("X-LINE-ChannelSecret", "63941849e2107100e64609b4f2e1cde6");
+
+	    HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+
+	    RestTemplate restTemplate = new RestTemplate();
+	    String linePayApiUrl = "https://sandbox-api-pay.line.me/v2/payments/request";
+
+	    ResponseEntity<String> response = restTemplate.postForEntity(linePayApiUrl, entity, String.class);
+
+	    return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+	}
+	@PostMapping("/makeConfirm/{transactionId}")
+	public ResponseEntity<String> makeConfirm(@PathVariable String transactionId, @RequestBody String requestBody) {
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.add("Content-Type", "application/json; charset=UTF-8");
+	    headers.add("X-LINE-ChannelId", "2005446685");
+	    headers.add("X-LINE-ChannelSecret", "63941849e2107100e64609b4f2e1cde6");
+
+	    HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+
+	    RestTemplate restTemplate = new RestTemplate();
+	    String linePayConfirm = "https://sandbox-api-pay.line.me/v2/payments/"+transactionId+"/confirm";
+
+	    ResponseEntity<String> response = restTemplate.postForEntity(linePayConfirm, entity, String.class);
+
+	    return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+	}
+
 }
