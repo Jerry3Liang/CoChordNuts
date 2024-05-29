@@ -59,6 +59,7 @@ public class WishListService {
 			productDTO.setPhoto(wish.getProduct().getPhoto());
 			productDTO.setUnitPrice(wish.getProduct().getUnitPrice());
 			productDTO.setDiscount(wish.getProduct().getDiscount());
+			productDTO.setArtistType(wish.getProduct().getArtist().getArtistName());
 			products.add(productDTO);
 		}
 		return products;

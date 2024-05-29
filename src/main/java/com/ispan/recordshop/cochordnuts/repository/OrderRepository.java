@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ispan.recordshop.cochordnuts.model.Orders;
 
@@ -31,4 +33,11 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
 	
 	@Query(value="SELECT COUNT(*) FROM Orders ", nativeQuery = true)
 	public Integer findAllOrderCount();
+	
+	@Transactional
+    @Modifying
+	@Query(value="Delete Cart where member_memberNo=:memberNo ", nativeQuery = true)
+	public void deleteCartByMemberNo(@Param("memberNo") Integer memberNo);
+	
+	
 }

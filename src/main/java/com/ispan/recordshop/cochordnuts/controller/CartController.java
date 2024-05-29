@@ -169,20 +169,21 @@ public class CartController {
     }
     @PostMapping("/cart/buyAgain/{orderNo}")
     public String buyAgain(@PathVariable String orderNo) {
-    	
+    	JSONObject responseObj = new JSONObject();
     	List<Cart> cartArray = new ArrayList<>();
     	Orders orders = ordersServiceImpl.findByOrderNo(Integer.valueOf(orderNo)).get();
     	Integer member = orders.getMemberNo();
     	List<OrderDetail> orderDetail=orders.getOrderDetail();
     	System.out.println(member);
-    	
+    	Integer c = 0 ;
     	for(OrderDetail anDetail : orderDetail) {
+    		c+=1;
     		Cart cart =new Cart();
     		CartId cartId= new CartId();
     		
     		cart.setMember(memberService.findById(member));
         	cartId.setMemberId(member);
-//        	  cart.setCartId(cartId)  		
+ 		
     		cart.setCount(anDetail.getProductBoughtCount());
     		
     		cart.setProduct(productRepository.findById(anDetail.getProductNo()).get());
@@ -190,15 +191,24 @@ public class CartController {
     		
     		cart.setCartId(cartId);
     		
-    		cartService.cartAdd(cart);
-    		System.out.println(cartService.cartAdd(cart));
-//    		cartArray.add(cart);
+//    		cartService.cartAdd(cart);
+    		
+    		cartArray.add(cart);
+
     		
     	}
-//    	cartService.cartList(cartArray);
+    	
+    	boolean rs = cartService.cartList(cartArray);
+    	
+    	responseObj.put("result", rs);
+    	return responseObj.toString() ; 
+    		
+    	
+    	
+    	
         
       
-        return null;
+        
     }
     
 

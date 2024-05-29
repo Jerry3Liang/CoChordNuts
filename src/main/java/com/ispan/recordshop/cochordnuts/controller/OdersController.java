@@ -24,6 +24,7 @@ import com.ispan.recordshop.cochordnuts.model.Member;
 import com.ispan.recordshop.cochordnuts.model.OrderDetail;
 import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
+import com.ispan.recordshop.cochordnuts.service.CartService;
 import com.ispan.recordshop.cochordnuts.service.impl.OrderDetailServiceImpl;
 import com.ispan.recordshop.cochordnuts.service.impl.OrdersServiceImpl;
 
@@ -42,10 +43,12 @@ public class OdersController {
 	@Autowired
 	private OrderDetailServiceImpl orderDetailServiceImpl;
 	
+	
 
 	@SuppressWarnings("unused")
 	@PostMapping("/orders/insert/{MemberNo}") // 前台下單 User輸入運送方式、付款方式等等
 	public String create(@RequestBody Orders od,@PathVariable Integer MemberNo) {
+		
 		JSONObject responseJson = new JSONObject(od);
 		System.out.println(responseJson);
 //		od.setMemberNo((Member)httpSession.getAttribute("UserId"));//之後再打開	
@@ -66,6 +69,8 @@ public class OdersController {
 			responseJson.put("orderNo", od.getOrderNo());
 			responseJson.put("memberNo", MemberNo);
 			List<CartForOrdersDto> carts=ordersServiceImpl.findCartByMember2(MemberNo,order);//依會員編號找到Cart
+			
+			
 			Integer i =1;
 			for(CartForOrdersDto cart :carts) {
 				orderDetailServiceImpl.insert(cart);
@@ -73,7 +78,7 @@ public class OdersController {
 			}
 			responseJson.put("orderDetailInsert", i);
 	
-			
+			ordersServiceImpl.deleteCartByMemberNo(MemberNo);
 			
 		} else {
 			responseJson.put("success", false);
@@ -116,27 +121,33 @@ public class OdersController {
 	@PostMapping("/orders/findAll") // 後台訂單搜尋全部
 	public String findAll(@RequestBody String json) {
 		System.out.println("findAll");
+
 		JSONObject responseJson = new JSONObject();
-		JSONObject obj = new JSONObject(json);
-		Integer count;
-		JSONArray array = new JSONArray();
-		if(obj.getString("num")!=null && obj.getString("num")!="") {
-			Integer num =Integer.parseInt(obj.getString("num")) ;
-			count = ordersServiceImpl.findOrderCount(num);
-		}else {
-			count=ordersServiceImpl.findAllOrderCount();
-		}
+			JSONObject obj = new JSONObject(json);
+			Integer count;
+			JSONArray array = new JSONArray();
+			if (obj.getString("num") != null && obj.getString("num") != "") {
+				Integer num = Integer.parseInt(obj.getString("num"));
+				count = ordersServiceImpl.findOrderCount(num);
+			} else {
+				count = ordersServiceImpl.findAllOrderCount();
+			}
+			List<Orders> orders = ordersServiceImpl.selectAll(obj);
+			
+			if(orders!=null) {
+				for (Orders order : orders) {
+					JSONObject item = new JSONObject(order);
+					array.put(item);
+				}				
+				responseJson.put("list", array);
+				responseJson.put("count", count);
+			}else {
+				responseJson.put("error", false);
+			}
+			
+			return responseJson.toString();
+	
 		
-		List<Orders> orders = ordersServiceImpl.selectAll(obj);
-		
-		for (Orders order : orders) {			
-			JSONObject item = new JSONObject(order);
-			array.put(item);
-		}
-		responseJson.put("list", array);
-		responseJson.put("count", count);
-		System.out.println(responseJson.toString());
-		return responseJson.toString();
 	}
 
 	@GetMapping("/orders/findByOrderNo/{odNo}") //依訂單編號，單筆搜尋訂單及訂單詳細內容
@@ -177,13 +188,22 @@ public class OdersController {
 		
 		}
 		List<Orders> orders = ordersServiceImpl.findBymemberNo(obj);
-		for (Orders Order : orders) {
-			JSONObject item = new JSONObject(Order);
-			array.put(item);
+		if(orders!=null) {
+			for (Orders Order : orders) {
+				JSONObject item = new JSONObject(Order);
+				array.put(item);
+			}
+			responseJson.put("count", count);
+			responseJson.put("memberOrders", array);	
+			responseJson.put("result", true);
+		}else {			
+			responseJson.put("result", false);
 		}
-		System.out.println("數量:"+count);
-		responseJson.put("count", count);
-		responseJson.put("memberOrders", array);
+		
+		
+		
+		
+		
 		return responseJson.toString();
 	}
 	

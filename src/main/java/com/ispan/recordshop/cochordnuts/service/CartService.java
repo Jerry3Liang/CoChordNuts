@@ -116,12 +116,22 @@ public class CartService {
 	}
 
 
-//	public void cartList(List<Cart> cart) {
-//		cartRepo.saveAllAndFlush(cart);
-//	}
+	public boolean cartList(List<Cart> cart) {
+		if(cartRepo.saveAllAndFlush(cart)!=null) {
+			return true;
+		}else {
+			return false;
+		}
+		
+	}
 	
-	public Cart cartAdd(Cart cart) {
-		return cartRepo.save(cart);
+	public boolean cartAdd(Cart cart) {
+		if(cartRepo.save(cart)!=null) {
+			return true;
+		}else {
+			return false;
+		}
+		
 	}
 
 

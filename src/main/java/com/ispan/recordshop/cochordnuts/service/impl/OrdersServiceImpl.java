@@ -225,5 +225,7 @@ public class OrdersServiceImpl  {
 	}
 		return cartArray;
 }
-	
+	public void deleteCartByMemberNo(Integer memberNo) {
+		orderRepository.deleteCartByMemberNo(memberNo);
+	}
 }
