@@ -115,7 +115,7 @@ public class CartService {
 		}
 	}
 
-<<<<<<< HEAD
+
 //	public void cartList(List<Cart> cart) {
 //		cartRepo.saveAllAndFlush(cart);
 //	}
@@ -124,12 +124,11 @@ public class CartService {
 		return cartRepo.save(cart);
 	}
 
-=======
+
 	@Transactional
 	public void deleteItemInCart(Integer loggedInUser, Integer photoId) {
 
 		Cart cart = cartRepo.findByMemberAndProducts(loggedInUser, photoId);
 		cartRepo.delete(cart);
 	}
->>>>>>> ba35b0fbd405851ceb90f99f7d7af8c06248ef94
 }
