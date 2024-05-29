@@ -17,6 +17,10 @@ public class Cart {
 	@EmbeddedId
 	private CartId cartId;
 
+	@Override
+	public String toString() {
+		return "Cart [cartId=" + cartId + ", Count=" + Count + ", member=" + member + ", product=" + product + "]";
+	}
 	private Integer Count;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

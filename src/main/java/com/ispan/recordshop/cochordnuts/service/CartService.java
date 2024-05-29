@@ -115,4 +115,12 @@ public class CartService {
 		}
 	}
 
+//	public void cartList(List<Cart> cart) {
+//		cartRepo.saveAllAndFlush(cart);
+//	}
+	
+	public Cart cartAdd(Cart cart) {
+		return cartRepo.save(cart);
+	}
+
 }

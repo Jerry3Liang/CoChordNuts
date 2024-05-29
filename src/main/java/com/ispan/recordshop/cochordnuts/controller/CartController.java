@@ -1,5 +1,7 @@
 package com.ispan.recordshop.cochordnuts.controller;
 
+import java.util.ArrayList;
+
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 import java.util.List;
@@ -8,17 +10,22 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispan.recordshop.cochordnuts.dto.ProductDTO;
 import com.ispan.recordshop.cochordnuts.model.Cart;
+import com.ispan.recordshop.cochordnuts.model.CartId;
+import com.ispan.recordshop.cochordnuts.model.OrderDetail;
+import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.model.Product;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
 import com.ispan.recordshop.cochordnuts.service.CartService;
 import com.ispan.recordshop.cochordnuts.service.ProductService;
+import com.ispan.recordshop.cochordnuts.service.impl.MemberService;
+import com.ispan.recordshop.cochordnuts.service.impl.OrdersServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -35,6 +42,11 @@ public class CartController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private OrdersServiceImpl ordersServiceImpl;
+    
+    @Autowired
+    private MemberService memberService ;
     // @Autowired
     // private Product product;
 
@@ -155,5 +167,39 @@ public class CartController {
 
         return responseObj.toString();
     }
+    @PostMapping("/cart/buyAgain/{orderNo}")
+    public String buyAgain(@PathVariable String orderNo) {
+    	
+    	List<Cart> cartArray = new ArrayList<>();
+    	Orders orders = ordersServiceImpl.findByOrderNo(Integer.valueOf(orderNo)).get();
+    	Integer member = orders.getMemberNo();
+    	List<OrderDetail> orderDetail=orders.getOrderDetail();
+    	System.out.println(member);
+    	
+    	for(OrderDetail anDetail : orderDetail) {
+    		Cart cart =new Cart();
+    		CartId cartId= new CartId();
+    		
+    		cart.setMember(memberService.findById(member));
+        	cartId.setMemberId(member);
+//        	  cart.setCartId(cartId)  		
+    		cart.setCount(anDetail.getProductBoughtCount());
+    		
+    		cart.setProduct(productRepository.findById(anDetail.getProductNo()).get());
+    		cartId.setProductId(anDetail.getProductNo());
+    		
+    		cart.setCartId(cartId);
+    		
+    		cartService.cartAdd(cart);
+    		System.out.println(cartService.cartAdd(cart));
+//    		cartArray.add(cart);
+    		
+    	}
+//    	cartService.cartList(cartArray);
+        
+      
+        return null;
+    }
+    
 
 }
