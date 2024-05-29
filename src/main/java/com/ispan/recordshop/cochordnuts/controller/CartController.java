@@ -1,5 +1,7 @@
 package com.ispan.recordshop.cochordnuts.controller;
 
+import java.util.ArrayList;
+
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 import java.util.List;
@@ -8,17 +10,22 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispan.recordshop.cochordnuts.dto.ProductDTO;
 import com.ispan.recordshop.cochordnuts.model.Cart;
+import com.ispan.recordshop.cochordnuts.model.CartId;
+import com.ispan.recordshop.cochordnuts.model.OrderDetail;
+import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.model.Product;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
 import com.ispan.recordshop.cochordnuts.service.CartService;
 import com.ispan.recordshop.cochordnuts.service.ProductService;
+import com.ispan.recordshop.cochordnuts.service.impl.MemberService;
+import com.ispan.recordshop.cochordnuts.service.impl.OrdersServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -35,6 +42,11 @@ public class CartController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private OrdersServiceImpl ordersServiceImpl;
+    
+    @Autowired
+    private MemberService memberService ;
     // @Autowired
     // private Product product;
 
@@ -51,7 +63,7 @@ public class CartController {
 
         Integer memberId = Integer.parseInt(Objj.getString("memberNo"));
         Integer productId = Objj.getInt("productId");
-
+        Integer count = Objj.getInt("count");
         // String productId1 = productId.substring(0, productId.length() - 1);
         // Integer productId2 = Integer.parseInt(productId1);
 
@@ -60,7 +72,7 @@ public class CartController {
             return responseObj.toString();
         }
         // int memberId = 1;
-        cartService.addToCartService(memberId, productId);
+        cartService.addToCartService(memberId, productId, count);
 
         // List<Product> allProducts = productRepository.findAll();
         String productName = productService.findById(productId).getProductName();
@@ -155,5 +167,66 @@ public class CartController {
 
         return responseObj.toString();
     }
+    @PostMapping("/cart/buyAgain/{orderNo}")
+    public String buyAgain(@PathVariable String orderNo) {
+    	JSONObject responseObj = new JSONObject();
+    	List<Cart> cartArray = new ArrayList<>();
+    	Orders orders = ordersServiceImpl.findByOrderNo(Integer.valueOf(orderNo)).get();
+    	Integer member = orders.getMemberNo();
+    	List<OrderDetail> orderDetail=orders.getOrderDetail();
+    	System.out.println(member);
+    	Integer c = 0 ;
+    	for(OrderDetail anDetail : orderDetail) {
+    		c+=1;
+    		Cart cart =new Cart();
+    		CartId cartId= new CartId();
+    		
+    		cart.setMember(memberService.findById(member));
+        	cartId.setMemberId(member);
+ 		
+    		cart.setCount(anDetail.getProductBoughtCount());
+    		
+    		cart.setProduct(productRepository.findById(anDetail.getProductNo()).get());
+    		cartId.setProductId(anDetail.getProductNo());
+    		
+    		cart.setCartId(cartId);
+    		
+//    		cartService.cartAdd(cart);
+    		
+    		cartArray.add(cart);
+
+    		
+    	}
+    	
+    	boolean rs = cartService.cartList(cartArray);
+    	
+    	responseObj.put("result", rs);
+    	return responseObj.toString() ; 
+    		
+    	
+    	
+    	
+        
+      
+        
+    }
+    
+
+    @PostMapping("/cart/deleteItem")
+    public String deleteItemFromCart(@RequestBody String obj) {
+        JSONObject responseObj = new JSONObject();
+        JSONObject cartItemObj = new JSONObject(obj);
+
+        Integer memberId = Integer.parseInt(cartItemObj.getString("memberNo"));
+        Integer productId = cartItemObj.getInt("productId");
+
+        cartService.deleteItemInCart(memberId, productId);
+
+        responseObj.put("message", "刪除成功");
+        return responseObj.toString();
+    }
+    
+  
+    
 
 }

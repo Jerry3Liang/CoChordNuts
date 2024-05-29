@@ -176,6 +176,9 @@ public class ProductService {
 		String endDate = obj.isNull("endDate")? null : obj.getString("endDate");
 		String artistName = obj.isNull("artistName")? null : obj.getString("artistName");
 		Integer productStatus = obj.isNull("productStatus")? null : obj.getInt("productStatus");
+		Integer isBest = obj.isNull("isBest")? null : obj.getInt("isBest");
+		Integer isDiscount = obj.isNull("isDiscount")? null : obj.getInt("isDiscount");
+		Integer isPreorder = obj.isNull("isPreorder")? null : obj.getInt("isPreorder");
 		Integer style = obj.isNull("style")? null : obj.getInt("style");
 		Integer language = obj.isNull("language")? null : obj.getInt("language");
 		
@@ -201,6 +204,16 @@ public class ProductService {
 		}
 		if(productStatus != null) {
 			predicates.add(criteriaBuilder.equal(table.get("productStatus"), productStatus));
+		}
+		if(isBest != null) {
+			predicates.add(criteriaBuilder.equal(table.get("isBest"), isBest));
+		}
+		if(isDiscount != null) {
+//			System.out.println(isDiscount);
+			predicates.add(criteriaBuilder.equal(table.get("isDiscount"), isDiscount));
+		}
+		if(isPreorder != null) {
+			predicates.add(criteriaBuilder.equal(table.get("isPreorder"), isPreorder));
 		}
 		if(productName != null && productName.length() != 0) {
 			System.out.println(productName);
@@ -302,6 +315,9 @@ public class ProductService {
 			String endDate = obj.isNull("endDate")? null : obj.getString("endDate");
 			String artistName = obj.isNull("artistName")? null : obj.getString("artistName");
 			Integer productStatus = obj.isNull("productStatus")? null : obj.getInt("productStatus");
+			Integer isBest = obj.isNull("isBest")? null : obj.getInt("isBest");
+			Integer isDiscount = obj.isNull("isDiscount")? null : obj.getInt("isDiscount");
+			Integer isPreorder = obj.isNull("isPreorder")? null : obj.getInt("isPreorder");
 			Integer style = obj.isNull("style")? null : obj.getInt("style");
 			Integer language = obj.isNull("language")? null : obj.getInt("language");
 			
@@ -324,6 +340,16 @@ public class ProductService {
 			}
 			if(productStatus != null) {
 				predicates.add(criteriaBuilder.equal(table.get("productStatus"), productStatus));
+			}
+			if(isBest != null) {
+				predicates.add(criteriaBuilder.equal(table.get("isBest"), isBest));
+			}
+			if(isDiscount != null) {
+				System.out.println(isDiscount);
+				predicates.add(criteriaBuilder.equal(table.get("isDiscount"), isDiscount));
+			}
+			if(isPreorder != null) {
+				predicates.add(criteriaBuilder.equal(table.get("isPreorder"), isPreorder));
 			}
 			if(productName != null && productName.length() != 0) {
 				System.out.println(productName);

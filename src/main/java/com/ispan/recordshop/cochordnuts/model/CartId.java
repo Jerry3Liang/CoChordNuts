@@ -18,6 +18,11 @@ public class CartId implements Serializable {
 	@Column(name = "fk_product_id", nullable = false)
 	private Integer productId;
 
+	@Override
+	public String toString() {
+		return "CartId [memberId=" + memberId + ", productId=" + productId + "]";
+	}
+
 	public Integer getMemberId() {
 		return memberId;
 	}
