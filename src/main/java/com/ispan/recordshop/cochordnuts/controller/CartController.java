@@ -202,4 +202,18 @@ public class CartController {
     }
     
 
+    @PostMapping("/cart/deleteItem")
+    public String deleteItemFromCart(@RequestBody String obj) {
+        JSONObject responseObj = new JSONObject();
+        JSONObject cartItemObj = new JSONObject(obj);
+
+        Integer memberId = Integer.parseInt(cartItemObj.getString("memberNo"));
+        Integer productId = cartItemObj.getInt("productId");
+
+        cartService.deleteItemInCart(memberId, productId);
+
+        responseObj.put("message", "刪除成功");
+        return responseObj.toString();
+    }
+
 }
