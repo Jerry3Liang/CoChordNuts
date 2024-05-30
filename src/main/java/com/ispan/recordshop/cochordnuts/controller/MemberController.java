@@ -1,12 +1,16 @@
 package com.ispan.recordshop.cochordnuts.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +18,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispan.recordshop.cochordnuts.dto.MemberDTO;
 import com.ispan.recordshop.cochordnuts.model.CustomerCase;
 import com.ispan.recordshop.cochordnuts.model.Member;
-import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.service.impl.MemberService;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 
@@ -31,8 +33,29 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @PostMapping("/sendCode")
+    public Map<String, Object> sendVerificationCode(@RequestBody Map<String, String> request) {
+        Map<String, Object> response = new HashMap<>();
+        String email = request.get("email");
+        String code = request.get("code");
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("CoChordNuts註冊驗證碼");
+        message.setText("您好，感謝您在CoChordsNuts的註冊申請 !\r\n" +
+                "您的驗證碼是: " + code + "\r\n" + "如果這不是您本人的操作，請忽略本信件 !");
+        mailSender.send(message);
+
+        response.put("success", true);
+        response.put("message", "驗證碼已發送至您的Email!");
+        return response;
+    }
+
     // 帳號是否存在
-    @GetMapping("/products/email/{email}")
+    @GetMapping("/members/email/{email}")
     public String existsByEmail(@PathVariable("email") String email) {
         JSONObject responseJson = new JSONObject();
         boolean exist = memberService.existByEmail(email);
@@ -42,6 +65,21 @@ public class MemberController {
         } else {
             responseJson.put("success", true);
             responseJson.put("message", "帳號不存在");
+        }
+        return responseJson.toString();
+    }
+
+    // 電話是否存在
+    @GetMapping("/members/phone/{phone}")
+    public String existsByPhone(@PathVariable("phone") String phone) {
+        JSONObject responseJson = new JSONObject();
+        boolean exist = memberService.existByPhone(phone);
+        if (exist) {
+            responseJson.put("success", false);
+            responseJson.put("message", "電話已存在");
+        } else {
+            responseJson.put("success", true);
+            responseJson.put("message", "電話不存在");
         }
         return responseJson.toString();
     }
