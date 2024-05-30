@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.ispan.recordshop.cochordnuts.dao.CustomerCaseDaoImpl;
 import com.ispan.recordshop.cochordnuts.dto.CartForOrdersDto;
 import com.ispan.recordshop.cochordnuts.dto.OrderDetailDto;
 import com.ispan.recordshop.cochordnuts.model.Member;
@@ -25,6 +26,7 @@ import com.ispan.recordshop.cochordnuts.model.OrderDetail;
 import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
 import com.ispan.recordshop.cochordnuts.service.CartService;
+import com.ispan.recordshop.cochordnuts.service.impl.CustomerCaseServiceImpl;
 import com.ispan.recordshop.cochordnuts.service.impl.OrderDetailServiceImpl;
 import com.ispan.recordshop.cochordnuts.service.impl.OrdersServiceImpl;
 
@@ -43,7 +45,8 @@ public class OdersController {
 	@Autowired
 	private OrderDetailServiceImpl orderDetailServiceImpl;
 	
-	
+	@Autowired
+	private CustomerCaseServiceImpl customerCaseServiceImpl;
 
 	@SuppressWarnings("unused")
 	@PostMapping("/orders/insert/{MemberNo}") // 前台下單 User輸入運送方式、付款方式等等
@@ -150,6 +153,8 @@ public class OdersController {
 			JSONObject item = new JSONObject(Dto);
 			array.put(item);
 		}
+		boolean isCustomerCaseExist= customerCaseServiceImpl.caseExitByOrderNo(odNo);
+		responseJson.put("isCustomerCaseExist", isCustomerCaseExist);
 		responseJson.put("orderDetailDto", array);
 		responseJson.put("order", obj);
 		return responseJson.toString();
