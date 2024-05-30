@@ -119,9 +119,9 @@ public class Orders {
 		this.memberNo = memberNo;
 	}
 	
-	public CustomerCase getCustomerCase() {
-		return customerCase;
-	}
+//	public CustomerCase getCustomerCase() {
+//		return customerCase;
+//	}
 
 	public void setCustomerCase(CustomerCase customerCase) {
 		this.customerCase = customerCase;
