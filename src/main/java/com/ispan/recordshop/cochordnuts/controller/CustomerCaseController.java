@@ -27,7 +27,7 @@ public class CustomerCaseController {
             @RequestParam(required = false) String search,
 
             //排序 Sorting
-            @RequestParam(defaultValue = "message_time") String orderby,
+            @RequestParam(defaultValue = "messageTime") String orderby,
             @RequestParam(defaultValue = "desc") String sort,
 
             //分頁 Pagination

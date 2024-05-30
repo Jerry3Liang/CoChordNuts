@@ -13,7 +13,7 @@ public class MemberAnswerRowMapper implements RowMapper<MemberAnswerDto> {
     public MemberAnswerDto mapRow(ResultSet rs, int rowNum) throws SQLException {
         MemberAnswerDto memberAnswerDto = new MemberAnswerDto();
         memberAnswerDto.setAnswerMessage(rs.getString("message"));
-        memberAnswerDto.setMessageTime(rs.getString("message_time"));
+        memberAnswerDto.setMessageTime(rs.getString("messageTime"));
         memberAnswerDto.setMemberName(rs.getString("name"));
 
         return memberAnswerDto;

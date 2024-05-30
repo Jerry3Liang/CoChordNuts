@@ -13,11 +13,11 @@ public class CustomerCaseRowMapper implements RowMapper<CustomerCaseRequest> {
     @Override
     public CustomerCaseRequest mapRow(ResultSet rs, int rowNum) throws SQLException {
         CustomerCaseRequest customerCase = new CustomerCaseRequest();
-        customerCase.setCustomerCaseNo(rs.getInt("case_no"));
+        customerCase.setCustomerCaseNo(rs.getInt("caseNo"));
         customerCase.setSubject(rs.getString("subject"));
         customerCase.setStatus(rs.getInt("status"));
-        customerCase.setOrderNo(rs.getInt("order_no"));
-        customerCase.setMemberNo(rs.getInt("member_no"));
+        customerCase.setOrderNo(rs.getInt("orderNo"));
+        customerCase.setMemberNo(rs.getInt("memberNo"));
         return customerCase;
     }
 }

@@ -66,6 +66,7 @@ public class CaseDetailController {
         CaseDetailRequest caseDetailRequest = caseDetailService.getCaseDetailById(caseDetailId);
         CustomerCaseRequest customerCaseRequest = caseService.getCaseById(caseDetailRequest.getCustomerCaseNo());
         customerCaseRequest.setStatus(1);
+
         caseService.updateCaseStatus(customerCaseRequest.getCustomerCaseNo(), customerCaseRequest);
 
         return ResponseEntity.created(URI.create("http://localhost:8080/rest/findContent/" + caseDetailId)).body(caseDetailRequest);
@@ -94,6 +95,9 @@ public class CaseDetailController {
     @GetMapping("/findMemberAnswer/{memberNo}")
     public ResponseEntity<?> findMemberAnswerByMemberNo(@PathVariable(name = "memberNo") Integer memberNo){
         List<MemberAnswerDto> memberAnswerDto = caseDetailService.findMemberAnswerByMemberNo(memberNo);
+        for(MemberAnswerDto member : memberAnswerDto){
+            System.out.println(member.getMemberName());
+        }
         if(memberAnswerDto != null){
             return ResponseEntity.ok(memberAnswerDto);
         } else {

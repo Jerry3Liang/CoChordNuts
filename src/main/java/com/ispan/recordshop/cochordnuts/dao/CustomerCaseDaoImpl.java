@@ -26,11 +26,11 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     @Override
     public List<CustomerCaseDto> getCases(CustomerCaseParams customerCaseParams) {
-        String sql = "SELECT MIN(cc.case_no) case_no, m.name, cc.subject, MAX(cd.message_time) message_time, MIN(ee.emp_name) emp_name, cc.status FROM customer_case cc " +
-                     "LEFT JOIN member m ON cc.member_no = m.member_no " +
-                     "LEFT JOIN case_detail cd ON cc.case_no = cd.case_no " +
-                     "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
-                     "GROUP BY cc.case_no, cc.subject, cc.status, m.name";
+        String sql = "SELECT MIN(cc.caseNo) caseNo, m.name, cc.subject, MAX(cd.messageTime) messageTime, MIN(ee.empName) empName, cc.status FROM customer_case cc " +
+                     "LEFT JOIN member m ON cc.memberNo = m.memberNo " +
+                     "LEFT JOIN case_detail cd ON cc.caseNo = cd.caseNo " +
+                     "LEFT JOIN employee ee ON cd.employeeNo = ee.employeeNo " +
+                     "GROUP BY cc.caseNo, cc.subject, cc.status, m.name";
 
         Map<String, Object> map = new HashMap<>();
 
@@ -64,7 +64,7 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
 
     @Override
     public Integer createCase(CustomerCaseRequest customerCaseRequest) {
-        String sql = "INSERT INTO customer_case (subject, status, member_no, order_no) " +
+        String sql = "INSERT INTO customer_case (subject, status, memberNo, orderNo) " +
                      "VALUES (:subject, :status, :memberNo, :orderNo)";
 
         Map<String, Object> map = new HashMap<>();
@@ -82,8 +82,8 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
 
     @Override
     public CustomerCaseRequest getCaseById(Integer customerCaseNo) {
-        String sql = "SELECT case_no, subject, status, order_no, member_no FROM customer_case " +
-                     "WHERE case_no = :customerCaseNo";
+        String sql = "SELECT caseNo, subject, status, orderNo, memberNo FROM customer_case " +
+                     "WHERE caseNo = :customerCaseNo";
 
         Map<String, Object> map = new HashMap<>();
         map.put("customerCaseNo", customerCaseNo);
@@ -99,12 +99,12 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
 
     @Override
     public List<MemberAnswerCaseDto> getCaseByMemberNo(Integer memberNo) {
-        String sql = "SELECT MIN(cc.case_no) case_no, m.name, cc.subject, MAX(cd.message_time) message_time, MIN(ee.emp_name) emp_name, cc.status FROM customer_case cc " +
-                     "LEFT JOIN member m ON cc.member_no = m.member_no " +
-                     "LEFT JOIN case_detail cd ON cc.case_no = cd.case_no " +
-                     "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
-                     "WHERE cc.member_no = :memberNo " +
-                     "GROUP BY cc.case_no, cc.subject, cc.status, m.name";
+        String sql = "SELECT MIN(cc.caseNo) caseNo, m.name, cc.subject, MAX(cd.messageTime) messageTime, MIN(ee.empName) empName, cc.status FROM customer_case cc " +
+                     "LEFT JOIN member m ON cc.memberNo = m.memberNo " +
+                     "LEFT JOIN case_detail cd ON cc.caseNo = cd.caseNo " +
+                     "LEFT JOIN employee ee ON cd.employeeNo = ee.employeeNo " +
+                     "WHERE cc.memberNo = :memberNo " +
+                     "GROUP BY cc.caseNo, cc.subject, cc.status, m.name";
 
         Map<String, Object> map = new HashMap<>();
         map.put("memberNo", memberNo);
@@ -115,7 +115,7 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
     @Transactional
     @Override
     public void updateCaseStatus(Integer customerCaseNo, CustomerCaseRequest customerCaseRequest) {
-        String sql = "UPDATE customer_case SET status = :status WHERE case_no = :caseNo";
+        String sql = "UPDATE customer_case SET status = :status WHERE caseNo = :caseNo";
 
         Map<String, Object> map = new HashMap<>();
         map.put("caseNo", customerCaseNo);
