@@ -44,9 +44,9 @@ public class CartController {
 
     @Autowired
     private OrdersServiceImpl ordersServiceImpl;
-    
+
     @Autowired
-    private MemberService memberService ;
+    private MemberService memberService;
     // @Autowired
     // private Product product;
 
@@ -64,6 +64,8 @@ public class CartController {
         Integer memberId = Integer.parseInt(Objj.getString("memberNo"));
         Integer productId = Objj.getInt("productId");
         Integer count = Objj.getInt("count");
+        Integer productStock = productService.findById(productId).getStock();
+
         // String productId1 = productId.substring(0, productId.length() - 1);
         // Integer productId2 = Integer.parseInt(productId1);
 
@@ -72,13 +74,15 @@ public class CartController {
             return responseObj.toString();
         }
         // int memberId = 1;
+
         cartService.addToCartService(memberId, productId, count);
 
         // List<Product> allProducts = productRepository.findAll();
         String productName = productService.findById(productId).getProductName();
         responseObj
                 .put("message", "加入購物車 :)")
-                .put("productName", productName);
+                .put("productName", productName)
+                .put("inventory", productStock);
         return responseObj.toString();
 
     }
@@ -89,6 +93,7 @@ public class CartController {
         JSONObject responseObj = new JSONObject();
         JSONObject memberObj = new JSONObject(memberIdObj);
         Integer memberId = Integer.parseInt(memberObj.getString("memberNo"));
+
         // String memberId = memberObj.getString("memberNo");
         if (memberId == 0) {
             responseObj.put("message", "請登入會員");
@@ -100,9 +105,11 @@ public class CartController {
             for (Cart item : cartList) {
 
                 Product itemProduct = item.getProduct();
+
                 JSONObject itemObj = new JSONObject()
                         .put("productId", itemProduct.getProductNo())
                         .put("productName", itemProduct.getProductName())
+                        .put("inventory", itemProduct.getStock())
                         // .put("photo", itemProduct.getPhoto())
                         .put("price", itemProduct.getUnitPrice())
                         .put("discount", itemProduct.getDiscount())
@@ -127,22 +134,24 @@ public class CartController {
         if (memberId == 0) {
             responseObj.put("message", "請登入會員");
             return responseObj.toString();
-        } else if (productStock != 0) {
-
-            cartService.addOneVolumn(memberId, productId);
-
-            ProductDTO itemProduct = productService.findById(productId);
-            Cart item = cartService.findTheCartItemAndProduct(memberId, productId);
-            responseObj
-                    .put("message", "+ 1")
-                    .put("price", itemProduct.getUnitPrice());
-            // .put("count", item.getCount());
-            return responseObj.toString();
         }
-        {
-            responseObj.put("message", "目前已無庫存");
-            return responseObj.toString();
-        }
+        // else if (productStock != 0) {
+
+        cartService.addOneVolumn(memberId, productId);
+
+        ProductDTO itemProduct = productService.findById(productId);
+        Cart item = cartService.findTheCartItemAndProduct(memberId, productId);
+        responseObj
+                .put("productName", itemProduct.getProductName())
+                .put("message", "+ 1")
+                .put("price", itemProduct.getUnitPrice())
+                .put("inventory", productStock);
+        // .put("count", item.getCount());
+        return responseObj.toString();
+        // }
+        // {
+        // responseObj.put("message", "目前已無庫存");
+        // return responseObj.toString();
     }
 
     @PostMapping("/cart/minusOne")
@@ -167,50 +176,43 @@ public class CartController {
 
         return responseObj.toString();
     }
+
     @PostMapping("/cart/buyAgain/{orderNo}")
     public String buyAgain(@PathVariable String orderNo) {
-    	JSONObject responseObj = new JSONObject();
-    	List<Cart> cartArray = new ArrayList<>();
-    	Orders orders = ordersServiceImpl.findByOrderNo(Integer.valueOf(orderNo)).get();
-    	Integer member = orders.getMemberNo();
-    	List<OrderDetail> orderDetail=orders.getOrderDetail();
-    	System.out.println(member);
-    	Integer c = 0 ;
-    	for(OrderDetail anDetail : orderDetail) {
-    		c+=1;
-    		Cart cart =new Cart();
-    		CartId cartId= new CartId();
-    		
-    		cart.setMember(memberService.findById(member));
-        	cartId.setMemberId(member);
- 		
-    		cart.setCount(anDetail.getProductBoughtCount());
-    		
-    		cart.setProduct(productRepository.findById(anDetail.getProductNo()).get());
-    		cartId.setProductId(anDetail.getProductNo());
-    		
-    		cart.setCartId(cartId);
-    		
-//    		cartService.cartAdd(cart);
-    		
-    		cartArray.add(cart);
+        JSONObject responseObj = new JSONObject();
+        List<Cart> cartArray = new ArrayList<>();
+        Orders orders = ordersServiceImpl.findByOrderNo(Integer.valueOf(orderNo)).get();
+        Integer member = orders.getMemberNo();
+        List<OrderDetail> orderDetail = orders.getOrderDetail();
+        System.out.println(member);
+        Integer c = 0;
+        for (OrderDetail anDetail : orderDetail) {
+            c += 1;
+            Cart cart = new Cart();
+            CartId cartId = new CartId();
 
-    		
-    	}
-    	
-    	boolean rs = cartService.cartList(cartArray);
-    	
-    	responseObj.put("result", rs);
-    	return responseObj.toString() ; 
-    		
-    	
-    	
-    	
-        
-      
-        
+            cart.setMember(memberService.findById(member));
+            cartId.setMemberId(member);
+
+            cart.setCount(anDetail.getProductBoughtCount());
+
+            cart.setProduct(productRepository.findById(anDetail.getProductNo()).get());
+            cartId.setProductId(anDetail.getProductNo());
+
+            cart.setCartId(cartId);
+
+            // cartService.cartAdd(cart);
+
+            cartArray.add(cart);
+
+        }
+
+        boolean rs = cartService.cartList(cartArray);
+
+        responseObj.put("result", rs);
+        return responseObj.toString();
+
     }
-    
 
     @PostMapping("/cart/deleteItem")
     public String deleteItemFromCart(@RequestBody String obj) {
@@ -225,8 +227,5 @@ public class CartController {
         responseObj.put("message", "刪除成功");
         return responseObj.toString();
     }
-    
-  
-    
 
 }
