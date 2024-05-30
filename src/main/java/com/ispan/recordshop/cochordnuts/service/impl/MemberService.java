@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.ispan.recordshop.cochordnuts.dao.MemberDao;
-import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +42,6 @@ public class MemberService {
 
     @Autowired
     private BCryptPasswordEncoder bcrypt;
-
 
     public boolean existByEmail(String email) {
         if (email != null && email.length() != 0) {
