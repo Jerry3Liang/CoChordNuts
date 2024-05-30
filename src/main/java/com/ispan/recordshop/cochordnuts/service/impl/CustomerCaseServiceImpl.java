@@ -64,6 +64,11 @@ public class CustomerCaseServiceImpl implements CustomerCaseService {
         return null;
     }
 
+    @Override
+    public boolean caseExitByOrderNo(Integer orderNo) {
+        return customerCaseDao.caseExitByOrderNo(orderNo);
+    }
+
     /**
      * 根據案件編號變更回覆狀態
      * @param customerCaseNo: 主鍵

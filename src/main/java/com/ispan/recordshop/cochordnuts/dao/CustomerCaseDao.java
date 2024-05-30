@@ -19,5 +19,7 @@ public interface CustomerCaseDao {
 
     List<MemberAnswerCaseDto> getCaseByMemberNo(Integer memberNo);
 
+    boolean caseExitByOrderNo(Integer orderNo);
+
     void updateCaseStatus(Integer customerCaseNo, CustomerCaseRequest customerCaseRequest);
 }

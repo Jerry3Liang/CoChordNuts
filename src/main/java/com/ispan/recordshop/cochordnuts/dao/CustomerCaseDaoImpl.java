@@ -112,6 +112,22 @@ public class CustomerCaseDaoImpl implements CustomerCaseDao{
         return namedParameterJdbcTemplate.query(sql, map, new MemberCaseAnswerRowMapper());
     }
 
+    @Override
+    public boolean caseExitByOrderNo(Integer orderNo) {
+        String sql = "SELECT * FROM customer_case " +
+                     "WHERE orderNo = :orderNo";
+        Map<String, Object> map = new HashMap<>();
+        map.put("orderNo", orderNo);
+
+        List<CustomerCaseRequest> caseRequest = namedParameterJdbcTemplate.query(sql, map, new CustomerCaseRowMapper());
+
+        if(caseRequest.isEmpty()){
+            return false;
+        }
+
+        return true;
+    }
+
     @Transactional
     @Override
     public void updateCaseStatus(Integer customerCaseNo, CustomerCaseRequest customerCaseRequest) {

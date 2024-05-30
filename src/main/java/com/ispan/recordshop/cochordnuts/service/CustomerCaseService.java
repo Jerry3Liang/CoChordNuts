@@ -23,6 +23,8 @@ public interface CustomerCaseService {
 
     List<MemberAnswerCaseDto> getCaseByMemberNo(Integer memberNo);
 
+    boolean caseExitByOrderNo(Integer orderNo);
+
     void updateCaseStatus(Integer customerCaseNo, CustomerCaseRequest customerCaseRequest);
 
     boolean deleteCustomerCaseByCaseNo(Integer caseNo);
