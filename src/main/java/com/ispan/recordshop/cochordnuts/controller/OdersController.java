@@ -51,7 +51,6 @@ public class OdersController {
 		
 		JSONObject responseJson = new JSONObject(od);
 		System.out.println(responseJson);
-//		od.setMemberNo((Member)httpSession.getAttribute("UserId"));//之後再打開	
 		od.setMemberNo(memberRepository.findById(MemberNo).get());
 		od.setAddress();
 		od.setCreateDate();
@@ -71,14 +70,13 @@ public class OdersController {
 			List<CartForOrdersDto> carts=ordersServiceImpl.findCartByMember2(MemberNo,order);//依會員編號找到Cart
 			
 			
-			Integer i =1;
-			for(CartForOrdersDto cart :carts) {
-				orderDetailServiceImpl.insert(cart);
-				i++;			
+			
+			for(CartForOrdersDto cart :carts) {//取得carts陣列資料
+				orderDetailServiceImpl.insert(cart);//新增至orderDetail							
 			}
-			responseJson.put("orderDetailInsert", i);
+			
 	
-			ordersServiceImpl.deleteCartByMemberNo(MemberNo);
+			ordersServiceImpl.deleteCartByMemberNo(MemberNo);//下單後刪除Cart內容
 			
 		} else {
 			responseJson.put("success", false);
@@ -102,21 +100,6 @@ public class OdersController {
 		return responseJson.toString();
 	}
 	
-	@DeleteMapping("/orders/deleteById/{odNo}") // 後台刪除訂單
-	public String deleteById(@PathVariable Integer odNo) {
-		JSONObject responseJson = new JSONObject();
-		boolean rs = ordersServiceImpl.deleteById(odNo);
-		if (rs) {
-			responseJson.put("success", true);
-			responseJson.put("message", "刪除成功");
-		} else {
-			responseJson.put("success", false);
-			responseJson.put("message", "刪除失敗");
-		}
-
-		return responseJson.toString();
-	}
-
 
 	@PostMapping("/orders/findAll") // 後台訂單搜尋全部
 	public String findAll(@RequestBody String json) {

@@ -111,12 +111,11 @@ public class OrdersServiceImpl  {
 	
 	public Orders update(Integer MemberNo,Orders orders) {//修改訂單狀態
 		Integer orderNo= orders.getOrderNo();
-//		Orders oldOrders=orderRepository.findById(orderNo).get();
+
 		if(orderRepository.findById(orderNo)!=null) {
 			Member m = memberRepository.findById(MemberNo).get();
 			orders.setMemberNo(m);
 			orders.setLastModifiedDate();
-//			orders.setStatus();
 				return orderRepository.save(orders);											
 		}	
 		return null;
