@@ -14,12 +14,13 @@ public class ShowCaseDetailRowMapper implements RowMapper<CaseDetailDto> {
     @Override
     public CaseDetailDto mapRow(ResultSet rs, int rowNum) throws SQLException {
         CaseDetailDto caseDetailDto = new CaseDetailDto();
-        caseDetailDto.setCaseDetailNo(rs.getInt("case_detail_no"));
-        caseDetailDto.setCaseNo(rs.getInt("case_no"));
+        caseDetailDto.setCaseDetailNo(rs.getInt("caseDetailNo"));
+        caseDetailDto.setCaseNo(rs.getInt("caseNo"));
         caseDetailDto.setMessage(rs.getString("message"));
-        String temp = DatetimeConverter.toString(rs.getTimestamp("message_time"), "yyyy-MM-dd HH:mm:ss");
+        String temp = DatetimeConverter.toString(rs.getTimestamp("messageTime"), "yyyy-MM-dd HH:mm:ss");
         caseDetailDto.setMessageTime(temp);
-        caseDetailDto.setEmployeeName(rs.getString("emp_name"));
+        caseDetailDto.setEmployeeName(rs.getString("empName"));
+        caseDetailDto.setMemberName(rs.getString("name"));
 
         return caseDetailDto;
     }

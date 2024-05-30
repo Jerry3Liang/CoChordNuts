@@ -3,7 +3,9 @@ package com.ispan.recordshop.cochordnuts.dao;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailDto;
 import com.ispan.recordshop.cochordnuts.dto.CaseDetailRequest;
 import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
+import com.ispan.recordshop.cochordnuts.dto.MemberAnswerDto;
 import com.ispan.recordshop.cochordnuts.rowmapper.CaseDetailRowMapper;
+import com.ispan.recordshop.cochordnuts.rowmapper.MemberAnswerRowMapper;
 import com.ispan.recordshop.cochordnuts.rowmapper.ShowCaseDetailRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -25,8 +27,10 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
 
     @Override
     public List<CaseDetailDto> getAnswers(CustomerCaseParams customerCaseParams) {
-        String sql = "SELECT cd.case_detail_no, cd.case_no, cd.[message], cd.message_time, ee.emp_name FROM case_detail cd\n" +
-                     "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no WHERE 1 = 1";
+        String sql = "SELECT cd.caseDetailNo, cd.caseNo, cd.[message], cd.messageTime, ee.empName, m.name FROM case_detail cd " +
+                     "LEFT JOIN employee ee ON cd.employeeNo = ee.employeeNo " +
+                     "LEFT JOIN member m ON cd.member_no = m.memberNo " +
+                     "WHERE 1 = 1";
 
         Map<String, Object> map = new HashMap<>();
 
@@ -55,8 +59,8 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
 
     @Override
     public Integer answerContent(CaseDetailRequest caseDetailRequest) {
-        String sql = "INSERT INTO case_detail ([message], message_time, case_no, employee_no) " +
-                     "VALUES (:answerMessage, :lastMessageDate, :customerCaseNo, :employeeNo)";
+        String sql = "INSERT INTO case_detail ([message], messageTime, caseNo, employeeNo, member_no) " +
+                     "VALUES (:answerMessage, :lastMessageDate, :customerCaseNo, :employeeNo, :memberNo)";
 
         Map<String, Object> map = new HashMap<>();
         map.put("answerMessage", caseDetailRequest.getAnswerMessage());
@@ -64,6 +68,7 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
         map.put("lastMessageDate", now);
         map.put("customerCaseNo", caseDetailRequest.getCustomerCaseNo());
         map.put("employeeNo", caseDetailRequest.getEmployeeNo());
+        map.put("memberNo", caseDetailRequest.getMemberNo());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -74,7 +79,7 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
 
     @Override
     public void updateContent(Integer caseDetailNo, CaseDetailRequest caseDetailRequest) {
-        String sql = "UPDATE case_detail SET message = :answerMessage WHERE case_detail_no = :caseDetailNo";
+        String sql = "UPDATE case_detail SET message = :answerMessage WHERE caseDetailNo = :caseDetailNo";
         Map<String, Object> map = new HashMap<>();
         map.put("caseDetailNo", caseDetailNo);
         map.put("answerMessage", caseDetailRequest.getAnswerMessage());
@@ -84,10 +89,11 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
 
     @Override
     public List<CaseDetailDto> findByCaseNo(Integer caseNo) {
-        String sql = "SELECT cd.case_detail_no, cd.case_no, cd.[message], cd.message_time, ee.emp_name FROM case_detail cd " +
-                     "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
-                     "WHERE cd.case_no = :caseNo " +
-                     "ORDER BY cd.message_time ASC";
+        String sql = "SELECT cd.caseDetailNo, cd.caseNo, cd.[message], cd.messageTime, ee.empName, m.name FROM case_detail cd " +
+                     "LEFT JOIN employee ee ON cd.employeeNo = ee.employeeNo " +
+                     "LEFT JOIN member m ON cd.member_no = m.memberNo " +
+                     "WHERE cd.caseNo = :caseNo " +
+                     "ORDER BY cd.messageTime ASC";
 
         Map<String, Object> map = new HashMap<>();
         map.put("caseNo", caseNo);
@@ -97,8 +103,8 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
 
     @Override
     public CaseDetailRequest getCaseDetailById(Integer caseDetailNo) {
-        String sql = "SELECT case_detail_no, [message], message_time, case_no, employee_no FROM case_detail " +
-                     " WHERE case_detail_no = :caseDetailNo";
+        String sql = "SELECT caseDetailNo, [message], messageTime, caseNo, employeeNo, member_no FROM case_detail " +
+                     " WHERE caseDetailNo = :caseDetailNo";
 
         Map<String, Object> map = new HashMap<>();
         map.put("caseDetailNo", caseDetailNo);
@@ -114,9 +120,10 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
 
     @Override
     public CaseDetailDto findCaseDetailById(Integer caseDetailNo) {
-        String sql = "SELECT cd.case_detail_no, cd.case_no, cd.[message], cd.message_time, ee.emp_name FROM case_detail cd " +
-                     "LEFT JOIN employee ee ON cd.employee_no = ee.employee_no " +
-                     "WHERE cd.case_detail_no = :caseDetailNo";
+        String sql = "SELECT cd.caseDetailNo, cd.caseNo, cd.[message], cd.messageTime, ee.empName, m.name FROM case_detail cd " +
+                     "LEFT JOIN employee ee ON cd.employeeNo = ee.employeeNo " +
+                     "LEFT JOIN member m ON cd.member_no = m.memberNo " +
+                     "WHERE cd.caseDetailNo = :caseDetailNo";
 
         Map<String, Object> map = new HashMap<>();
         map.put("caseDetailNo", caseDetailNo);
@@ -128,5 +135,18 @@ public class CaseDetailDaoImpl implements CaseDetailDao{
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<MemberAnswerDto> findMemberAnswerByMemberNo(Integer memberNo) {
+        String sql = "SELECT cd.[message], cd.messageTime, m.name FROM case_detail cd " +
+                     "LEFT JOIN member m ON cd.member_no = m.memberNo " +
+                     "WHERE m.memberNo = :memberNo";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("memberNo", memberNo);
+
+        return namedParameterJdbcTemplate.query(sql, map, new MemberAnswerRowMapper());
+
     }
 }

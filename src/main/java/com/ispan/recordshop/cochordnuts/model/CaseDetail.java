@@ -38,6 +38,9 @@ public class CaseDetail implements Serializable {
     @JoinColumn(name = "employeeNo")
     private Employee employeeNo;
 
+    @Column(name = "member_no")
+    private Integer memberNo;
+
     //無參數 Constructor
     public CaseDetail(){}
 
@@ -79,5 +82,13 @@ public class CaseDetail implements Serializable {
 
     public void setEmployeeNo(Employee employeeNo) {
         this.employeeNo = employeeNo;
+    }
+
+    public Integer getMemberNo() {
+        return memberNo;
+    }
+
+    public void setMemberNo(Integer memberNo) {
+        this.memberNo = memberNo;
     }
 }

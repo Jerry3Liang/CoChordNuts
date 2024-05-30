@@ -12,11 +12,12 @@ public class CaseDetailRowMapper implements RowMapper<CaseDetailRequest> {
     @Override
     public CaseDetailRequest mapRow(ResultSet rs, int rowNum) throws SQLException {
         CaseDetailRequest caseRequest = new CaseDetailRequest();
-        caseRequest.setCaseDetailNo(rs.getInt("case_detail_no"));
-        caseRequest.setCustomerCaseNo(rs.getInt("case_no"));
+        caseRequest.setCaseDetailNo(rs.getInt("caseDetailNo"));
+        caseRequest.setCustomerCaseNo(rs.getInt("caseNo"));
         caseRequest.setAnswerMessage(rs.getString("message"));
-        caseRequest.setLastMessageDate(rs.getString("message_time"));
-        caseRequest.setEmployeeNo(rs.getInt("employee_no"));
+        caseRequest.setLastMessageDate(rs.getString("messageTime"));
+        caseRequest.setEmployeeNo(rs.getInt("employeeNo"));
+        caseRequest.setMemberNo(rs.getInt("member_no"));
 
         return caseRequest;
     }

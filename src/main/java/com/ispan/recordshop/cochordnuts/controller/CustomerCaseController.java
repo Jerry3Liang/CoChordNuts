@@ -1,8 +1,6 @@
 package com.ispan.recordshop.cochordnuts.controller;
 
-import com.ispan.recordshop.cochordnuts.dto.CustomerCaseDto;
-import com.ispan.recordshop.cochordnuts.dto.CustomerCaseParams;
-import com.ispan.recordshop.cochordnuts.dto.CustomerCaseRequest;
+import com.ispan.recordshop.cochordnuts.dto.*;
 import com.ispan.recordshop.cochordnuts.service.CustomerCaseService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -29,7 +27,7 @@ public class CustomerCaseController {
             @RequestParam(required = false) String search,
 
             //排序 Sorting
-            @RequestParam(defaultValue = "message_time") String orderby,
+            @RequestParam(defaultValue = "messageTime") String orderby,
             @RequestParam(defaultValue = "desc") String sort,
 
             //分頁 Pagination
@@ -76,6 +74,16 @@ public class CustomerCaseController {
         CustomerCaseRequest customerCase = customerCaseService.getCaseById(id);
         if(customerCase != null){
             return ResponseEntity.ok(customerCase);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/findMemberCase/{memberNo}")
+    public ResponseEntity<?> findAnswerByCaseNo(@PathVariable(name = "memberNo") Integer memberNo){
+        List<MemberAnswerCaseDto> memberAnswerCaseDtoList = customerCaseService.getCaseByMemberNo(memberNo);
+        if(memberAnswerCaseDtoList != null){
+            return ResponseEntity.ok(memberAnswerCaseDtoList);
         } else {
             return ResponseEntity.notFound().build();
         }

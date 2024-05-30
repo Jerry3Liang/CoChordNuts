@@ -1,13 +1,18 @@
 package com.ispan.recordshop.cochordnuts.dao;
 
 import com.ispan.recordshop.cochordnuts.model.Member;
+import com.ispan.recordshop.cochordnuts.model.Role;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.PersistenceContext;
@@ -22,6 +27,9 @@ public class MemberDaoImpl implements MemberDao {
 
     @PersistenceContext
     private Session session;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public Session getSession() {
         return this.session;
@@ -231,5 +239,16 @@ public class MemberDaoImpl implements MemberDao {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void addRoleForMemberId(Integer memberId, Role role) {
+        String sql = "INSERT INTO role_group (employee_no_employee_no, role_no_role_no) VALUES (:employeeId, :roleId)";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("employeeId", memberId);
+        map.put("roleId", role.getRoleNo());
+
+        namedParameterJdbcTemplate.update(sql, map);
     }
 }

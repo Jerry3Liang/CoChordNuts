@@ -9,4 +9,5 @@ public class CaseDetailRequest {
     private String answerMessage;
     private String lastMessageDate;
     private Integer employeeNo;
+    private Integer memberNo;
 }

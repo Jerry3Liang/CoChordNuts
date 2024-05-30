@@ -10,5 +10,6 @@ public class CaseDetailDto {
     private String message;
     private String messageTime;
     private String employeeName;
+    private String memberName;
 
 }
