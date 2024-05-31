@@ -72,6 +72,14 @@ public class CaseDetailController {
         return ResponseEntity.created(URI.create("http://localhost:8080/rest/findContent/" + caseDetailId)).body(caseDetailRequest);
     }
 
+    @PostMapping("/customerAnswer")
+    public ResponseEntity<CaseDetailRequest> createAnswerContentForCustomer(@RequestBody CaseDetailRequest detailRequest){
+        Integer caseDetailId = caseDetailService.answerContent(detailRequest);
+        CaseDetailRequest caseDetailRequest = caseDetailService.getCaseDetailById(caseDetailId);
+
+        return ResponseEntity.created(URI.create("http://localhost:8080/rest/findContent/" + caseDetailId)).body(caseDetailRequest);
+    }
+
     @GetMapping("/findContent/{pk}")
     public ResponseEntity<?> findAnswerById(@PathVariable(name = "pk") Integer id){
         CaseDetailDto caseDetailDto = caseDetailService.findCaseDetailById(id);

@@ -12,7 +12,7 @@ public class CustomerCaseTests {
 
     @Test
     public void caseExitByOderId(){
-        boolean caseExit = customerCaseService.caseExitByOrderNo(1);
+        boolean caseExit = customerCaseService.caseExitByOrderNo(3);
         System.out.println(caseExit);
     }
 }
