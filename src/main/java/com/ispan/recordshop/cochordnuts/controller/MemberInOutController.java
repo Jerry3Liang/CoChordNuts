@@ -64,6 +64,7 @@ public class MemberInOutController {
 			responseJson.put("message", "登入成功");
 			responseJson.put("lastLoginTime", lastLoginTime);
 			responseJson.put("loginTime", loginTime);
+			responseJson.put("memberStatus", member.getMemberStatus());
 		}
 
 		JSONObject user = new JSONObject()
@@ -79,9 +80,10 @@ public class MemberInOutController {
 		responseJson.put("memberNo", member.getMemberNo());
 		responseJson.put("lastLoginTime", lastLoginTime);
 		responseJson.put("loginTime", loginTime);
-
+		responseJson.put("memberStatus", member.getMemberStatus());
 		return responseJson.toString();
 	}
+
 	// 登出
 	@PostMapping("/memberLogout")
 	public String logout(HttpSession session, @RequestBody String json) {
