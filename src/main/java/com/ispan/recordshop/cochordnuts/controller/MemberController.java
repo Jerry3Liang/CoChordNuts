@@ -230,7 +230,7 @@ public class MemberController {
                     responseJson.put("message", "新的email已存在");
                 } else {
                     // 其他情況下，進行修改
-                	System.out.println("hahahahhahah");
+                    System.out.println("hahahahhahah");
                     Member member = memberService.modify(json);
                     if (member == null) {
                         responseJson.put("success", false);
@@ -248,18 +248,17 @@ public class MemberController {
 
     @PutMapping("/member/updateRecipient/{pk}")
     public String updateRecipient(@PathVariable(name = "pk") Integer memberNo, @RequestBody String json) {
-    	JSONObject responseJson = new JSONObject();
-    	if(memberService.modifyRecipient(memberNo, json)!=null) {
-    		responseJson.put("success", true);
-    		return responseJson.toString();
-    	}else {
-    		responseJson.put("success", false);
-    		return responseJson.toString();
-    	}
-    	
-    	
+        JSONObject responseJson = new JSONObject();
+        if (memberService.modifyRecipient(memberNo, json) != null) {
+            responseJson.put("success", true);
+            return responseJson.toString();
+        } else {
+            responseJson.put("success", false);
+            return responseJson.toString();
+        }
+
     }
-    
+
     // 修改密碼
     @PutMapping("/member/changepwd/{pk}")
     public String modifyPwd(@PathVariable(name = "pk") Integer memberNo, @RequestBody String json) {
@@ -337,7 +336,8 @@ public class MemberController {
                         .put("phone", member.getPhone())
                         .put("recipient", member.getRecipient())
                         .put("recipientAddress", member.getRecipientAddress())
-                        .put("recipientPhone", member.getRecipientPhone());
+                        .put("recipientPhone", member.getRecipientPhone())
+                        .put("memberStatus", member.getMemberStatus());
                 array.put(item);
             }
         }
