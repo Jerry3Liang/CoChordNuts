@@ -123,9 +123,9 @@ public class Orders {
 //		return customerCase;
 //	}
 
-	public void setCustomerCase(CustomerCase customerCase) {
-		this.customerCase = customerCase;
-	}
+//	public void setCustomerCase(CustomerCase customerCase) {
+//		this.customerCase = customerCase;
+//	}
 
 	public String getPayment() {
 		return payment;

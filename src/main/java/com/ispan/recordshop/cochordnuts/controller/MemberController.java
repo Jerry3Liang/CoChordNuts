@@ -230,6 +230,7 @@ public class MemberController {
                     responseJson.put("message", "新的email已存在");
                 } else {
                     // 其他情況下，進行修改
+                	System.out.println("hahahahhahah");
                     Member member = memberService.modify(json);
                     if (member == null) {
                         responseJson.put("success", false);
@@ -245,6 +246,20 @@ public class MemberController {
         return responseJson.toString();
     }
 
+    @PutMapping("/member/updateRecipient/{pk}")
+    public String updateRecipient(@PathVariable(name = "pk") Integer memberNo, @RequestBody String json) {
+    	JSONObject responseJson = new JSONObject();
+    	if(memberService.modifyRecipient(memberNo, json)!=null) {
+    		responseJson.put("success", true);
+    		return responseJson.toString();
+    	}else {
+    		responseJson.put("success", false);
+    		return responseJson.toString();
+    	}
+    	
+    	
+    }
+    
     // 修改密碼
     @PutMapping("/member/changepwd/{pk}")
     public String modifyPwd(@PathVariable(name = "pk") Integer memberNo, @RequestBody String json) {

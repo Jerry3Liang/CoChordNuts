@@ -411,4 +411,22 @@ public class MemberService {
         return false;
     }
 
+    public Member modifyRecipient(Integer memberNo,String json) {
+    	JSONObject obj = new JSONObject(json);
+    	
+    	String recipient = obj.isNull("recipient") ? null : obj.getString("recipient");
+        String recipientPhone = obj.isNull("recipientPhone") ? null : obj.getString("recipientPhone");
+
+        if (memberNo != null) {
+            Member optional = memberRepo.findById(memberNo).get();
+            if(optional!=null) {
+            	optional.setRecipient(recipient);
+            	optional.setRecipientPhone(recipientPhone);
+            }
+            return memberRepo.save(optional);
+        }
+        
+       return null; 
+    }
+    
 }

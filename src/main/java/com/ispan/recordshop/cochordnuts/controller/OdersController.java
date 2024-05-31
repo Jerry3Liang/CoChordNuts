@@ -201,19 +201,42 @@ public class OdersController {
 		
 		
 		Member member = memberRepository.findById(memberNo).get();
-		
+//		JSONObject memberItem = new JSONObject(member);
 		String name = member.getName();
 		String email = member.getEmail();
 		String phone = member.getPhone();
 		String address = member.getAddress();
+		String recipientAddress;
+		String recipientPhone;
+		String recipient;
+		if(member.getRecipientPhone()==null) {
+			recipientPhone="";
+		}else {
+			recipientPhone = member.getRecipientPhone();
+		}
 		
+		if(member.getRecipient()==null) {
+			recipient="";
+		}else {
+			recipient = member.getRecipient();
+		}
+		
+		if(member.getRecipientAddress()==null) {
+			recipientAddress="";
+		}else {
+			recipientAddress = member.getRecipientAddress();
+		}
+		
+		 
 		
 		//只取前端所需屬性
 		responseJson.put("name", name);
 		responseJson.put("email", email);
 		responseJson.put("phone", phone);
 		responseJson.put("address", address);
-		responseJson.put("member", member);
+		responseJson.put("recipientPhone", recipientPhone);
+		responseJson.put("recipient", recipient);
+		responseJson.put("recipientAddress", recipientAddress);
 		
 		
 		return responseJson.toString();
