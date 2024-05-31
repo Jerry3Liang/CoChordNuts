@@ -63,6 +63,17 @@ public class Member {
 	@Column(name = "recipientPhone")
 	private String recipientPhone; // 收件人電話
 
+	@Column(name = "memberStatus")
+	private Integer memberStatus; // 會員狀態
+
+	public Integer getMemberStatus() {
+		return memberStatus;
+	}
+
+	public void setMemberStatus(Integer memberStatus) {
+		this.memberStatus = memberStatus;
+	}
+
 	@Override
 	public String toString() {
 		return "Member [" + " name=" + name + ", password=" + password + ", email=" + email
