@@ -7,9 +7,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,14 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.ispan.recordshop.cochordnuts.dao.CustomerCaseDaoImpl;
 import com.ispan.recordshop.cochordnuts.dto.CartForOrdersDto;
 import com.ispan.recordshop.cochordnuts.dto.OrderDetailDto;
 import com.ispan.recordshop.cochordnuts.model.Member;
 import com.ispan.recordshop.cochordnuts.model.OrderDetail;
 import com.ispan.recordshop.cochordnuts.model.Orders;
 import com.ispan.recordshop.cochordnuts.repository.MemberRepository;
-import com.ispan.recordshop.cochordnuts.service.CartService;
 import com.ispan.recordshop.cochordnuts.service.impl.CustomerCaseServiceImpl;
 import com.ispan.recordshop.cochordnuts.service.impl.OrderDetailServiceImpl;
 import com.ispan.recordshop.cochordnuts.service.impl.OrdersServiceImpl;
@@ -60,6 +58,7 @@ public class OdersController {
 		od.setStatus();	
 		od.setLastModifiedDate();
 		od.setFreight();
+		od.setPaymentStatus("未付款");
 		Orders order = ordersServiceImpl.insert(od);
 		if(order!=null) {
 			od.setReceiptNo();
@@ -258,9 +257,10 @@ public class OdersController {
 
 	    return new ResponseEntity<>(response.getBody(), response.getStatusCode());
 	}
-	@PostMapping("/makeConfirm/{transactionId}")
-	public ResponseEntity<String> makeConfirm(@PathVariable String transactionId, @RequestBody String requestBody) {
+	@PostMapping("/makeConfirm/{transactionId}/{orderNo}")
+	public ResponseEntity<String> makeConfirm(@PathVariable String transactionId, @PathVariable String orderNo,@RequestBody String requestBody) {
 	    HttpHeaders headers = new HttpHeaders();
+	    Integer ordernum=Integer.valueOf(orderNo);
 	    headers.add("Content-Type", "application/json; charset=UTF-8");
 	    headers.add("X-LINE-ChannelId", "2005446685");
 	    headers.add("X-LINE-ChannelSecret", "63941849e2107100e64609b4f2e1cde6");
@@ -271,7 +271,11 @@ public class OdersController {
 	    String linePayConfirm = "https://sandbox-api-pay.line.me/v2/payments/"+transactionId+"/confirm";
 
 	    ResponseEntity<String> response = restTemplate.postForEntity(linePayConfirm, entity, String.class);
-
+	    if(response.getStatusCode() == HttpStatus.OK) {
+	    	Orders order =ordersServiceImpl.findByOrderNo(ordernum).get();
+	    	order.setPaymentStatus("已付款");
+	    	ordersServiceImpl.insert(order);
+	    }
 	    return new ResponseEntity<>(response.getBody(), response.getStatusCode());
 	}
 

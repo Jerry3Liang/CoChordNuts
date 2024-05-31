@@ -79,6 +79,16 @@ public class Orders {
 	private String recipientAddress;// 收件人電話
 
 	private String recipientPhone;// 收件人地址
+	
+	private String paymentStatus;//付款狀態
+
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
 
 	public Orders() {
 	}
