@@ -1,5 +1,6 @@
 package com.ispan.recordshop.cochordnuts.controller;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -34,12 +35,7 @@ public class ProductController {
 	//新增產品
 	@PostMapping("/products/create")
 //	public void createProduct(@RequestBody Product product) {
-	public ResponseEntity<?> createProduct(@RequestBody Product product) {
-//		if(product.getPhoto() == null) {
-//			System.out.println("空的");
-//		} else {
-//			System.out.println("有東西");
-//		}
+	public ResponseEntity<?> createProduct(@RequestBody Product product) throws IOException {
 		if(product != null) {
 			ProductDTO result = productService.findById(product.getProductNo());
 			if(result == null) {

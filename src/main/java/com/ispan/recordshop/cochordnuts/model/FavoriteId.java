@@ -13,8 +13,16 @@ public class FavoriteId implements Serializable {
 
     public FavoriteId() {
     }
+    
+    
 
-    public Integer getMemberId() {
+    @Override
+	public String toString() {
+		return "FavoriteId [memberId=" + memberId + ", productStyleId=" + productStyleId + "]";
+	}
+
+
+	public Integer getMemberId() {
         return memberId;
     }
 

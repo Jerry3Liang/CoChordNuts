@@ -1,11 +1,15 @@
 package com.ispan.recordshop.cochordnuts.service;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.Session;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -113,13 +117,34 @@ public class ProductService {
 	}
 
 	// 新增產品
-	public Product insert(Product product) {
+	public Product insert(Product product) throws IOException {
 		if(product != null ) {
+			if(product.getPhoto() == null) {
+				product.setPhoto(initializePhoto());
+			}
 			product.setLastModifiedDate(new Date());
 			return productRepo.save(product);
 		}
 		return null;
 	}
+	
+	// 沒圖片放入no-image
+	public byte[] initializePhoto() throws IOException {
+		byte[] buffer = new byte[8192];
+
+		ClassLoader classLoader = getClass().getClassLoader();
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		BufferedInputStream is = new BufferedInputStream(
+				classLoader.getResourceAsStream("static/images/no-image.jpg"));
+		int len = is.read(buffer);
+		while(len!=-1) {
+			os.write(buffer, 0, len);
+			len = is.read(buffer);
+		}
+		is.close();
+		return os.toByteArray();
+    }
+
 
 	// 多筆查詢分頁
 	public Page<Product> findAllByPages(Integer pageNumber) {
@@ -179,12 +204,12 @@ public class ProductService {
 		Integer isBest = obj.isNull("isBest")? null : obj.getInt("isBest");
 		Integer isDiscount = obj.isNull("isDiscount")? null : obj.getInt("isDiscount");
 		Integer isPreorder = obj.isNull("isPreorder")? null : obj.getInt("isPreorder");
-		Integer style = obj.isNull("style")? null : obj.getInt("style");
+		JSONArray style = obj.isNull("style")? null : obj.getJSONArray("style");
 		Integer language = obj.isNull("language")? null : obj.getInt("language");
 		
 		//設定排列預設值
 		int start = obj.isNull("start") ? 0 : obj.getInt("start");
-		int rows = obj.isNull("rows") ? 16 : obj.getInt("rows");
+		int rows = obj.isNull("rows") ? 4 : obj.getInt("rows");
 		String order = obj.isNull("order") ? "productNo" : obj.getString("order");
 		boolean direction = obj.isNull("direction") ? false : obj.getBoolean("direction");
 		
@@ -252,8 +277,14 @@ public class ProductService {
 			}
 		}
 		//下拉選項用數字對照
-		if(style != null && style != 0) {
-			predicates.add(criteriaBuilder.equal(table.get("productStyle"), style));
+		if(style != null) {
+			System.out.println(style);
+			List<Integer> styleNos = new ArrayList<>();
+			for(int i = 0; i < style.length(); i++) {
+				styleNos.add(style.getInt(i));
+			}
+			predicates.add(table.get("productStyle").get("styleNo").in(styleNos));
+//			predicates.add(criteriaBuilder.equal(table.get("productStyle"), style));
 		}
 		//下拉選項用數字對照
 		if(language != null && language != 0) {
@@ -318,7 +349,7 @@ public class ProductService {
 			Integer isBest = obj.isNull("isBest")? null : obj.getInt("isBest");
 			Integer isDiscount = obj.isNull("isDiscount")? null : obj.getInt("isDiscount");
 			Integer isPreorder = obj.isNull("isPreorder")? null : obj.getInt("isPreorder");
-			Integer style = obj.isNull("style")? null : obj.getInt("style");
+			JSONArray style = obj.isNull("style")? null : obj.getJSONArray("style");
 			Integer language = obj.isNull("language")? null : obj.getInt("language");
 			
 			//Criteria Connect
@@ -385,8 +416,13 @@ public class ProductService {
 				}
 			}
 			//下拉選項用數字對照
-			if(style != null && style != 0) {
-				predicates.add(criteriaBuilder.equal(table.get("productStyle"), style));
+			if(style != null) {
+				System.out.println(style);
+				List<Integer> styleNos = new ArrayList<>();
+				for(int i = 0; i < style.length(); i++) {
+					styleNos.add(style.getInt(i));
+				}
+				predicates.add(table.get("productStyle").get("styleNo").in(styleNos));
 			}
 			//下拉選項用數字對照
 			if(language != null && language != 0) {

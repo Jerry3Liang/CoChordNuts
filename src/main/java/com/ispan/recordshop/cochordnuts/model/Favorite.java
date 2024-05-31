@@ -27,8 +27,15 @@ public class Favorite {
 
     public Favorite() {
     }
+    
 
-    public FavoriteId getFavoriteId() {
+	@Override
+	public String toString() {
+		return "Favorite [favoriteId=" + favoriteId + "]";
+	}
+
+
+	public FavoriteId getFavoriteId() {
         return favoriteId;
     }
 
