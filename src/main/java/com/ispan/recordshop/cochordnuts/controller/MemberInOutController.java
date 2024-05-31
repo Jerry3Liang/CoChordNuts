@@ -31,7 +31,7 @@ public class MemberInOutController {
 	@Autowired
 	private JsonWebTokenUtility jsonWebTokenUtility;
 
-	@PostMapping("/login")
+	@PostMapping("/memberLogin")
 	public String handlerMethod(HttpSession session, @RequestBody String json) {
 		JSONObject responseJson = new JSONObject();
 		// 接收資料
@@ -83,7 +83,7 @@ public class MemberInOutController {
 		return responseJson.toString();
 	}
 	// 登出
-	@PostMapping("/logout")
+	@PostMapping("/memberLogout")
 	public String logout(HttpSession session, @RequestBody String json) {
 		JSONObject responseJson = new JSONObject();
 		JSONObject obj = new JSONObject(json);
