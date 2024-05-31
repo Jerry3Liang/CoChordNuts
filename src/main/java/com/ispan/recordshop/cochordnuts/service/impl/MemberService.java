@@ -231,6 +231,7 @@ public class MemberService {
                     insert.setAddress(address);
                     insert.setRegisterTime(new Date());
                     insert.setPhone(phone);
+                    insert.setMemberStatus(1);
                     Member savedMember = memberRepo.save(insert);
 
                     for (Integer productStyleId : favoriteIds) {
@@ -403,7 +404,8 @@ public class MemberService {
 
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 if (passwordEncoder.matches(password, storedPasswordHash)) {
-                    memberRepo.deleteById(memberNo);
+                    member.setMemberStatus(0);
+                    memberRepo.save(member);
                     return true;
                 }
             }
@@ -411,32 +413,22 @@ public class MemberService {
         return false;
     }
 
-    //編輯收件人
-    public Member modifyRecipient(Integer memberNo,String json) {
-    	JSONObject obj = new JSONObject(json);
-    	String recipientAddress = obj.isNull("recipientAddress") ? null : obj.getString("recipientAddress");
-    	String recipient = obj.isNull("recipient") ? null : obj.getString("recipient");
+    public Member modifyRecipient(Integer memberNo, String json) {
+        JSONObject obj = new JSONObject(json);
+
+        String recipient = obj.isNull("recipient") ? null : obj.getString("recipient");
         String recipientPhone = obj.isNull("recipientPhone") ? null : obj.getString("recipientPhone");
 
         if (memberNo != null) {
             Member optional = memberRepo.findById(memberNo).get();
-            if(optional!=null) {
-            	if(recipientAddress!=null && recipientAddress!="") {
-            		optional.setRecipientAddress(recipientAddress);
-            	}
-            	if(recipient!=null && recipient!="") {
-            		optional.setRecipient(recipient);
-            	}
-            	if(recipientPhone!=null && recipientPhone!="") {
-            		optional.setRecipientPhone(recipientPhone);
-            	}
-            	
-            	
+            if (optional != null) {
+                optional.setRecipient(recipient);
+                optional.setRecipientPhone(recipientPhone);
             }
             return memberRepo.save(optional);
         }
-        
-       return null; 
+
+        return null;
     }
-    
+
 }
