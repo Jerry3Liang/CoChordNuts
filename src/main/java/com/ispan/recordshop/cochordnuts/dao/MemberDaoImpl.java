@@ -50,6 +50,7 @@ public class MemberDaoImpl implements MemberDao {
         String recipient = obj.isNull("recipient") ? null : obj.getString("recipient");
         String recipientAddress = obj.isNull("recipientAddress") ? null : obj.getString("recipientAddress");
         String recipientPhone = obj.isNull("recipientPhone") ? null : obj.getString("recipientPhone");
+        Integer memberStatus = obj.isNull("memberStatus") ? null : obj.getInt("memberStatus");
 
         CriteriaBuilder criteriaBuilder = this.getSession().getCriteriaBuilder();
         CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
@@ -122,6 +123,11 @@ public class MemberDaoImpl implements MemberDao {
             Predicate[] array = predicates.toArray(new Predicate[0]);
             criteriaQuery = criteriaQuery.where(array);
         }
+
+        if (memberStatus != null) {
+            Predicate p = criteriaBuilder.equal(table.get("memberStatus"), memberStatus);
+            predicates.add(p);
+        }
         // where end
 
         TypedQuery<Long> typedQuery = this.getSession().createQuery(criteriaQuery);
@@ -147,6 +153,7 @@ public class MemberDaoImpl implements MemberDao {
         String recipient = obj.isNull("recipient") ? null : obj.getString("recipient");
         String recipientAddress = obj.isNull("recipientAddress") ? null : obj.getString("recipientAddress");
         String recipientPhone = obj.isNull("recipientPhone") ? null : obj.getString("recipientPhone");
+        Integer memberStatus = obj.isNull("memberStatus") ? null : obj.getInt("memberStatus");
 
         int start = obj.isNull("start") ? 0 : obj.getInt("start");
         int rows = obj.isNull("rows") ? 10 : obj.getInt("rows");
@@ -219,6 +226,11 @@ public class MemberDaoImpl implements MemberDao {
         if (predicates != null && !predicates.isEmpty()) {
             Predicate[] array = predicates.toArray(new Predicate[0]);
             criteriaQuery = criteriaQuery.where(array);
+        }
+
+        if (memberStatus != null) {
+            Predicate p = criteriaBuilder.equal(table.get("memberStatus"), memberStatus);
+            predicates.add(p);
         }
         // where end
 
