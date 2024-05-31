@@ -150,7 +150,7 @@ public class ProductService {
 	public Page<Product> findAllByPages(Integer pageNumber) {
 		Pageable pageable = PageRequest.of(pageNumber - 1, 15, Sort.Direction.DESC, "productNo");
 		return productRepo.findAllByPages(pageable);
-
+		
 	}
 
 	// 查詢全部產品
