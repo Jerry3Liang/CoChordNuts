@@ -10,6 +10,15 @@ public class MemberDTO {
     private String email;
     private String address;
     private List<Integer> favoriteIds;
+    private Integer memberStatus;
+
+    public Integer getMemberStatus() {
+        return memberStatus;
+    }
+
+    public void setMemberStatus(Integer memberStatus) {
+        this.memberStatus = memberStatus;
+    }
 
     public String getName() {
         return name;
