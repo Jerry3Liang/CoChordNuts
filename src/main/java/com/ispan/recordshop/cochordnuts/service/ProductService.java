@@ -317,6 +317,8 @@ public class ProductService {
 				productDTO.setProductNo(pro.getProductNo());
 				productDTO.setProductName(pro.getProductName());
 				productDTO.setUnitPrice(pro.getUnitPrice());
+				productDTO.setStock(pro.getStock());
+				productDTO.setProductStatus(pro.getProductStatus());
 				productDTO.setDescribe(pro.getDescribe());
 				productDTO.setPublishedDate(DatetimeConverter.toString(pro.getPublishedDate(), "yyyy-MM-dd"));
 				productDTO.setDiscount(pro.getDiscount());
