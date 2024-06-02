@@ -387,10 +387,10 @@ public class ProductService {
 				Predicate p2 = criteriaBuilder.like(table.get("productName"), "%"+productName+"%");
 				predicates.add(p2);
 			}
-			if(startPrice != null) {
+			if(startPrice != null && startPrice != 0) {
 				predicates.add(criteriaBuilder.greaterThanOrEqualTo(table.get("unitPrice"), startPrice));
 			}
-			if(endPrice != null) {
+			if(endPrice != null && endPrice != 0) {
 				predicates.add(criteriaBuilder.lessThanOrEqualTo(table.get("unitPrice"), endPrice));
 			}
 			//日期比較 處理~~~~

@@ -26,14 +26,14 @@ public class FavoriteController {
 	@GetMapping("/favoriteFind/{memberId}")
 	public List<ProductDTO> favoriteFind(@PathVariable Integer memberId) {
 		List<Integer> result = favoriteService.findStyleNoByMemberId(memberId);
-		System.out.println(result);
+//		System.out.println(result);
 		
 		if(result.isEmpty()) {
 			return null;
 		}
 		JSONObject json = new JSONObject();
 		json.put("style", result);
-		System.out.println(productService.search(json));
+//		System.out.println(productService.search(json));
 		return productService.search(json);
 		
 		
