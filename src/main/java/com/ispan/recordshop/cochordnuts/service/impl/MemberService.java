@@ -415,15 +415,24 @@ public class MemberService {
 
     public Member modifyRecipient(Integer memberNo, String json) {
         JSONObject obj = new JSONObject(json);
-
+        String recipientAddress = obj.isNull("recipientAddress") ? null : obj.getString("recipientAddress");
         String recipient = obj.isNull("recipient") ? null : obj.getString("recipient");
         String recipientPhone = obj.isNull("recipientPhone") ? null : obj.getString("recipientPhone");
 
         if (memberNo != null) {
             Member optional = memberRepo.findById(memberNo).get();
             if (optional != null) {
-                optional.setRecipient(recipient);
-                optional.setRecipientPhone(recipientPhone);
+            	if(recipientAddress!=null){
+            		optional.setRecipientAddress(recipientAddress);
+            	}
+            	if(recipient!=null){
+            		optional.setRecipient(recipient);            	
+            	}
+            	if(recipientPhone!=null){
+            		optional.setRecipientPhone(recipientPhone);            	
+            	}
+                
+                
             }
             return memberRepo.save(optional);
         }
