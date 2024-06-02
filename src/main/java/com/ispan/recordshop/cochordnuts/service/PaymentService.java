@@ -2,11 +2,13 @@ package com.ispan.recordshop.cochordnuts.service;
 
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.UUID;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ispan.recordshop.cochordnuts.model.Orders;
+import com.ispan.recordshop.cochordnuts.service.impl.OrdersServiceImpl;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 
 import ecpay.payment.integration.AllInOne;
@@ -14,6 +16,9 @@ import ecpay.payment.integration.domain.AioCheckOutALL;
 
 @Service
 public class PaymentService {
+	
+	@Autowired
+	private OrdersServiceImpl ordersService;
 	
 	public String ecpayCheckout(JSONObject json) {
 		
@@ -55,7 +60,10 @@ public class PaymentService {
 	}
 	
 	//修改付款狀態
-	public void updatePaymentStatus() {
+	public void updatePaymentStatus(Integer memberNo, Integer orderNo) {
+		Orders order = ordersService.findByOrderNo(orderNo).get();
+		order.setPaymentStatus("已付款");
+		ordersService.update(memberNo, order);
 		
 	}
 	

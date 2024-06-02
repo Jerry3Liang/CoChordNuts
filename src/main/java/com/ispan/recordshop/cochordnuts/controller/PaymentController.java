@@ -78,6 +78,7 @@ public class PaymentController {
 				Integer memberNo = Integer.parseInt(customField2);
 				System.out.println(orderNo);
 				System.out.println(memberNo);
+				paymentService.updatePaymentStatus(memberNo, orderNo);
 				return "redirect:http://localhost:5173/order/ECPaymentSuccess";
 			} else {
 				return "redirect:http://localhost:5173/order/ECPaymentFail";
