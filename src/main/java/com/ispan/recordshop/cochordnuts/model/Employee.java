@@ -1,8 +1,10 @@
 package com.ispan.recordshop.cochordnuts.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,6 +26,10 @@ public class Employee {
 	public Employee() {
 		
 	}
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "lastLoginTime")
+	private Date lastLoginTime; // 最後登入日
 
 	public Integer getEmployeeNo() {
 		return employeeNo;
@@ -49,4 +55,22 @@ public class Employee {
 		this.password = password;
 	}
 
+	public Date getLastLoginTime() {
+		return lastLoginTime;
+	}
+
+	public void setLastLoginTime(Date lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee{" +
+				"employeeNo=" + employeeNo +
+				", caseDetails=" + caseDetails +
+				", name='" + name + '\'' +
+				", password='" + password + '\'' +
+				", lastLoginTime=" + lastLoginTime +
+				'}';
+	}
 }

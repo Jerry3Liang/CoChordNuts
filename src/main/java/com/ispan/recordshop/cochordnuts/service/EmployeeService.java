@@ -11,6 +11,10 @@ public interface EmployeeService {
 
     Integer createEmployee(Employee employee);
 
+    Employee login(String name, String password);
+
+    Employee logout(String json);
+
     List<Role> getRolesByEmployeeId(Integer employeeId);
 
     void addRoleForEmployeeId(Integer employeeId, Role role);
