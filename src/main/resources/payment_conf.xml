@@ -16,6 +16,7 @@
             <HashIV>EkRm7iFT261dpevs</HashIV>
         </MInfo>
     </MerchantInfo>
+    <URL>redirect:http://localhost:5173/</URL>
     
    <IgnorePayment>
    <!-- <Method>Credit</Method>

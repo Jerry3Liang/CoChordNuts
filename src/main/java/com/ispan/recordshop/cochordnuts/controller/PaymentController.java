@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ispan.recordshop.cochordnuts.service.PaymentService;
 
+import ecpay.payment.integration.PaymentURL;
+
 @RestController
 @CrossOrigin
 public class PaymentController {
@@ -72,6 +74,7 @@ public class PaymentController {
 			params.put("TradeNo", tradeNo);
 			params.put("CheckMacValue", checkMacValue);
 			boolean checkResult = paymentService.compareCheckMacValue(params);
+			PaymentURL url = new PaymentURL();
 			
 			if(rtnCode.equals("1") && checkResult == true) {
 				Integer orderNo = Integer.parseInt(customField1);
@@ -79,9 +82,9 @@ public class PaymentController {
 				System.out.println(orderNo);
 				System.out.println(memberNo);
 				paymentService.updatePaymentStatus(memberNo, orderNo);
-				return "redirect:http://localhost:5173/order/ECPaymentSuccess";
+				return PaymentURL.URL+"order/ECPaymentSuccess";
 			} else {
-				return "redirect:http://localhost:5173/order/ECPaymentFail";
+				return PaymentURL.URL+"order/ECPaymentFail";
 			}
 			
 		}
