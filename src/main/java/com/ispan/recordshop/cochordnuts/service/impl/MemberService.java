@@ -142,8 +142,6 @@ public class MemberService {
     // return null;
     // }
 
-    //
-
     // 查詢會員客服
     public List<CustomerCase> findCaseByMemberNo(Integer memberNo) {
         if (memberNo != null) {
@@ -153,7 +151,6 @@ public class MemberService {
         }
         return null;
     }
-    //
 
     public String getPhoneByEmail(String email) {
         Optional<Member> optional = memberRepo.findByEmail(email);
@@ -192,7 +189,6 @@ public class MemberService {
             if (optional.isPresent()) {
                 Member member = optional.get();
                 String storedPasswordHash = member.getPassword();
-
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 if (passwordEncoder.matches(password, storedPasswordHash)) {
                     return member;
@@ -366,13 +362,30 @@ public class MemberService {
         return null;
     }
 
+    // 忘記密碼
+    public Member rePassword(String json) {
+        JSONObject obj = new JSONObject(json);
+        String email = obj.isNull("email") ? null : obj.getString("email");
+        if (email != null) {
+            Optional<Member> optional = memberRepo.findByEmail(email);
+            if (optional != null) {
+                Member member = optional.get();
+                String bcryptPassword = bcrypt.encode(obj.getString("password"));
+                member.setPassword(bcryptPassword);
+                return memberRepo.save(member);
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
+
     // 修改密碼
     public Member modifyPwd(String json) {
         try {
             JSONObject obj = new JSONObject(json);
             Integer memberNo = obj.isNull("memberNo") ? null : obj.getInt("memberNo");
             String oriPassword = obj.isNull("oriPassword") ? null : obj.getString("oriPassword");
-            System.out.println("memberNo=" + memberNo + "/ori=" + oriPassword);
             if (memberNo != null) {
                 Optional<Member> optional = memberRepo.findById(memberNo);
                 if (optional.isPresent()) {
@@ -401,7 +414,6 @@ public class MemberService {
             if (optional.isPresent()) {
                 Member member = optional.get();
                 String storedPasswordHash = member.getPassword();
-
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 if (passwordEncoder.matches(password, storedPasswordHash)) {
                     member.setMemberStatus(0);
@@ -411,6 +423,26 @@ public class MemberService {
             }
         }
         return false;
+    }
+
+    
+    // 修改帳號狀態
+    public Member changeStatus(Integer memberNo) {
+        try {
+            if (memberNo != null) {
+                Optional<Member> optional = memberRepo.findById(memberNo);
+                if (optional.isPresent()) {
+                    Member member = optional.get();
+                    member.setMemberStatus(1);
+                    return memberRepo.save(member);
+                } else {
+                    return null;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Member modifyRecipient(Integer memberNo, String json) {
@@ -431,13 +463,9 @@ public class MemberService {
             	if(recipientPhone!=null){
             		optional.setRecipientPhone(recipientPhone);            	
             	}
-                
-                
             }
             return memberRepo.save(optional);
         }
-
         return null;
     }
-
 }
