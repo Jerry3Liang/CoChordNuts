@@ -44,9 +44,9 @@ public class MemberController {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("CoChordNuts註冊驗證碼");
+        message.setSubject("CoChordNuts註冊驗證信");
         message.setText("您好，感謝您在CoChordsNuts的註冊申請 !\r\n" +
-                "您的驗證碼是: " + code + "\r\n" + "如果這不是您本人的操作，請忽略本信件 !");
+                "您的驗證碼是: " + code + "\r\n\r\n" + "如果這不是您本人的操作，請忽略本信件 !");
         mailSender.send(message);
 
         response.put("success", true);
@@ -312,6 +312,31 @@ public class MemberController {
         return responseJson.toString();
     }
 
+     // 修改帳號狀態
+    @PutMapping("/member/changeStatus/{pk}")
+    public String changeStatus(@PathVariable(name = "pk") Integer memberNo) {
+        JSONObject responseJson = new JSONObject();
+
+        if (memberNo == null) {
+            responseJson.put("success", false);
+            responseJson.put("message", "memberNo和password是必要欄位");
+        } else if (!memberService.existById(memberNo)) {
+            responseJson.put("success", false);
+            responseJson.put("message", "memberNo不存在");
+        } else {
+            Member member = memberService.changeStatus(memberNo);
+
+            if (member == null) {
+                responseJson.put("success", false);
+                responseJson.put("message", "修改失敗");
+            } else {
+                responseJson.put("success", true);
+                responseJson.put("message", "修改成功");
+            }
+        }
+        return responseJson.toString();
+    }
+
     // 查詢多筆
     @PostMapping("/members/find")
     public String find(@RequestBody String json) {
@@ -395,7 +420,8 @@ public class MemberController {
                     .put("phone", member.getPhone())
                     .put("recipient", member.getRecipient())
                     .put("recipientAddress", member.getRecipientAddress())
-                    .put("recipientPhone", member.getRecipientPhone());
+                    .put("recipientPhone", member.getRecipientPhone())
+                    .put("memberStatus", member.getMemberStatus());
             array.put(item);
         }
         responseJson.put("list", array);
