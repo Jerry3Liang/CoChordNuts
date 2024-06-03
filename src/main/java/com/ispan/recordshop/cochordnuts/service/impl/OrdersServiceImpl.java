@@ -107,11 +107,27 @@ public class OrdersServiceImpl  {
 	
 	public Orders update(Integer MemberNo,Orders orders) {//修改訂單狀態
 		Integer orderNo= orders.getOrderNo();
+		Orders origin = orderRepository.findById(orderNo).get();
+		if(orders.getStatus().equals("訂單取消") && origin.getPaymentStatus().equals("已付款")) {			
+			orders.setPaymentStatus("待退款");	
+		}else if(orders.getStatus().equals("訂單取消") && origin.getPaymentStatus().equals("未付款")) {
+			orders.setPaymentStatus("取消");
+			
+		}else  if(orders.getPaymentStatus()==null) {//如果前端沒傳paymentStatus，將舊資料放入orders中
+			orders.setPaymentStatus(origin.getPaymentStatus());
+		}
+//		System.out.println(origin.getPayment().equals("現金") && orders.getStatus().equals("訂單完成"));
+//		if(origin.getPayment().equals("現金") && orders.getStatus().equals("訂單完成") ) {
+//			origin.setPaymentStatus("已付款");
+//		}
 
 		if(orderRepository.findById(orderNo)!=null) {
 			Member m = memberRepository.findById(MemberNo).get();
+			
 			orders.setMemberNo(m);
+			orders.setAddress();
 			orders.setLastModifiedDate();
+			
 				return orderRepository.save(orders);											
 		}	
 		return null;
@@ -173,28 +189,28 @@ public class OrdersServiceImpl  {
 		return orderRepository.findMemberByMemberNoAndOrderNoCount(memberNo,OrderNo) ;
 	}
 	
-	public List<CartForOrdersDto> findCartByMember(Integer memberNo) {
-		List<CartForOrdersDto> cartArray = new ArrayList<>();
-		List<Map<String, Object>> results = orderRepository.findCartByMemberNo(memberNo);
-		if(results!=null) {			
-			for (Map<String, Object> row : results) {
-				CartForOrdersDto cart = new CartForOrdersDto();//將MAP取得的資料丟進新建的CartDto
-				cart.setCount((Integer)row.get("Count"));			
-				Integer productNo =(Integer) row.get("product_productNo");//取得Map中會員編號
-				Product product=productRepository.findById(productNo).get();//依會員編號取得product物件		
-				//將取得的product物件丟入Cart
-				cart.setDiscount(product.getDiscount());//折扣
-				cart.setUnitPrice(product.getUnitPrice());//單價
-				cart.setProductName(product.getProductName());//商品名稱
-				cart.setProductNo(productNo);//商品編號
-				cart.setTotal();
-				cartArray.add(cart);//cart存入陣列
-			}
-		
-		
-	}
-		return cartArray;
-}
+//	public List<CartForOrdersDto> findCartByMember(Integer memberNo) {
+//		List<CartForOrdersDto> cartArray = new ArrayList<>();
+//		List<Map<String, Object>> results = orderRepository.findCartByMemberNo(memberNo);
+//		if(results!=null) {			
+//			for (Map<String, Object> row : results) {
+//				CartForOrdersDto cart = new CartForOrdersDto();//將MAP取得的資料丟進新建的CartDto
+//				cart.setCount((Integer)row.get("Count"));			
+//				Integer productNo =(Integer) row.get("product_productNo");//取得Map中會員編號
+//				Product product=productRepository.findById(productNo).get();//依會員編號取得product物件		
+//				//將取得的product物件丟入Cart
+//				cart.setDiscount(product.getDiscount());//折扣
+//				cart.setUnitPrice(product.getUnitPrice());//單價
+//				cart.setProductName(product.getProductName());//商品名稱
+//				cart.setProductNo(productNo);//商品編號
+//				cart.setTotal();
+//				cartArray.add(cart);//cart存入陣列
+//			}
+//		
+//		
+//	}
+//		return cartArray;
+//}
 	
 	
 	public List<CartForOrdersDto> findCartByMember2(Integer memberNo,Orders order) {
@@ -220,7 +236,21 @@ public class OrdersServiceImpl  {
 	}
 		return cartArray;
 }
+	//依會員編號刪除Cart
 	public void deleteCartByMemberNo(Integer memberNo) {
 		orderRepository.deleteCartByMemberNo(memberNo);
+	}
+	
+	//依商品編號(productNo)修改商品
+	public Product updateProductByProductNo(Integer productNo, Integer Count ) {
+		Product product = productRepository.findById(productNo).get();
+		if(product!=null) {
+			Integer stock = product.getStock()-Count;
+			product.setStock(stock);
+			return productRepository.save(product);
+			
+		}
+		
+		return null;
 	}
 }

@@ -76,6 +76,7 @@ public class OdersController {
 
 			for (CartForOrdersDto cart : carts) {// 取得carts陣列資料
 				orderDetailServiceImpl.insert(cart);// 新增至orderDetail
+				ordersServiceImpl.updateProductByProductNo(cart.getProductNo(), cart.getCount());
 			}
 
 			ordersServiceImpl.deleteCartByMemberNo(MemberNo);// 下單後刪除Cart內容
@@ -88,7 +89,7 @@ public class OdersController {
                     "感謝您選擇在 CoChordsNuts 購物！\r\n\r\n" +
                     "以下是您的訂單詳情：\r\n" +
                     "訂單編號：" + orderNumber + "\r\n" +
-                    "消費金額：" + totalPay + "\r\n\r\n" +
+                    "消費金額：$" + totalPay + "\r\n\r\n" +
                     "如果您有任何疑問或需要幫助，請隨時聯繫我們。\r\n" +
                     "再次感謝您的光臨！\r\n" +
                     "祝您生活愉快，\r\n" +
