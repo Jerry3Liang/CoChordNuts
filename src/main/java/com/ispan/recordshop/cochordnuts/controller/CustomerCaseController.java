@@ -61,6 +61,49 @@ public class CustomerCaseController {
         return ResponseEntity.ok().body(page);
     }
 
+    @GetMapping("/allCase/{empNo}")
+    public ResponseEntity<Page<CustomerCaseDto>> findAllCaseByEmployeeNo(
+            //員工編號
+            @PathVariable(name = "empNo") Integer employeeNo,
+
+            //查詢條件 Filtering
+            @RequestParam(required = false) String search,
+
+            //排序 Sorting
+            @RequestParam(defaultValue = "messageTime") String orderby,
+            @RequestParam(defaultValue = "desc") String sort,
+
+            //分頁 Pagination
+            @RequestParam(defaultValue = "5") @Max(1000) @Min(0) Integer fetch,
+            @RequestParam(defaultValue = "0") @Min(0) Integer offset
+    ){
+        CustomerCaseParams customerCaseParams = new CustomerCaseParams();
+        customerCaseParams.setSearch(search);
+        customerCaseParams.setOrderby(orderby);
+        customerCaseParams.setSort(sort);
+        customerCaseParams.setFetch(fetch);
+        customerCaseParams.setOffset(offset);
+
+        //取得 case list
+        List<CustomerCaseDto> caseList = customerCaseService.getCaseByEmployeeNo(customerCaseParams, employeeNo);
+
+        //取得 case 總數
+        Integer total = caseList.size();
+
+        //分頁
+        Page<CustomerCaseDto> page = new Page<>();
+        page.setFetch(fetch);
+        page.setOffset(offset);
+        page.setTotal(total);
+        page.setResults(caseList);
+
+        //加上 response header
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.ok().body(page);
+    }
+
     @PostMapping("/createCustomerCase")
     public ResponseEntity<CustomerCaseRequest> createCustomerCase(@RequestBody CustomerCaseRequest customerCaseRequest){
         Integer caseNo = customerCaseService.createCase(customerCaseRequest);

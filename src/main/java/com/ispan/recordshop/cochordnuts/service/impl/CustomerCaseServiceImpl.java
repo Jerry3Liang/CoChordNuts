@@ -33,6 +33,11 @@ public class CustomerCaseServiceImpl implements CustomerCaseService {
     }
 
     @Override
+    public List<CustomerCaseDto> getCaseByEmployeeNo(CustomerCaseParams customerCaseParams, Integer employeeNo) {
+        return customerCaseDao.getCaseByEmployeeNo(customerCaseParams, employeeNo);
+    }
+
+    @Override
     public Integer createCase(CustomerCaseRequest customerCaseRequest) {
         return customerCaseDao.createCase(customerCaseRequest);
     }

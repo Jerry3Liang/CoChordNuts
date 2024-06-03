@@ -11,6 +11,8 @@ public interface CustomerCaseDao {
 
     List<CustomerCaseDto> getCases(CustomerCaseParams customerCaseParams);
 
+    List<CustomerCaseDto> getCaseByEmployeeNo(CustomerCaseParams customerCaseParams, Integer employeeNo);
+
     Integer countCase(CustomerCaseParams customerCaseParams);
 
     Integer createCase(CustomerCaseRequest customerCaseRequest);

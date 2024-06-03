@@ -15,6 +15,8 @@ public interface CustomerCaseService {
 
     List<CustomerCaseDto> getCases(CustomerCaseParams customerCaseParams);
 
+    List<CustomerCaseDto> getCaseByEmployeeNo(CustomerCaseParams customerCaseParams, Integer employeeNo);
+
     Integer createCase(CustomerCaseRequest customerCaseRequest);
 
     CustomerCaseRequest getCaseById(Integer customerCaseNo);
