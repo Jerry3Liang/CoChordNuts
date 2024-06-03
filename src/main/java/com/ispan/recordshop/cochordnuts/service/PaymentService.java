@@ -2,6 +2,7 @@ package com.ispan.recordshop.cochordnuts.service;
 
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.UUID;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,13 @@ public class PaymentService {
 		String memberNo = memberNoInt.toString();
 		String date = DatetimeConverter.toString(new Date(), "yyyy/MM/dd HH:mm:ss");
 		
-//		String uuId = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 20);
+		//產生隨機碼避免訂單重複
+		String uuId = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 4);
 
 		AllInOne all = new AllInOne("");
 
 		AioCheckOutALL obj = new AioCheckOutALL();
-		obj.setMerchantTradeNo(orderNoStr);
+		obj.setMerchantTradeNo(orderNoStr+uuId);
 		obj.setMerchantTradeDate(date);
 		obj.setTotalAmount(amount);
 		obj.setTradeDesc("test Description");
