@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import com.ispan.recordshop.cochordnuts.dto.ProductDTO;
 import com.ispan.recordshop.cochordnuts.model.Artist;
 import com.ispan.recordshop.cochordnuts.model.Language;
+import com.ispan.recordshop.cochordnuts.model.MusicYear;
 import com.ispan.recordshop.cochordnuts.model.Product;
 import com.ispan.recordshop.cochordnuts.model.ProductStyle;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
@@ -52,8 +53,8 @@ public class ProductService {
 	private ProductStyleService prodStyleService;
 	@Autowired
 	private LanguageService languageService;
-//	@Autowired
-//	private MusicYearService musicYearService;
+	@Autowired
+	private MusicYearService musicYearService;
 	
 	// 單一查詢回傳Product
 	public Product findByIdReturnProduct(Integer id) {
@@ -200,12 +201,14 @@ public class ProductService {
 		String startDate = obj.isNull("startDate")? null : obj.getString("startDate");
 		String endDate = obj.isNull("endDate")? null : obj.getString("endDate");
 		String artistName = obj.isNull("artistName")? null : obj.getString("artistName");
+		String musicStyle = obj.isNull("musicStyle")? null : obj.getString("musicStyle");
+		String language = obj.isNull("language")? null : obj.getString("language");
+		String musicYear = obj.isNull("musicYear")? null : obj.getString("musicYear");
 		Integer productStatus = obj.isNull("productStatus")? null : obj.getInt("productStatus");
 		Integer isBest = obj.isNull("isBest")? null : obj.getInt("isBest");
 		Integer isDiscount = obj.isNull("isDiscount")? null : obj.getInt("isDiscount");
 		Integer isPreorder = obj.isNull("isPreorder")? null : obj.getInt("isPreorder");
 		JSONArray style = obj.isNull("style")? null : obj.getJSONArray("style");
-		Integer language = obj.isNull("language")? null : obj.getInt("language");
 		
 		//設定排列預設值
 		int start = obj.isNull("start") ? 0 : obj.getInt("start");
@@ -276,7 +279,46 @@ public class ProductService {
 				predicates.add(criteriaBuilder.equal(table.get("artist").get("artistNo"), 0));
 			}
 		}
-		//下拉選項用數字對照
+		if(musicStyle != null && musicStyle.length() != 0) {
+			System.out.println(musicStyle);
+			List<ProductStyle> musicStyles = prodStyleService.findByName(musicStyle);
+			if(!musicStyles.isEmpty()) {
+				List<Integer> musicStyleNos = new ArrayList<>();
+				for(ProductStyle styleNo : musicStyles) {
+					musicStyleNos.add(styleNo.getStyleNo());
+				}
+				predicates.add(table.get("productStyle").get("styleNo").in(musicStyleNos));
+			} else {
+				predicates.add(criteriaBuilder.equal(table.get("productStyle").get("styleNo"), 0));
+			}
+		}
+		if(language != null && language.length() != 0) {
+			System.out.println(language);
+			List<Language> languages = languageService.findByLanguage(language);
+			if(!languages.isEmpty()) {
+				List<Integer> languagesNos = new ArrayList<>();
+				for(Language lan : languages) {
+					languagesNos.add(lan.getLanguageNo());
+				}
+				predicates.add(table.get("language").get("languageNo").in(languagesNos));
+			} else {
+				predicates.add(criteriaBuilder.equal(table.get("language").get("languageNo"), 0));
+			}
+		}
+		if(musicYear != null && musicYear.length() != 0) {
+			System.out.println(musicYear);
+			List<MusicYear> musicYears = musicYearService.findByMusicYear(musicYear);
+			if(!musicYears.isEmpty()) {
+				List<Integer> musicYearNos = new ArrayList<>();
+				for(MusicYear year : musicYears) {
+					musicYearNos.add(year.getMusicYearNo());
+				}
+				predicates.add(table.get("musicYear").get("musicYearNo").in(musicYearNos));
+			} else {
+				predicates.add(criteriaBuilder.equal(table.get("musicYear").get("languageNo"), 0));
+			}
+		}
+		//傳入音樂類型編號陣列 喜好推薦
 		if(style != null) {
 			System.out.println(style);
 			List<Integer> styleNos = new ArrayList<>();
@@ -285,10 +327,6 @@ public class ProductService {
 			}
 			predicates.add(table.get("productStyle").get("styleNo").in(styleNos));
 //			predicates.add(criteriaBuilder.equal(table.get("productStyle"), style));
-		}
-		//下拉選項用數字對照
-		if(language != null && language != 0) {
-			predicates.add(criteriaBuilder.equal(table.get("language"), language));
 		}
 		
 		if(predicates != null && !predicates.isEmpty()) {
@@ -347,12 +385,14 @@ public class ProductService {
 			String startDate = obj.isNull("startDate")? null : obj.getString("startDate");
 			String endDate = obj.isNull("endDate")? null : obj.getString("endDate");
 			String artistName = obj.isNull("artistName")? null : obj.getString("artistName");
+			String musicStyle = obj.isNull("musicStyle")? null : obj.getString("musicStyle");
+			String language = obj.isNull("language")? null : obj.getString("language");
+			String musicYear = obj.isNull("musicYear")? null : obj.getString("musicYear");
 			Integer productStatus = obj.isNull("productStatus")? null : obj.getInt("productStatus");
 			Integer isBest = obj.isNull("isBest")? null : obj.getInt("isBest");
 			Integer isDiscount = obj.isNull("isDiscount")? null : obj.getInt("isDiscount");
 			Integer isPreorder = obj.isNull("isPreorder")? null : obj.getInt("isPreorder");
 			JSONArray style = obj.isNull("style")? null : obj.getJSONArray("style");
-			Integer language = obj.isNull("language")? null : obj.getInt("language");
 			
 			//Criteria Connect
 			CriteriaBuilder criteriaBuilder = this.getSession().getCriteriaBuilder();
@@ -417,7 +457,46 @@ public class ProductService {
 					predicates.add(criteriaBuilder.equal(table.get("artist").get("artistNo"), 0));
 				}
 			}
-			//下拉選項用數字對照
+			if(musicStyle != null && musicStyle.length() != 0) {
+				System.out.println(musicStyle);
+				List<ProductStyle> musicStyles = prodStyleService.findByName(musicStyle);
+				if(!musicStyles.isEmpty()) {
+					List<Integer> musicStyleNos = new ArrayList<>();
+					for(ProductStyle styleNo : musicStyles) {
+						musicStyleNos.add(styleNo.getStyleNo());
+					}
+					predicates.add(table.get("ProductStyle").get("styleNo").in(musicStyleNos));
+				} else {
+					predicates.add(criteriaBuilder.equal(table.get("ProductStyle").get("styleNo"), 0));
+				}
+			}
+			if(language != null && language.length() != 0) {
+				System.out.println(language);
+				List<Language> languages = languageService.findByLanguage(language);
+				if(!languages.isEmpty()) {
+					List<Integer> languagesNos = new ArrayList<>();
+					for(Language lan : languages) {
+						languagesNos.add(lan.getLanguageNo());
+					}
+					predicates.add(table.get("language").get("languageNo").in(languagesNos));
+				} else {
+					predicates.add(criteriaBuilder.equal(table.get("language").get("languageNo"), 0));
+				}
+			}
+			if(musicYear != null && musicYear.length() != 0) {
+				System.out.println(musicYear);
+				List<MusicYear> musicYears = musicYearService.findByMusicYear(musicYear);
+				if(!musicYears.isEmpty()) {
+					List<Integer> musicYearNos = new ArrayList<>();
+					for(MusicYear year : musicYears) {
+						musicYearNos.add(year.getMusicYearNo());
+					}
+					predicates.add(table.get("musicYear").get("musicYearNo").in(musicYearNos));
+				} else {
+					predicates.add(criteriaBuilder.equal(table.get("musicYear").get("languageNo"), 0));
+				}
+			}
+			//傳入音樂類型編號陣列 喜好推薦
 			if(style != null) {
 				System.out.println(style);
 				List<Integer> styleNos = new ArrayList<>();
@@ -425,10 +504,6 @@ public class ProductService {
 					styleNos.add(style.getInt(i));
 				}
 				predicates.add(table.get("productStyle").get("styleNo").in(styleNos));
-			}
-			//下拉選項用數字對照
-			if(language != null && language != 0) {
-				predicates.add(criteriaBuilder.equal(table.get("language"), language));
 			}
 			
 			if(predicates != null && !predicates.isEmpty()) {

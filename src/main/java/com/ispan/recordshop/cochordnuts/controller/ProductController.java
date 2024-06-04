@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -129,6 +130,16 @@ public class ProductController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	// 查詢全部分頁
+	@GetMapping("/products/findAllByPages/{page}")
+	public ResponseEntity<?> findAllByPages(@PathVariable Integer page){
+		Page<Product> result = productService.findAllByPages(page);
+		if(result != null && !result.isEmpty()) {
+			return ResponseEntity.ok(result);
+		}
+		return ResponseEntity.notFound().build();
+	}
+	
 	// 單一查詢回傳ProductDTO
 	@GetMapping("/products/detail/{id}")
 	public ResponseEntity<?> findById(@PathVariable Integer id) {
@@ -192,8 +203,8 @@ public class ProductController {
 	} 
 	
 	// 依音樂類型查詢商品 流行/搖滾
-	@GetMapping("/products/styleFind")
-	public ResponseEntity<?> styleFind(@RequestParam Integer styleNo){
+	@GetMapping("/products/styleFind/{styleNo}")
+	public ResponseEntity<?> styleFind(@PathVariable Integer styleNo){
 		List<ProductDTO> result = productService.findByStyle(styleNo);
 		if(result != null && !result.isEmpty()) {
 			return ResponseEntity.ok(result);
