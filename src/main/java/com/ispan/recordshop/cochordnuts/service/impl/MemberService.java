@@ -1,9 +1,13 @@
 package com.ispan.recordshop.cochordnuts.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +101,43 @@ public class MemberService {
             Optional<Member> optional = memberRepo.findById(memberNo);
             if (optional.isPresent()) {
                 return optional.get();
+            }
+        }
+        return null;
+    }
+
+    public MemberDTO findById1(Integer memberNo) {
+        if (memberNo != null) {
+            Optional<Member> optional = memberRepo.findMemberByFav(memberNo);
+            if (optional.isPresent()) {
+                Member member = optional.get();
+                List<Integer> favoriteIds = favoriteRepo.findStyleNoByMemberId(memberNo)
+                        .stream()
+                        .map(favorite -> favorite.getFavoriteId().getProductStyleId())
+                        .collect(Collectors.toList());
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat dateFormatTime = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                String birthday = dateFormat.format(member.getBirthday());
+                String registerTime = dateFormatTime.format(member.getRegisterTime());
+                String lastLoginTime = dateFormatTime.format(member.getLastLoginTime());
+
+                MemberDTO memberDTO = new MemberDTO();
+                memberDTO.setMemberNo(member.getMemberNo());
+                memberDTO.setName(member.getName());
+                memberDTO.setBirthday(birthday);
+                memberDTO.setEmail(member.getEmail());
+                memberDTO.setAddress(member.getAddress());
+                memberDTO.setPhone(member.getPhone());
+                memberDTO.setFavoriteIds(favoriteIds);
+                memberDTO.setMemberStatus(member.getMemberStatus());
+                memberDTO.setRegisterTime(registerTime);
+                memberDTO.setLastLoginTime(lastLoginTime);
+                memberDTO.setRecipient(member.getRecipient());
+                memberDTO.setRecipientPhone(member.getRecipientPhone());
+                memberDTO.setRecipientAddress(member.getRecipientAddress());
+
+                return memberDTO;
             }
         }
         return null;
@@ -335,9 +376,17 @@ public class MemberService {
             String recipient = obj.isNull("recipient") ? null : obj.getString("recipient");
             String recipientAddress = obj.isNull("recipientAddress") ? null : obj.getString("recipientAddress");
             String recipientPhone = obj.isNull("recipientPhone") ? null : obj.getString("recipientPhone");
+            JSONArray favoriteIdsJsonArray = obj.isNull("favoriteIds") ? null : obj.getJSONArray("favoriteIds");
+            List<Integer> favoriteIds = new ArrayList<>();
+            if (favoriteIdsJsonArray != null) {
+                for (int i = 0; i < favoriteIdsJsonArray.length(); i++) {
+                    favoriteIds.add(favoriteIdsJsonArray.getInt(i));
+                }
+            }
 
             if (memberNo != null) {
                 Optional<Member> optional = memberRepo.findById(memberNo);
+
                 if (optional.isPresent()) {
                     Member update = optional.get();
                     update.setName(name);
@@ -353,7 +402,21 @@ public class MemberService {
                     update.setRecipient(recipient);
                     update.setRecipientAddress(recipientAddress);
                     update.setRecipientPhone(recipientPhone);
-                    return memberRepo.save(update);
+                    Member savedMember = memberRepo.save(update);
+
+                    // 更新喜好
+                    favoriteRepo.deleteByMemberId(memberNo); // 先删除原本的
+                    for (Integer productStyleId : favoriteIds) {
+                        Favorite favorite = new Favorite();
+                        FavoriteId favoriteId = new FavoriteId();
+                        favoriteId.setMemberId(savedMember.getMemberNo());
+                        favoriteId.setProductStyleId(productStyleId);
+                        favorite.setFavoriteId(favoriteId);
+                        favorite.setMember(savedMember);
+                        favorite.setProductStyle(ProStyleRepo.findById(productStyleId).orElse(null));
+                        favoriteRepo.save(favorite);
+                    }
+                    return savedMember;
                 }
             }
         } catch (JSONException e) {
@@ -361,6 +424,47 @@ public class MemberService {
         }
         return null;
     }
+
+    // public Member modify(String json) {
+    // try {
+    // JSONObject obj = new JSONObject(json);
+    // Integer memberNo = obj.isNull("memberNo") ? null : obj.getInt("memberNo");
+    // String name = obj.isNull("name") ? null : obj.getString("name");
+    // String email = obj.isNull("email") ? null : obj.getString("email");
+    // String birthday = obj.isNull("birthday") ? null : obj.getString("birthday");
+    // String address = obj.isNull("address") ? null : obj.getString("address");
+    // String phone = obj.isNull("phone") ? null : obj.getString("phone");
+    // String recipient = obj.isNull("recipient") ? null :
+    // obj.getString("recipient");
+    // String recipientAddress = obj.isNull("recipientAddress") ? null :
+    // obj.getString("recipientAddress");
+    // String recipientPhone = obj.isNull("recipientPhone") ? null :
+    // obj.getString("recipientPhone");
+    // if (memberNo != null) {
+    // Optional<Member> optional = memberRepo.findById(memberNo);
+    // if (optional.isPresent()) {
+    // Member update = optional.get();
+    // update.setName(name);
+    // update.setEmail(email);
+    // update.setAddress(address);
+    // update.setPhone(phone);
+    // if (birthday != null && birthday.length() != 0) {
+    // java.util.Date temp = DatetimeConverter.parse(birthday, "yyyy-MM-dd");
+    // update.setBirthday(temp);
+    // } else {
+    // update.setBirthday(null);
+    // }
+    // update.setRecipient(recipient);
+    // update.setRecipientAddress(recipientAddress);
+    // update.setRecipientPhone(recipientPhone);
+    // return memberRepo.save(update);
+    // }
+    // }
+    // } catch (JSONException e) {
+    // e.printStackTrace();
+    // }
+    // return null;
+    // }
 
     // 忘記密碼
     public Member rePassword(String json) {
@@ -425,7 +529,6 @@ public class MemberService {
         return false;
     }
 
-    
     // 修改帳號狀態
     public Member changeStatus(Integer memberNo) {
         try {
