@@ -230,7 +230,6 @@ public class MemberController {
                     responseJson.put("message", "新的email已存在");
                 } else {
                     // 其他情況下，進行修改
-                    System.out.println("hahahahhahah");
                     Member member = memberService.modify(json);
                     if (member == null) {
                         responseJson.put("success", false);
@@ -312,7 +311,7 @@ public class MemberController {
         return responseJson.toString();
     }
 
-     // 修改帳號狀態
+    // 修改帳號狀態
     @PutMapping("/member/changeStatus/{pk}")
     public String changeStatus(@PathVariable(name = "pk") Integer memberNo) {
         JSONObject responseJson = new JSONObject();
@@ -341,7 +340,6 @@ public class MemberController {
     @PostMapping("/members/find")
     public String find(@RequestBody String json) {
         JSONObject responseJson = new JSONObject();
-
         JSONArray array = new JSONArray();
         List<Member> members = memberService.find(json);
         if (members != null && !members.isEmpty()) {
@@ -403,11 +401,11 @@ public class MemberController {
     public String findById(@PathVariable(name = "pk") Integer memberNo) {
         JSONObject responseJson = new JSONObject();
         JSONArray array = new JSONArray();
-        Member member = memberService.findById(memberNo);
+        MemberDTO member = memberService.findById1(memberNo);
         if (member != null) {
-            String birthday = DatetimeConverter.toString(member.getBirthday(), "yyyy-MM-dd");
-            String registerTime = DatetimeConverter.toString(member.getRegisterTime(), "yyyy-MM-dd HH:mm");
-            String lastLoginTime = DatetimeConverter.toString(member.getLastLoginTime(), "yyyy-MM-dd HH:mm");
+            String birthday = member.getBirthday();
+            String registerTime = member.getRegisterTime();
+            String lastLoginTime = member.getLastLoginTime();
 
             JSONObject item = new JSONObject()
                     .put("memberNo", member.getMemberNo())
@@ -422,6 +420,11 @@ public class MemberController {
                     .put("recipientAddress", member.getRecipientAddress())
                     .put("recipientPhone", member.getRecipientPhone())
                     .put("memberStatus", member.getMemberStatus());
+            JSONArray favoritesArray = new JSONArray();
+            for (Integer favoriteId : member.getFavoriteIds()) {
+                favoritesArray.put(favoriteId);
+            }
+            item.put("favorites", favoritesArray);
             array.put(item);
         }
         responseJson.put("list", array);
