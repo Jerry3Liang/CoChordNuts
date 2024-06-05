@@ -1,6 +1,6 @@
 package com.ispan.recordshop.cochordnuts.dto;
 
-import java.util.Date;
+import com.ispan.recordshop.cochordnuts.model.Product;
 
 import lombok.Data;
 
@@ -27,6 +27,25 @@ public class ProductDTO {
 	public ProductDTO() {
 	}
 
+	public ProductDTO(Product product) {
+        this.productNo = product.getProductNo();
+        this.productName = product.getProductName();
+        this.unitPrice = product.getUnitPrice();
+        this.stock = product.getStock();
+        this.describe = product.getDescribe();
+        this.publishedDate = product.getPublishedDate().toString();
+        this.discount = product.getDiscount();
+        this.photo = product.getPhoto();
+        this.styleType = product.getProductStyle().getStyleType();
+        this.artistType = product.getArtist().getArtistName();
+        this.languageType = product.getLanguage().getLanguageType();
+        this.productStatus = product.getProductStatus();
+        this.isDiscount = product.getIsDiscount();
+        this.isBest = product.getIsBest();
+        this.isPreorder = product.getIsPreorder();
+        
+        
+    }
 
 	
 	

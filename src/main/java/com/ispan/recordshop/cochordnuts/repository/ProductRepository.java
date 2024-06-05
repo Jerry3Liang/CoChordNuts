@@ -27,7 +27,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	List<Product> findIsPreorder(@Param("n") Integer isPreorder, @Param("m") Integer productStatus);
 	
 	@Query("from Product where language = :n and productStatus = :m")
+	Page<Product> findByLanguageInf(@Param("n") Language language, @Param("m") Integer productStatus, Pageable pageable);
+	
+	@Query("from Product where language = :n and productStatus = :m")
 	List<Product> findByLanguage(@Param("n") Language language, @Param("m") Integer productStatus);
+	
+	@Query("from Product where productStyle = :n and productStatus = :m")
+	Page<Product> findByStyleInf(@Param("n") ProductStyle style, @Param("m") Integer productStatus, Pageable pageable);
 	
 	@Query("from Product where productStyle = :n and productStatus = :m")
 	List<Product> findByStyle(@Param("n") ProductStyle style, @Param("m") Integer productStatus);

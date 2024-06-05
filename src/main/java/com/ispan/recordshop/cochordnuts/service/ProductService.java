@@ -26,11 +26,13 @@ import com.ispan.recordshop.cochordnuts.model.Product;
 import com.ispan.recordshop.cochordnuts.model.ProductStyle;
 import com.ispan.recordshop.cochordnuts.repository.ProductRepository;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
+import com.ispan.recordshop.cochordnuts.util.PageConverter;
 
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
@@ -623,6 +625,14 @@ public class ProductService {
 			}
 			return productsDTO;
 		}
+		
+		// 依語言查詢商品 華語/日韓/西洋 無限滾動
+		public Page<ProductDTO> findByLanguageInf(Integer languageNo, Pageable pageable){
+			Language language = languageService.findById(languageNo);
+			Page<Product> products = productRepo.findByLanguageInf(language, 1, pageable);
+			return PageConverter.convertPage(products, ProductDTO::new);
+		}
+		
 	
 		// 依音樂類型查詢商品 流行/搖滾
 		public List<ProductDTO> findByStyle(Integer styleNo){
@@ -648,6 +658,12 @@ public class ProductService {
 			return productsDTO;
 		}
 		
+		// 依音樂類型查詢商品 流行/搖滾 無限滾動
+		public Page<ProductDTO> findByStyleInf(Integer styleNo, Pageable pageable){
+			ProductStyle style = prodStyleService.findById(styleNo);
+			Page<Product> products = productRepo.findByStyleInf(style, 1, pageable);
+			return PageConverter.convertPage(products, ProductDTO::new);
+		}
 		
 		
 		

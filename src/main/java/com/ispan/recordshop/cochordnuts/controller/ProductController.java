@@ -7,6 +7,8 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -202,10 +204,39 @@ public class ProductController {
 		return ResponseEntity.notFound().build();
 	} 
 	
-	// 依音樂類型查詢商品 流行/搖滾
+	// 依語言查詢商品 華語/日韓/西洋 無限滾動分頁
+	@GetMapping("/products/languageFindInf/{languageNo}")
+	public ResponseEntity<?> languageFindTest(
+			@PathVariable Integer languageNo,
+			@RequestParam int page,
+	        @RequestParam int size){
+		Pageable pageable = PageRequest.of(page - 1, size);
+		Page<ProductDTO> result = productService.findByLanguageInf(languageNo, pageable);
+		if(result != null && !result.isEmpty()) {
+			return ResponseEntity.ok(result);
+		}
+		return ResponseEntity.notFound().build();
+	} 
+	
+	
+	// 依音樂類型查詢商品 流行/搖滾 
 	@GetMapping("/products/styleFind/{styleNo}")
 	public ResponseEntity<?> styleFind(@PathVariable Integer styleNo){
 		List<ProductDTO> result = productService.findByStyle(styleNo);
+		if(result != null && !result.isEmpty()) {
+			return ResponseEntity.ok(result);
+		}
+		return ResponseEntity.notFound().build();
+	} 
+	
+	// 依音樂類型查詢商品 流行/搖滾 無限滾動分頁
+	@GetMapping("/products/styleFindInf/{styleNo}")
+	public ResponseEntity<?> styleFindInf(
+			@PathVariable Integer styleNo,
+			@RequestParam int page,
+	        @RequestParam int size){
+		Pageable pageable = PageRequest.of(page - 1, size);
+		Page<ProductDTO> result = productService.findByStyleInf(styleNo, pageable);
 		if(result != null && !result.isEmpty()) {
 			return ResponseEntity.ok(result);
 		}
