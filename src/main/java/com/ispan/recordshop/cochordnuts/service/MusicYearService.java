@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ispan.recordshop.cochordnuts.dto.MusicYearDTO;
 import com.ispan.recordshop.cochordnuts.dto.StyleDTO;
+import com.ispan.recordshop.cochordnuts.model.Language;
 import com.ispan.recordshop.cochordnuts.model.MusicYear;
 import com.ispan.recordshop.cochordnuts.model.ProductStyle;
 import com.ispan.recordshop.cochordnuts.repository.MusicYearRepository;
@@ -39,6 +40,10 @@ public class MusicYearService {
 		return musicYearRepo.findById(id).get();
 	}
 	
+	
+	public List<MusicYear> findByMusicYear(String generation) {
+		return musicYearRepo.findByMusicYearLike(generation);
+	}
 	
 
 }

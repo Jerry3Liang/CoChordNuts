@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ispan.recordshop.cochordnuts.dto.ArtistDTO;
 import com.ispan.recordshop.cochordnuts.dto.StyleDTO;
+import com.ispan.recordshop.cochordnuts.model.Artist;
 import com.ispan.recordshop.cochordnuts.model.ProductStyle;
 import com.ispan.recordshop.cochordnuts.repository.ProductStyleRepository;
 
@@ -36,6 +37,10 @@ public class ProductStyleService {
 	
 	public ProductStyle findById(Integer id){
 		return prodStyleRepo.findById(id).get();
+	}
+	
+	public List<ProductStyle> findByName(String name) {
+		return prodStyleRepo.findByNameLike(name);
 	}
 	
 	
