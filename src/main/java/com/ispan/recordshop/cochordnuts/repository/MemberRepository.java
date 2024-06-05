@@ -22,4 +22,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer>, Member
 
     Optional<Member> findByEmail(String email);
 
+    @Query("SELECT m FROM Member m LEFT JOIN Favorite f ON m.memberNo = f.favoriteId.memberId WHERE m.memberNo = :memberNo")
+    Optional<Member> findMemberByFav(Integer memberNo);
+
 }
