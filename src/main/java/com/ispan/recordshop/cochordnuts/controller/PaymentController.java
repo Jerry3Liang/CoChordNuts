@@ -88,6 +88,24 @@ public class PaymentController {
 			}
 			
 		}
+		
+		
+		
+//		@PostMapping("/ecpayReturn")
+//		public String ecpayReturn(
+//				@RequestParam(value = "CustomField1", required = false) String customField1,
+//				@RequestParam(value = "CustomField2", required = false) String customField2) {
+//			
+//			
+//				Integer orderNo = Integer.parseInt(customField1);
+//				Integer memberNo = Integer.parseInt(customField2);
+//				System.out.println(orderNo);
+//				System.out.println(memberNo);
+//				paymentService.updatePaymentStatus(memberNo, orderNo);
+//				return PaymentURL.URL+"order/ECPaymentSuccess";
+//			}
+			
+		
 	
 	}
 
