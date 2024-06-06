@@ -18,8 +18,8 @@ import java.util.List;
 @CrossOrigin
 public class GoogleOauthController {
 
-    private final String GOOGLE_CLIENT_ID = "325692365134-0pr3latp9i2bcjjk7qmdsdt9v5r31uuk.apps.googleusercontent.com";
-    String GOOGLE_CLIENT_SECRET = "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";
+    private final String GOOGLE_CLIENT_ID = "";
+    String GOOGLE_CLIENT_SECRET = "";
     String GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
     String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 
