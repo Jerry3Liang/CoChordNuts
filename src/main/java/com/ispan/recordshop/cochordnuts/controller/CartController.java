@@ -108,7 +108,7 @@ public class CartController {
                 Product itemProduct = item.getProduct();
                 Integer currentInventory = itemProduct.getStock();
                 Integer itemCount = item.getCount();
-                if (currentInventory < itemCount) {
+                if (currentInventory < itemCount && currentInventory > 0) {
                     cartService.deleteItemInCart(memberId, itemProduct.getProductNo());
                     cartService.addToCartService(memberId, itemProduct.getProductNo(), currentInventory);
                     item.setCount(currentInventory);

@@ -115,25 +115,23 @@ public class CartService {
 		}
 	}
 
-
 	public boolean cartList(List<Cart> cart) {
-		if(cartRepo.saveAllAndFlush(cart)!=null) {
+		if (cartRepo.saveAllAndFlush(cart) != null) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
-		
-	}
-	
-	public boolean cartAdd(Cart cart) {
-		if(cartRepo.save(cart)!=null) {
-			return true;
-		}else {
-			return false;
-		}
-		
+
 	}
 
+	public boolean cartAdd(Cart cart) {
+		if (cartRepo.save(cart) != null) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
 
 	@Transactional
 	public void deleteItemInCart(Integer loggedInUser, Integer photoId) {
@@ -141,4 +139,10 @@ public class CartService {
 		Cart cart = cartRepo.findByMemberAndProducts(loggedInUser, photoId);
 		cartRepo.delete(cart);
 	}
+
+	// @Transactional
+	// public void adjustCount(Integer loggedInUser, Integer productId){
+	// Cart exist = cartRepo.findByMemberAndProducts(loggedInUser, productId);
+	// }
+
 }
