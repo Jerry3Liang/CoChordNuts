@@ -92,6 +92,7 @@ public class CartController {
 
         JSONObject responseObj = new JSONObject();
         JSONObject memberObj = new JSONObject(memberIdObj);
+
         Integer memberId = Integer.parseInt(memberObj.getString("memberNo"));
 
         // String memberId = memberObj.getString("memberNo");
@@ -105,17 +106,34 @@ public class CartController {
             for (Cart item : cartList) {
 
                 Product itemProduct = item.getProduct();
-
-                JSONObject itemObj = new JSONObject()
-                        .put("productId", itemProduct.getProductNo())
-                        .put("productName", itemProduct.getProductName())
-                        .put("inventory", itemProduct.getStock())
-                        // .put("photo", itemProduct.getPhoto())
-                        .put("price", itemProduct.getUnitPrice())
-                        .put("discount", itemProduct.getDiscount())
-                        .put("count", item.getCount())
-                        .put("artist", itemProduct.getArtist().getArtistName());
-                array.put(itemObj);
+                Integer currentInventory = itemProduct.getStock();
+                Integer itemCount = item.getCount();
+                if (currentInventory < itemCount) {
+                    cartService.deleteItemInCart(memberId, itemProduct.getProductNo());
+                    cartService.addToCartService(memberId, itemProduct.getProductNo(), currentInventory);
+                    item.setCount(currentInventory);
+                    JSONObject itemObj = new JSONObject()
+                            .put("productId", itemProduct.getProductNo())
+                            .put("productName", itemProduct.getProductName())
+                            .put("inventory", itemProduct.getStock())
+                            // .put("photo", itemProduct.getPhoto())
+                            .put("price", itemProduct.getUnitPrice())
+                            .put("discount", itemProduct.getDiscount())
+                            .put("count", item.getCount())
+                            .put("artist", itemProduct.getArtist().getArtistName());
+                    array.put(itemObj);
+                } else {
+                    JSONObject itemObj = new JSONObject()
+                            .put("productId", itemProduct.getProductNo())
+                            .put("productName", itemProduct.getProductName())
+                            .put("inventory", itemProduct.getStock())
+                            // .put("photo", itemProduct.getPhoto())
+                            .put("price", itemProduct.getUnitPrice())
+                            .put("discount", itemProduct.getDiscount())
+                            .put("count", item.getCount())
+                            .put("artist", itemProduct.getArtist().getArtistName());
+                    array.put(itemObj);
+                }
             }
             responseObj.put("list", array);
             return responseObj.toString();
