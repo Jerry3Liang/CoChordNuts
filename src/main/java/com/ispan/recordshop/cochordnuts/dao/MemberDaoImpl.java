@@ -156,7 +156,7 @@ public class MemberDaoImpl implements MemberDao {
         Integer memberStatus = obj.isNull("memberStatus") ? null : obj.getInt("memberStatus");
 
         int start = obj.isNull("start") ? 0 : obj.getInt("start");
-        int rows = obj.isNull("rows") ? 10 : obj.getInt("rows");
+        int rows = obj.isNull("rows") ? 50 : obj.getInt("rows");
         String order = obj.isNull("order") ? "id" : obj.getString("order");
         boolean dir = obj.isNull("dir") ? false : obj.getBoolean("dir");
 
