@@ -33,6 +33,9 @@ import com.ispan.recordshop.cochordnuts.service.impl.OrdersServiceImpl;
 @RestController
 @CrossOrigin
 public class OdersController {
+	
+	String id = "2005446685";
+	String secret = "63941849e2107100e64609b4f2e1cde6";
 
 	@Autowired
 	private OrdersServiceImpl ordersServiceImpl;
@@ -148,7 +151,6 @@ public class OdersController {
 		} else {
 			responseJson.put("error", false);
 		}
-
 		return responseJson.toString();
 
 	}
@@ -255,8 +257,8 @@ public class OdersController {
 	public ResponseEntity<String> makePayment(@RequestBody String requestBody) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json; charset=UTF-8");
-		headers.add("X-LINE-ChannelId", "2005446685");
-		headers.add("X-LINE-ChannelSecret", "63941849e2107100e64609b4f2e1cde6");
+		headers.add("X-LINE-ChannelId", id);
+		headers.add("X-LINE-ChannelSecret", secret);
 
 		HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
@@ -274,8 +276,8 @@ public class OdersController {
 		HttpHeaders headers = new HttpHeaders();
 		Integer ordernum = Integer.valueOf(orderNo);
 		headers.add("Content-Type", "application/json; charset=UTF-8");
-		headers.add("X-LINE-ChannelId", "2005446685");
-		headers.add("X-LINE-ChannelSecret", "63941849e2107100e64609b4f2e1cde6");
+		headers.add("X-LINE-ChannelId", id);
+		headers.add("X-LINE-ChannelSecret", secret);
 
 		HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
