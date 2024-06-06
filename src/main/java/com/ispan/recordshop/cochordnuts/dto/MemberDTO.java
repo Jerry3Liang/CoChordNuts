@@ -3,6 +3,14 @@ package com.ispan.recordshop.cochordnuts.dto;
 import java.util.List;
 
 public class MemberDTO {
+
+    private Integer memberNo;
+    private String registerTime;
+    private String lastLoginTime;
+    private String recipient;
+    private String recipientAddress;
+    private String recipientPhone;
+
     private String name;
     private String birthday;
     private String password;
@@ -12,12 +20,52 @@ public class MemberDTO {
     private List<Integer> favoriteIds;
     private Integer memberStatus;
 
-    public Integer getMemberStatus() {
-        return memberStatus;
+    public Integer getMemberNo() {
+        return memberNo;
     }
 
-    public void setMemberStatus(Integer memberStatus) {
-        this.memberStatus = memberStatus;
+    public void setMemberNo(Integer memberNo) {
+        this.memberNo = memberNo;
+    }
+
+    public String getRegisterTime() {
+        return registerTime;
+    }
+
+    public void setRegisterTime(String registerTime) {
+        this.registerTime = registerTime;
+    }
+
+    public String getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public void setLastLoginTime(String lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
+
+    public String getRecipientAddress() {
+        return recipientAddress;
+    }
+
+    public void setRecipientAddress(String recipientAddress) {
+        this.recipientAddress = recipientAddress;
+    }
+
+    public String getRecipientPhone() {
+        return recipientPhone;
+    }
+
+    public void setRecipientPhone(String recipientPhone) {
+        this.recipientPhone = recipientPhone;
     }
 
     public String getName() {
@@ -74,6 +122,14 @@ public class MemberDTO {
 
     public void setFavoriteIds(List<Integer> favoriteIds) {
         this.favoriteIds = favoriteIds;
+    }
+
+    public Integer getMemberStatus() {
+        return memberStatus;
+    }
+
+    public void setMemberStatus(Integer memberStatus) {
+        this.memberStatus = memberStatus;
     }
 
 }
