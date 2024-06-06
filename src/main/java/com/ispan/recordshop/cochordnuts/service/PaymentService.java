@@ -13,6 +13,7 @@ import com.ispan.recordshop.cochordnuts.service.impl.OrdersServiceImpl;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 
 import ecpay.payment.integration.AllInOne;
+import ecpay.payment.integration.PaymentURL;
 import ecpay.payment.integration.domain.AioCheckOutALL;
 
 @Service
@@ -22,6 +23,8 @@ public class PaymentService {
 	private OrdersServiceImpl ordersService;
 	
 	public String ecpayCheckout(JSONObject json) {
+		
+		PaymentURL url = new PaymentURL();
 		
 		Integer amountInt = json.isNull("totalPay")? null : json.getInt("totalPay");
 		Integer orderNoInt = json.isNull("orderNo")? null : json.getInt("orderNo");
@@ -46,11 +49,11 @@ public class PaymentService {
 		obj.setCustomField1(orderNo);
 		obj.setCustomField2(memberNo);
 		// 交易結果回傳網址，只接受 https 開頭的網站，可以使用 ngrok
-		obj.setReturnURL("http://localhost:8080/ecpayReturn");
-		obj.setOrderResultURL("http://localhost:8080/ecpayReturn");
+		obj.setReturnURL("http://192.168.31.96:8080/ecpayReturn");
+		obj.setOrderResultURL("http://192.168.31.96:8080/ecpayReturn");
 		obj.setNeedExtraPaidInfo("N");
 		// 商店轉跳網址 (Optional)
-		obj.setClientBackURL("http://localhost:5173/");
+		obj.setClientBackURL("http://192.168.31.96:4173/");
 		String form = all.aioCheckOut(obj, null);
 
 		return form;
