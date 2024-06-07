@@ -216,7 +216,7 @@ public class ProductService {
 		int start = obj.isNull("start") ? 0 : obj.getInt("start");
 		int rows = obj.isNull("rows") ? 4 : obj.getInt("rows");
 		String order = obj.isNull("order") ? "productNo" : obj.getString("order");
-		boolean direction = obj.isNull("direction") ? false : obj.getBoolean("direction");
+		boolean direction = obj.isNull("direction") ? true : obj.getBoolean("direction");
 		
 		//Criteria Connect
 		CriteriaBuilder criteriaBuilder = this.getSession().getCriteriaBuilder();
