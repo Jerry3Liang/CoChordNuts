@@ -43,9 +43,9 @@ public class EmployeeController {
         //在 DB 新增 Employee 資料
         Integer employeeId = employeeService.createEmployee(employee);
 
-        //為 Employee 添加預設的 Role
-        Role normalRole = roleService.getRoleByName("ROLE_NORMAL_EMPLOYEE");
-        employeeService.addRoleForEmployeeId(employeeId, normalRole);
+//        //為 Employee 添加預設的 Role
+//        Role normalRole = roleService.getRoleByName("ROLE_NORMAL_EMPLOYEE");
+//        employeeService.addRoleForEmployeeId(employeeId, normalRole);
 
         return "註冊成功";
     }

@@ -2,6 +2,7 @@ package com.ispan.recordshop.cochordnuts.dao;
 
 import java.util.List;
 
+import com.ispan.recordshop.cochordnuts.dto.MemberDTO;
 import com.ispan.recordshop.cochordnuts.model.Role;
 import org.json.JSONObject;
 
@@ -16,4 +17,7 @@ public interface MemberDao {
 
 
     void addRoleForMemberId(Integer memberId, Role role);
+
+    MemberDTO findMemberByEmail (String email);
+
 }

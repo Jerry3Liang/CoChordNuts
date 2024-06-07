@@ -401,6 +401,7 @@ public class MemberController {
     public String findById(@PathVariable(name = "pk") Integer memberNo) {
         JSONObject responseJson = new JSONObject();
         JSONArray array = new JSONArray();
+        System.out.println(memberNo);
         MemberDTO member = memberService.findById1(memberNo);
         if (member != null) {
             String birthday = member.getBirthday();
