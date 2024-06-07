@@ -1,7 +1,9 @@
 package com.ispan.recordshop.cochordnuts.dao;
 
+import com.ispan.recordshop.cochordnuts.dto.MemberDTO;
 import com.ispan.recordshop.cochordnuts.model.Member;
 import com.ispan.recordshop.cochordnuts.model.Role;
+import com.ispan.recordshop.cochordnuts.rowmapper.MemberDTORowMapper;
 import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
 
 import java.util.ArrayList;
@@ -262,5 +264,23 @@ public class MemberDaoImpl implements MemberDao {
         map.put("roleId", role.getRoleNo());
 
         namedParameterJdbcTemplate.update(sql, map);
+    }
+
+    @Override
+    public MemberDTO findMemberByEmail(String email) {
+        String sql = "SELECT * FROM member WHERE email = :email";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("email", email);
+
+        List<MemberDTO> memberDTOList = namedParameterJdbcTemplate.query(sql, map, new MemberDTORowMapper());
+
+        if(!memberDTOList.isEmpty()){
+
+            return memberDTOList.get(0);
+        } else {
+
+            return null;
+        }
     }
 }

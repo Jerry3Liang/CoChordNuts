@@ -1,5 +1,16 @@
 package com.ispan.recordshop.cochordnuts.oauth;
 
+import com.ispan.recordshop.cochordnuts.dao.MemberDao;
+import com.ispan.recordshop.cochordnuts.dao.MemberDaoImpl;
+import com.ispan.recordshop.cochordnuts.dto.MemberDTO;
+import com.ispan.recordshop.cochordnuts.model.Member;
+import com.ispan.recordshop.cochordnuts.service.EmployeeService;
+import com.ispan.recordshop.cochordnuts.service.impl.MemberService;
+import com.ispan.recordshop.cochordnuts.util.DatetimeConverter;
+import com.ispan.recordshop.cochordnuts.util.JsonWebTokenUtility;
+import jakarta.servlet.http.HttpSession;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,16 +23,23 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 @RestController
 @CrossOrigin
 public class GoogleOauthController {
 
-    private final String GOOGLE_CLIENT_ID = "";
-    String GOOGLE_CLIENT_SECRET = "";
+    private final String GOOGLE_CLIENT_ID = "325692365134-0pr3latp9i2bcjjk7qmdsdt9v5r31uuk.apps.googleusercontent.com";
+    String GOOGLE_CLIENT_SECRET = "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";
     String GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
     String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+
+    @Autowired
+    private MemberService memberService;
+
+    @Autowired
+    private MemberDaoImpl memberDaoImpl;
 
     //拼接跳轉的 url，將使用者跳轉到 Google 認證中心頁面
     @GetMapping("/google/buildAuthUrl")
@@ -33,7 +51,7 @@ public class GoogleOauthController {
                 .queryParam("response_type", "code")
                 .queryParam("client_id", GOOGLE_CLIENT_ID)
                 .queryParam("scope", "profile+email+openid")
-                .queryParam("redirect_uri", "http://localhost:5173")
+                .queryParam("redirect_uri", "192.168.31.96::5173")
                 .queryParam("state", generateRandomState())
                 .queryParam("access_type", "offline");
 
@@ -56,7 +74,7 @@ public class GoogleOauthController {
         body.add("client_id", GOOGLE_CLIENT_ID);
         body.add("client_secret", GOOGLE_CLIENT_SECRET);
         body.add("code", exchangeTokenRequest.getCode());
-        body.add("redirect_uri", "http://localhost:5173");
+        body.add("redirect_uri", "192.168.31.96:5173");
 
         //發送請求
         String result;
@@ -102,7 +120,58 @@ public class GoogleOauthController {
             result = e.toString();
         }
 
-        return result;
+
+        JSONObject obj = new JSONObject(result);
+        String email = obj.getString("email");
+        String name = obj.getString("name");
+
+
+        boolean existEmail = memberService.existByEmail(email);
+        if(!existEmail){
+            MemberDTO memberDto = new MemberDTO();
+            memberDto.setName(name);
+            memberDto.setEmail(email);
+            memberDto.setBirthday(DatetimeConverter.toString(new Date(), "yyyy-MM-dd"));
+            memberDto.setRegisterTime(DatetimeConverter.toString(new Date(), "yyyy-MM-dd"));
+            memberDto.setLastLoginTime(DatetimeConverter.toString(new Date(), "yyyy-MM-dd"));
+            Member updateMember = memberService.createGoogle(memberDto);
+            obj.put("memberNo", updateMember.getMemberNo());
+            obj.put("isGoogleLogin", true);
+            obj.put("lastLoginTime", DatetimeConverter.toString(updateMember.getLastLoginTime(), "yyyy-MM-dd HH:mm:ss"));
+        } else {
+            MemberDTO member = memberDaoImpl.findMemberByEmail(email);
+            obj.put("memberNo", member.getMemberNo());
+            obj.put("isGoogleLogin", true);
+            obj.put("lastLoginTime", member.getLastLoginTime());
+        }
+
+        return obj.toString();
+    }
+
+    @PostMapping("/google/logout")
+    public String googleLogout(HttpSession session, @RequestBody String json) {
+        JSONObject responseJson = new JSONObject();
+        JSONObject obj = new JSONObject(json);
+        Integer memberNo = obj.isNull("memberNo") ? null : obj.getInt("memberNo");
+        String lastLoginTime = obj.isNull("lastLoginTime") ? null : obj.getString("lastLoginTime");
+
+        if (memberNo == null) {
+            responseJson.put("success", false);
+            responseJson.put("message", "用戶未登錄");
+            return responseJson.toString();
+        }
+
+
+        Member updatedMember = memberService.logout(json);
+
+        if (updatedMember != null) {
+            session.removeAttribute("loginMember");
+            session.removeAttribute("lastLoginTime");
+
+            responseJson.put("success", true);
+            responseJson.put("message", "登出成功");
+        }
+        return responseJson.toString();
     }
 
     private String generateRandomState() {

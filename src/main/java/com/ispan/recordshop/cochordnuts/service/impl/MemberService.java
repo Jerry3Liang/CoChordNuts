@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.ispan.recordshop.cochordnuts.dao.MemberDao;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +47,7 @@ public class MemberService {
 
     @Autowired
     private BCryptPasswordEncoder bcrypt;
+
 
     public boolean existByEmail(String email) {
         if (email != null && email.length() != 0) {
@@ -115,12 +117,14 @@ public class MemberService {
                         .stream()
                         .map(favorite -> favorite.getFavoriteId().getProductStyleId())
                         .collect(Collectors.toList());
-
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 SimpleDateFormat dateFormatTime = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 String birthday = dateFormat.format(member.getBirthday());
                 String registerTime = dateFormatTime.format(member.getRegisterTime());
                 String lastLoginTime = dateFormatTime.format(member.getLastLoginTime());
+
+
+
 
                 MemberDTO memberDTO = new MemberDTO();
                 memberDTO.setMemberNo(member.getMemberNo());
@@ -292,11 +296,11 @@ public class MemberService {
     // public Member create(String json, List<Integer> favoriteIds) {
     // try {
     // JSONObject obj = new JSONObject(json);
-    // String name = obj.isNull("name") ? null : obj.getString("name");
-    // String email = obj.isNull("email") ? null : obj.getString("email");
-    // String birthday = obj.isNull("birthday") ? null : obj.getString("birthday");
-    // String address = obj.isNull("address") ? null : obj.getString("address");
-    // String phone = obj.isNull("phone") ? null : obj.getString("phone");
+//     String name = obj.isNull("name") ? null : obj.getString("name");
+//     String email = obj.isNull("email") ? null : obj.getString("email");
+//     String birthday = obj.isNull("birthday") ? null : obj.getString("birthday");
+//     String address = obj.isNull("address") ? null : obj.getString("address");
+//     String phone = obj.isNull("phone") ? null : obj.getString("phone");
 
     // if (email != null && phone != null) {
     // Optional<Member> optional = memberRepo.findByEmailAndPhone(email, phone);
@@ -571,4 +575,52 @@ public class MemberService {
         }
         return null;
     }
+
+    // 新增
+    public Member createGoogle(MemberDTO memberRequest) {
+        try {
+            String name = memberRequest.getName();
+            String email = memberRequest.getEmail();
+
+            if (email != null ) {
+                Optional<Member> optional = memberRepo.findByEmail(email);
+                if (optional.isEmpty()) {
+                    Member insert = new Member();
+                    insert.setEmail(email);
+                    insert.setName(name);
+                    insert.setBirthday(new Date());
+                    insert.setRegisterTime(new Date());
+                    insert.setMemberStatus(1);
+                    return memberRepo.save(insert);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Member googleLogout(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            Integer memberNo = obj.isNull("memberNo") ? null : obj.getInt("memberNo");
+
+            if (memberNo != null) {
+                Optional<Member> optional = memberRepo.findById(memberNo);
+                if (optional.isPresent()) {
+                    Member update = optional.get();
+                    String lastLoginTime = obj.isNull("lastLoginTime") ? null : obj.getString("lastLoginTime");
+                    java.util.Date loginTime = DatetimeConverter.parse(lastLoginTime, "yyyy-MM-dd HH:mm:ss");
+                    update.setLastLoginTime(loginTime);
+                    return memberRepo.save(update);
+                } else {
+                    return null;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
