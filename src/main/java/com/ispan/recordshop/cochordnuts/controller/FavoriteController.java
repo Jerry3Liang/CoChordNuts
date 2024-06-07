@@ -33,6 +33,7 @@ public class FavoriteController {
 		}
 		JSONObject json = new JSONObject();
 		json.put("style", result);
+		json.put("productStatus", 1);
 //		System.out.println(productService.search(json));
 		return productService.search(json);
 		
