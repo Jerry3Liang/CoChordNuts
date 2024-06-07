@@ -51,7 +51,7 @@ public class GoogleOauthController {
                 .queryParam("response_type", "code")
                 .queryParam("client_id", GOOGLE_CLIENT_ID)
                 .queryParam("scope", "profile+email+openid")
-                .queryParam("redirect_uri", "192.168.31.96::5173")
+                .queryParam("redirect_uri", "http://192.168.31.96:4173")
                 .queryParam("state", generateRandomState())
                 .queryParam("access_type", "offline");
 
@@ -74,7 +74,7 @@ public class GoogleOauthController {
         body.add("client_id", GOOGLE_CLIENT_ID);
         body.add("client_secret", GOOGLE_CLIENT_SECRET);
         body.add("code", exchangeTokenRequest.getCode());
-        body.add("redirect_uri", "192.168.31.96:5173");
+        body.add("redirect_uri", "http://192.168.31.96:4173");
 
         //發送請求
         String result;
